@@ -9,6 +9,7 @@ import { MOCK_ROLE_OPTIONS, MOCK_USERS } from "@/components/users/types";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
+import { FilterBar } from "src/components/users/filter-bar-user";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
 
@@ -17,6 +18,8 @@ const usersSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
+  role: z.array(z.string()).optional().catch(MOCK_ROLE_OPTIONS.map((o) => o.name)).default(MOCK_ROLE_OPTIONS.map((o) => o.name)),
+  status: z.array(z.string()).optional().catch(["aktif", "pending", "tidak_aktif"]).default(["aktif", "pending", "tidak_aktif"]),
 });
 
 export const Route = createFileRoute("/_auth/users")({
@@ -30,20 +33,36 @@ function RouteComponent() {
   const search = Route.useSearch();
   const queryClient = useQueryClient();
 
-  const { page, per_page, search: searchQuery } = search;
+  const { page, per_page, search: searchQuery, role: roleFilter, status: statusFilter } = search;
 
   // Mock data query
   const usersQuery = useQuery({
-    queryKey: ["users", { page, per_page, search: searchQuery }],
+    queryKey: ["users", { page, per_page, search: searchQuery, role: roleFilter, status: statusFilter }],
     queryFn: () => {
-      const filtered = searchQuery
-        ? MOCK_USERS.filter(
-            (u) =>
-              u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              (u.peran ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
-          )
-        : MOCK_USERS;
+      let filtered = MOCK_USERS;
+      
+      // Apply search filter
+      if (searchQuery) {
+        filtered = filtered.filter(
+          (u) =>
+            u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (u.peran ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+      }
+      
+      if (roleFilter && roleFilter.length === 0) {
+        filtered = [];
+      } else if (roleFilter && roleFilter.length > 0) {
+        filtered = filtered.filter((u) => roleFilter.includes(u.peran ?? ""));
+      }
+
+      if (statusFilter && statusFilter.length === 0) {
+        filtered = [];
+      } else if (statusFilter && statusFilter.length > 0) {
+        filtered = filtered.filter((u) => statusFilter.includes(u.status));
+      }
+      
       const total = filtered.length;
       const last_page = Math.max(1, Math.ceil(total / per_page));
       const current_page = Math.min(Math.max(1, page), last_page);
@@ -100,6 +119,30 @@ function RouteComponent() {
       search: (prev: any) => ({
         ...prev,
         search: value === "" ? undefined : value,
+        page: 1,
+      }),
+      replace: true,
+    });
+  };
+
+  const handleRoleFilterChange = (selectedRoles: Array<string>) => {
+    navigate({
+      to: "/users",
+      search: (prev: any) => ({
+        ...prev,
+        role: selectedRoles,
+        page: 1,
+      }),
+      replace: true,
+    });
+  };
+
+  const handleStatusFilterChange = (selectedStatuses: Array<string>) => {
+    navigate({
+      to: "/users",
+      search: (prev: any) => ({
+        ...prev,
+        status: selectedStatuses,
         page: 1,
       }),
       replace: true,
@@ -172,9 +215,19 @@ function RouteComponent() {
 
       <SearchBar
         placeholder="Cari pengguna..."
-        className="mb-4"
+        className="mb-1"
         value={searchQuery ?? ""}
         onChange={(event) => handleSearchChange(event.target.value)}
+      />
+
+      <FilterBar
+        roleOptions={roleDropdownQuery.data ?? []}
+        onRoleFilterChange={handleRoleFilterChange}
+        onStatusFilterChange={handleStatusFilterChange}
+        defaultSelectedRoles={roleFilter ?? []}
+        defaultSelectedStatuses={statusFilter ?? []}
+        isLoading={usersQuery.isLoading}
+        className="mb-4"
       />
 
       <UsersTable
