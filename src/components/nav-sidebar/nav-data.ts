@@ -1,12 +1,12 @@
 import {
-  Banknote,
-  House,
   ArrowRightLeft,
-  History,
-  Settings,
-  Users,
+  Banknote,
   FileText,
+  History,
+  House,
+  Settings,
   UserCog,
+  Users,
 } from 'lucide-react'
 
 export const navItems = [

@@ -107,22 +107,22 @@ export function AppSidebar({
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage
-                      src={user?.photo_profile || undefined}
-                      alt={user?.nama || 'User'}
+                      src={user.photo_profile || undefined}
+                      alt={user.nama || 'User'}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">
-                      {user?.nama ? getInitials(user.nama) : <User className="w-5 h-5" />}
+                      {user.nama ? getInitials(user.nama) : <User className="w-5 h-5" />}
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-semibold">
-                    {user?.nama || 'Pengguna'}
+                    {user.nama || 'Pengguna'}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user?.email || 'Memuat...'}
+                    {user.email || 'Memuat...'}
                   </span>
                 </div>
               </Link>

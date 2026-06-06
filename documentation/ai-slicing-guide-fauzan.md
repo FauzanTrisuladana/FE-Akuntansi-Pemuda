@@ -4,7 +4,7 @@
 
 Tujuan: jalankan perubahan UI seragam di kode Frontend lalu laporkan hasilnya dalam format JSON.
 
-Input: project root `Frontend`.
+Input: project root `FE-Akuntamnsi-Pemuda`.
 
 Langkah (eksekusi otomatis):
 1. Temukan semua route yang pakai pagination di `src/routes/_auth/**`.
@@ -18,9 +18,10 @@ Langkah (eksekusi otomatis):
 
 Verifikasi (perintah yang harus dijalankan setelah perubahan):
 ```bash
-cd Frontend
-pnpm exec eslint --ext .ts,.tsx src --fix
-pnpm exec tsc --noEmit
+cd FE-Akuntansi-Pemuda
+pnpm lint
+pnpm format
+pnpm check
 ```
 
 Output (laporan — format manusia, isi detail):
@@ -38,8 +39,9 @@ Lint errors:
 - after: M
 
 Commands yang dijalankan:
-- pnpm exec eslint --ext .ts,.tsx src --fix
-- pnpm exec tsc --noEmit
+- pnpm lint
+- pnpm format
+- pnpm check
 
 Notes:
 - Catatan tambahan dan hal yang perlu dilanjutkan.
@@ -48,9 +50,7 @@ Kriteria keberhasilan:
 - halaman harus konsisten semuanya dengan yang sudah diterapkan sebelumnya
 - Semua route pagination default `per_page` = 10
 - Dialog/table menggunakan `Badge`/`Switch`/`Select`/lainnnya sesuai spesifikasi yang diminta
-- `eslint --fix` mengurangi error; `tsc --noEmit` tidak menampilkan error sama sekali
-
-Catatan: fokuskan perbaikan lint pada file yang diubah terlebih dahulu.
+- `lint --fix` mengurangi error; `tsc --noEmit` tidak menampilkan error sama sekali
 
 ---
 

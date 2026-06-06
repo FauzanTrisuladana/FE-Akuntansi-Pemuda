@@ -125,12 +125,12 @@ export function UserNav() {
         <Button variant="ghost" className="hover:bg-slate-100 h-12 gap-2 px-2">
           <Avatar className="h-9 w-9 border border-slate-200">
             <AvatarImage
-              src={user?.photo_profile || undefined}
-              alt={user?.nama || "User"}
+              src={user.photo_profile || undefined}
+              alt={user.nama || "User"}
               className="object-cover"
             />
             <AvatarFallback className="bg-slate-200 text-slate-700 font-bold text-xs">
-              {user?.nama ? getInitials(user.nama) : "..."}
+              {user.nama ? getInitials(user.nama) : "..."}
             </AvatarFallback>
           </Avatar>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -140,9 +140,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.nama || "Pengguna"}</p>
+            <p className="text-sm font-medium leading-none">{user.nama || "Pengguna"}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.email || "—"}
+              {user.email || "—"}
             </p>
           </div>
         </DropdownMenuLabel>

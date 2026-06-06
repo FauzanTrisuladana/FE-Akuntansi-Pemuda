@@ -1,0 +1,235 @@
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import type { FormEvent } from "react";
+import type { UserFormErrors } from "./types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogForm,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+type UserAddDialogProps = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onCreate: (payload: {
+    name: string;
+    username: string;
+    email: string;
+    role_id: number;
+  }) => boolean;
+  errors?: UserFormErrors;
+  roleOptions: Array<{ id: number; name: string }>;
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
+export function UserAddDialog({
+  open,
+  onOpenChange,
+  onCreate,
+  errors: _errors,
+  roleOptions,
+}: UserAddDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled =
+    typeof open === "boolean" && typeof onOpenChange === "function";
+  const dialogOpen = isControlled ? open : internalOpen;
+  const setDialogOpen = isControlled
+    ? (onOpenChange as (o: boolean) => void)
+    : setInternalOpen;
+
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [roleId, setRoleId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isFormValid =
+    name.trim() !== "" &&
+    username.trim() !== "" &&
+    email.trim() !== "" &&
+    roleId !== "";
+
+  const resetForm = () => {
+    setName("");
+    setUsername("");
+    setEmail("");
+    setRoleId("");
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid) return;
+
+    setIsLoading(true);
+    try {
+      const success = await onCreate({
+        name: name.trim(),
+        username: username.trim(),
+        email: email.trim(),
+        role_id: parseInt(roleId, 10),
+      });
+      if (success) {
+        setDialogOpen(false);
+        resetForm();
+      }
+    } catch {
+      toast.error("Gagal membuat user baru");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOpenChange = (val: boolean) => {
+    if (!val) resetForm();
+    setDialogOpen(val);
+  };
+
+  const generalError = _errors?.general?.[0];
+  const nameError = _errors?.name?.[0];
+  const usernameError = _errors?.username?.[0];
+  const emailError = _errors?.email?.[0];
+  const roleError = _errors?.role_id?.[0] ?? _errors?.role?.[0];
+
+  return (
+    <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogForm onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              Tambah User Baru
+            </DialogTitle>
+            <DialogDescription>
+              Isi form berikut untuk menambahkan user baru
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogBody className="grid gap-4 py-4">
+            {/* Nama Lengkap */}
+            <div className="grid gap-2">
+              <Label htmlFor="name" className="text-slate-600 font-medium">
+                Nama Lengkap*
+              </Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Masukkan nama lengkap"
+                className="h-12"
+                disabled={isLoading}
+              />
+              {nameError ? (
+                <p className="text-sm text-destructive">{nameError}</p>
+              ) : null}
+            </div>
+
+            {/* Username */}
+            <div className="grid gap-2">
+              <Label htmlFor="username" className="text-slate-600 font-medium">
+                Username*
+              </Label>
+              <Input
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Masukkan username"
+                className="h-12"
+                disabled={isLoading}
+              />
+              {usernameError ? (
+                <p className="text-sm text-destructive">{usernameError}</p>
+              ) : null}
+            </div>
+
+            {/* Email */}
+            <div className="grid gap-2">
+              <Label htmlFor="email" className="text-slate-600 font-medium">
+                Email*
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Masukkan email"
+                className="h-12"
+                disabled={isLoading}
+              />
+              {emailError ? (
+                <p className="text-sm text-destructive">{emailError}</p>
+              ) : null}
+            </div>
+
+            {/* Role */}
+            <div className="grid gap-2">
+              <Label
+                htmlFor="role-select"
+                className="text-slate-600 font-medium"
+              >
+                Role*
+              </Label>
+              <Select value={roleId} onValueChange={setRoleId}>
+                <SelectTrigger
+                  id="role-select"
+                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                >
+                  <SelectValue placeholder="Pilih Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roleOptions.map((role) => (
+                    <SelectItem key={role.id} value={role.id.toString()}>
+                      {role.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {roleError ? (
+                <p className="text-sm text-destructive">{roleError}</p>
+              ) : null}
+            </div>
+
+            {generalError ? (
+              <p className="text-sm text-destructive">{generalError}</p>
+            ) : null}
+          </DialogBody>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="destructive"
+              className="md:w-[50%] w-full h-12 cursor-pointer"
+              onClick={() => handleOpenChange(false)}
+              disabled={isLoading}
+            >
+              Batal
+            </Button>
+            <Button
+              type="submit"
+              className="md:w-[50%] w-full bg-slate-900 text-white hover:bg-slate-800 h-12 cursor-pointer"
+              disabled={isLoading || !isFormValid}
+            >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Simpan
+            </Button>
+          </DialogFooter>
+        </DialogForm>
+      </DialogContent>
+    </Dialog>
+  );
+}

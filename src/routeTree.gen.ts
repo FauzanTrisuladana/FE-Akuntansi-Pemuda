@@ -21,7 +21,6 @@ import { Route as AuthMutasiRekeningRouteImport } from './routes/_auth/mutasi-re
 import { Route as AuthLaporanKeuanganRouteImport } from './routes/_auth/laporan-keuangan'
 import { Route as AuthHistoryRiilRouteImport } from './routes/_auth/history-riil'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
-import { Route as AuthContohRouteImport } from './routes/_auth/contoh'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -83,16 +82,10 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthContohRoute = AuthContohRouteImport.update({
-  id: '/contoh',
-  path: '/contoh',
-  getParentRoute: () => AuthRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/contoh': typeof AuthContohRoute
   '/dashboard': typeof AuthDashboardRoute
   '/history-riil': typeof AuthHistoryRiilRoute
   '/laporan-keuangan': typeof AuthLaporanKeuanganRoute
@@ -106,7 +99,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/contoh': typeof AuthContohRoute
   '/dashboard': typeof AuthDashboardRoute
   '/history-riil': typeof AuthHistoryRiilRoute
   '/laporan-keuangan': typeof AuthLaporanKeuanganRoute
@@ -122,7 +114,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/contoh': typeof AuthContohRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/history-riil': typeof AuthHistoryRiilRoute
   '/_auth/laporan-keuangan': typeof AuthLaporanKeuanganRoute
@@ -138,7 +129,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/contoh'
     | '/dashboard'
     | '/history-riil'
     | '/laporan-keuangan'
@@ -152,7 +142,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
-    | '/contoh'
     | '/dashboard'
     | '/history-riil'
     | '/laporan-keuangan'
@@ -167,7 +156,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/login'
-    | '/_auth/contoh'
     | '/_auth/dashboard'
     | '/_auth/history-riil'
     | '/_auth/laporan-keuangan'
@@ -271,18 +259,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/contoh': {
-      id: '/_auth/contoh'
-      path: '/contoh'
-      fullPath: '/contoh'
-      preLoaderRoute: typeof AuthContohRouteImport
-      parentRoute: typeof AuthRoute
-    }
   }
 }
 
 interface AuthRouteChildren {
-  AuthContohRoute: typeof AuthContohRoute
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthHistoryRiilRoute: typeof AuthHistoryRiilRoute
   AuthLaporanKeuanganRoute: typeof AuthLaporanKeuanganRoute
@@ -295,7 +275,6 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthContohRoute: AuthContohRoute,
   AuthDashboardRoute: AuthDashboardRoute,
   AuthHistoryRiilRoute: AuthHistoryRiilRoute,
   AuthLaporanKeuanganRoute: AuthLaporanKeuanganRoute,
