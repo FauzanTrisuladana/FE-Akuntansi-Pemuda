@@ -4,11 +4,11 @@
 // import { getProfile } from '@/services/profileService'
 
 export type Anggota = {
-  id: number
-  nama: string
-  email: string
-  photo_profile: string | null
-}
+  id: number;
+  nama: string;
+  email: string;
+  photo_profile: string | null;
+};
 
 // Login feature disabled for auth checking - DO NOT DELETE
 // function syncProfileStorage(data: ProfileData) {
@@ -115,11 +115,12 @@ export function useUserProfile() {
       id: 1,
       nama: "Fauzan Trisuladana",
       email: "fauzantrisuladana@gmail.com",
-      photo_profile: "https://lh3.googleusercontent.com/a/ACg8ocJgjcrmN_OSQiAu_cwa0iqqeCT2DJCNExzdL7ztc3_I2er2KRM1=s432-c-no",
+      photo_profile:
+        "https://lh3.googleusercontent.com/a/ACg8ocJgjcrmN_OSQiAu_cwa0iqqeCT2DJCNExzdL7ztc3_I2er2KRM1=s432-c-no",
     } as Anggota,
     isLoading: false,
     isError: false,
-  }
+  };
   // return useQuery<Anggota>({
   //   queryKey: ['profile'],
   //   queryFn: async () => {

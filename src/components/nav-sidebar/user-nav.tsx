@@ -6,7 +6,7 @@
 // import { useQueryClient } from "@tanstack/react-query"
 // Login feature disabled for auth checking - DO NOT DELETE
 // import { Link } from "@tanstack/react-router"
-import { useRouter } from "@tanstack/react-router"
+import { useRouter } from "@tanstack/react-router";
 import {
   // Login feature disabled for auth checking - DO NOT DELETE
   // Building2,
@@ -16,16 +16,12 @@ import {
   // Login feature disabled for auth checking - DO NOT DELETE
   // LogOut,
   User as UserIcon,
-} from "lucide-react"
+} from "lucide-react";
 // Login feature disabled for auth checking - DO NOT DELETE
 // import type { Koperasi } from "@/services/authService"
 // import { logout } from "@/services/authService"
-import { useUserProfile } from "@/hooks/use-user-profile"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { useUserProfile } from "@/hooks/use-user-profile";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +30,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 // Login feature disabled for auth checking - DO NOT DELETE
 // function getKoperasiList(): Array<Koperasi> {
@@ -77,7 +73,7 @@ export function UserNav() {
   // Login feature disabled for auth checking - DO NOT DELETE
   // const { data: user } = useUserProfile()
   // const qc = useQueryClient()
-  const router = useRouter()
+  const router = useRouter();
 
   // Login feature disabled for auth checking - DO NOT DELETE
   // const [koperasiList] = React.useState<Array<Koperasi>>(() => getKoperasiList())
@@ -112,12 +108,12 @@ export function UserNav() {
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .substring(0, 2)
-  }
+      .substring(0, 2);
+  };
 
   // Login feature disabled for auth checking - DO NOT DELETE
   // Using dummy user data from useUserProfile hook
-  const { data: user } = useUserProfile()
+  const { data: user } = useUserProfile();
 
   return (
     <DropdownMenu>
@@ -140,7 +136,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.nama || "Pengguna"}</p>
+            <p className="text-sm font-medium leading-none">
+              {user.nama || "Pengguna"}
+            </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email || "—"}
             </p>
@@ -151,7 +149,10 @@ export function UserNav() {
         <DropdownMenuGroup>
           {/* Login feature disabled for auth checking - DO NOT DELETE */}
           {/* <Link to="/profile" className="w-full cursor-pointer"> */}
-          <DropdownMenuItem className="cursor-pointer" onClick={() => router.navigate({ to: '/profile' })}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => router.navigate({ to: "/profile" })}
+          >
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
@@ -168,5 +169,5 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

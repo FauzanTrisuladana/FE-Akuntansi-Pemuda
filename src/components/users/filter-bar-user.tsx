@@ -25,12 +25,12 @@ export function FilterBar({
   // Default: semua checkbox tercheck
   const defaultAllRoles = roleOptions.map((o) => o.name);
   const defaultAllStatuses = ["aktif", "pending", "tidak_aktif"];
-  
+
   const [selectedRoles, setSelectedRoles] = React.useState<Array<string>>(
-    defaultSelectedRoles ?? defaultAllRoles
+    defaultSelectedRoles ?? defaultAllRoles,
   );
   const [selectedStatuses, setSelectedStatuses] = React.useState<Array<string>>(
-    defaultSelectedStatuses ?? defaultAllStatuses
+    defaultSelectedStatuses ?? defaultAllStatuses,
   );
 
   // Sync state with URL params
@@ -60,7 +60,12 @@ export function FilterBar({
   };
 
   return (
-    <div className={cn("w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-2", className)}>
+    <div
+      className={cn(
+        "w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-2",
+        className,
+      )}
+    >
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
@@ -71,7 +76,9 @@ export function FilterBar({
                 <Checkbox
                   id={`role-${option.id}`}
                   checked={selectedRoles.includes(option.name)}
-                  onCheckedChange={(checked) => handleRoleChange(option.name, !!checked)}
+                  onCheckedChange={(checked) =>
+                    handleRoleChange(option.name, !!checked)
+                  }
                   disabled={isLoading}
                 />
                 <label
@@ -94,14 +101,20 @@ export function FilterBar({
                 <Checkbox
                   id={`status-${status}`}
                   checked={selectedStatuses.includes(status)}
-                  onCheckedChange={(checked) => handleStatusChange(status, !!checked)}
+                  onCheckedChange={(checked) =>
+                    handleStatusChange(status, !!checked)
+                  }
                   disabled={isLoading}
                 />
                 <label
                   htmlFor={`status-${status}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {status === "aktif" ? "Aktif" : status === "pending" ? "Pending" : "Tidak Aktif"}
+                  {status === "aktif"
+                    ? "Aktif"
+                    : status === "pending"
+                      ? "Pending"
+                      : "Tidak Aktif"}
                 </label>
               </div>
             ))}

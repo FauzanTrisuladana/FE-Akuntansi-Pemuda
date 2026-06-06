@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import * as React from 'react'
-import { Link } from '@tanstack/react-router'
-import { LogOut, User } from 'lucide-react'
-import { navItems } from './nav-data'
-import { SearchBar } from './search-bar'
-import { useUserProfile } from '@/hooks/use-user-profile'
+import * as React from "react";
+import { Link } from "@tanstack/react-router";
+import { LogOut, User } from "lucide-react";
+import { navItems } from "./nav-data";
+import { SearchBar } from "./search-bar";
+import { useUserProfile } from "@/hooks/use-user-profile";
 import {
   Sidebar,
   SidebarContent,
@@ -16,23 +16,23 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppSidebar({
   pathname,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { pathname: string }) {
-  const { data: user } = useUserProfile()
+  const { data: user } = useUserProfile();
 
   const getInitials = (name: string) => {
-    return (name || 'User')
-      .split(' ')
+    return (name || "User")
+      .split(" ")
       .map((n) => n[0])
-      .join('')
+      .join("")
       .toUpperCase()
-      .substring(0, 2)
-  }
+      .substring(0, 2);
+  };
 
   return (
     <Sidebar collapsible="icon" {...props} className="pt-4">
@@ -72,7 +72,7 @@ export function AppSidebar({
               </SidebarMenuItem>
               {navItems.map((item) => {
                 const isActive =
-                  pathname === item.url || pathname.startsWith(`${item.url}/`)
+                  pathname === item.url || pathname.startsWith(`${item.url}/`);
 
                 return (
                   <SidebarMenuItem key={item.title}>
@@ -88,7 +88,7 @@ export function AppSidebar({
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -103,26 +103,30 @@ export function AppSidebar({
               size="lg"
               className="group-data-[collapsible=icon]:p-1! hover:bg-slate-100"
             >
-              <Link to='/profile'>
+              <Link to="/profile">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage
                       src={user.photo_profile || undefined}
-                      alt={user.nama || 'User'}
+                      alt={user.nama || "User"}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">
-                      {user.nama ? getInitials(user.nama) : <User className="w-5 h-5" />}
+                      {user.nama ? (
+                        getInitials(user.nama)
+                      ) : (
+                        <User className="w-5 h-5" />
+                      )}
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-semibold">
-                    {user.nama || 'Pengguna'}
+                    {user.nama || "Pengguna"}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email || 'Memuat...'}
+                    {user.email || "Memuat..."}
                   </span>
                 </div>
               </Link>
@@ -147,5 +151,5 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

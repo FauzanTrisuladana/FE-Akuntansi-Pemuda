@@ -1,37 +1,37 @@
-import * as React from 'react'
-import { useState } from 'react'
-import { useRouter } from '@tanstack/react-router'
+import * as React from "react";
+import { useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 // Login feature disabled for auth checking - DO NOT DELETE
 // import { AlertCircle, Loader2 } from 'lucide-react'
 // import { GoogleLogin } from '@react-oauth/google'
 // import { toast } from 'sonner'
 // import { login, loginWithGoogle, } from '@/services/authService'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from "@/components/ui/card";
 import {
   Field,
   FieldGroup,
   FieldLabel,
   // Login feature disabled for auth checking - DO NOT DELETE
   // FieldSeparator,
-} from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
-  const router = useRouter()
+}: React.ComponentProps<"div">) {
+  const router = useRouter();
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // Login feature disabled for auth checking - DO NOT DELETE
   // const [isLoading, setIsLoading] = useState(false)
   // const [error, setError] = useState('')
@@ -85,7 +85,7 @@ export function LoginForm({
   // }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
           <div className="relative h-40 w-full mb-4">
@@ -102,9 +102,7 @@ export function LoginForm({
               />
             </div>
           </div>
-          <CardTitle className="text-2xl">
-            Akuntansi Koperasi.
-          </CardTitle>
+          <CardTitle className="text-2xl">Akuntansi Koperasi.</CardTitle>
           <CardDescription className="text-sm">
             Silakan masukkan kredensial Anda untuk mengakses dashboard
           </CardDescription>
@@ -198,7 +196,7 @@ export function LoginForm({
                   className="font-bold bg-primary p-6 cursor-pointer"
                   // Login feature disabled for auth checking - DO NOT DELETE
                   // disabled={isLoading}
-                  onClick={() => router.navigate({ to: '/dashboard' })}
+                  onClick={() => router.navigate({ to: "/dashboard" })}
                 >
                   Masuk
                 </Button>
@@ -208,5 +206,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { FilterBar } from "src/components/users/filter-bar-user";
 import type { UserFormErrors } from "@/components/users/types";
 import { MOCK_ROLE_OPTIONS, MOCK_USERS } from "@/components/users/types";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
-import { FilterBar } from "src/components/users/filter-bar-user";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
 
@@ -18,8 +18,14 @@ const usersSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  role: z.array(z.string()).optional().catch(MOCK_ROLE_OPTIONS.map((o) => o.name)).default(MOCK_ROLE_OPTIONS.map((o) => o.name)),
-  status: z.array(z.string()).optional().catch(["aktif", "pending", "tidak_aktif"]).default(["aktif", "pending", "tidak_aktif"]),
+  role: z
+    .array(z.string())
+    .catch(MOCK_ROLE_OPTIONS.map((o) => o.name))
+    .default(MOCK_ROLE_OPTIONS.map((o) => o.name)),
+  status: z
+    .array(z.string())
+    .catch(["aktif", "pending", "tidak_aktif"])
+    .default(["aktif", "pending", "tidak_aktif"]),
 });
 
 export const Route = createFileRoute("/_auth/users")({
@@ -33,14 +39,29 @@ function RouteComponent() {
   const search = Route.useSearch();
   const queryClient = useQueryClient();
 
-  const { page, per_page, search: searchQuery, role: roleFilter, status: statusFilter } = search;
+  const {
+    page,
+    per_page,
+    search: searchQuery,
+    role: roleFilter,
+    status: statusFilter,
+  } = search;
 
   // Mock data query
   const usersQuery = useQuery({
-    queryKey: ["users", { page, per_page, search: searchQuery, role: roleFilter, status: statusFilter }],
+    queryKey: [
+      "users",
+      {
+        page,
+        per_page,
+        search: searchQuery,
+        role: roleFilter,
+        status: statusFilter,
+      },
+    ],
     queryFn: () => {
       let filtered = MOCK_USERS;
-      
+
       // Apply search filter
       if (searchQuery) {
         filtered = filtered.filter(
@@ -50,19 +71,19 @@ function RouteComponent() {
             (u.peran ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
         );
       }
-      
-      if (roleFilter && roleFilter.length === 0) {
+
+      if (roleFilter.length === 0) {
         filtered = [];
-      } else if (roleFilter && roleFilter.length > 0) {
+      } else {
         filtered = filtered.filter((u) => roleFilter.includes(u.peran ?? ""));
       }
 
-      if (statusFilter && statusFilter.length === 0) {
+      if (statusFilter.length === 0) {
         filtered = [];
-      } else if (statusFilter && statusFilter.length > 0) {
+      } else {
         filtered = filtered.filter((u) => statusFilter.includes(u.status));
       }
-      
+
       const total = filtered.length;
       const last_page = Math.max(1, Math.ceil(total / per_page));
       const current_page = Math.min(Math.max(1, page), last_page);
@@ -163,13 +184,7 @@ function RouteComponent() {
   };
 
   // TODO: Ganti dengan API call ketika backend siap
-  const handleEdit = ({
-    id,
-    role_id,
-  }: {
-    id: number;
-    role_id: number;
-  }) => {
+  const handleEdit = ({ id, role_id }: { id: number; role_id: number }) => {
     setEditErrors(null);
     toast.success("User berhasil diperbarui");
     queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -224,8 +239,8 @@ function RouteComponent() {
         roleOptions={roleDropdownQuery.data ?? []}
         onRoleFilterChange={handleRoleFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
-        defaultSelectedRoles={roleFilter ?? []}
-        defaultSelectedStatuses={statusFilter ?? []}
+        defaultSelectedRoles={roleFilter}
+        defaultSelectedStatuses={statusFilter}
         isLoading={usersQuery.isLoading}
         className="mb-4"
       />

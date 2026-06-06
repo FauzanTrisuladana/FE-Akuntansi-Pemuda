@@ -1,21 +1,16 @@
-
-import {
-  Outlet,
-  createFileRoute,
-  useLocation,
-} from '@tanstack/react-router'
-import { AppSidebar } from '@/components/nav-sidebar/app-sidebar'
+import { Outlet, createFileRoute, useLocation } from "@tanstack/react-router";
+import { AppSidebar } from "@/components/nav-sidebar/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar'
-import { navItems } from '@/components/nav-sidebar/nav-data'
-import { SearchBar } from '@/components/nav-sidebar/search-bar'
-import { UserNav } from '@/components/nav-sidebar/user-nav'
-import Notifications from '@/components/nav-sidebar/notifications'
+} from "@/components/ui/sidebar";
+import { navItems } from "@/components/nav-sidebar/nav-data";
+import { SearchBar } from "@/components/nav-sidebar/search-bar";
+import { UserNav } from "@/components/nav-sidebar/user-nav";
+import Notifications from "@/components/nav-sidebar/notifications";
 
-export const Route = createFileRoute('/_auth')({
+export const Route = createFileRoute("/_auth")({
   // Tidak dipakai karena menyebabkan flicker
   // beforeLoad: ({ location }) => {
   //   if (!isAuthenticated()) {
@@ -28,12 +23,12 @@ export const Route = createFileRoute('/_auth')({
   //   }
   // },
   component: AuthLayout,
-})
+});
 
 function AuthLayout() {
   const pathname = useLocation({
     select: (location) => location.pathname,
-  })
+  });
 
   // Autentikasi dan authorisasi dengan client-side
   // const [isAuthorized, setIsAuthorized] = useState(false)
@@ -54,8 +49,8 @@ function AuthLayout() {
     <SidebarProvider
       style={
         {
-          '--sidebar-width': '18rem',
-          '--sidebar-width-icon': '5rem',
+          "--sidebar-width": "18rem",
+          "--sidebar-width-icon": "5rem",
         } as React.CSSProperties
       }
     >
@@ -79,5 +74,5 @@ function AuthLayout() {
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
