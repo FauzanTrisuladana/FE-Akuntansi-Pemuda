@@ -1,0 +1,212 @@
+import * as React from 'react'
+import { useState } from 'react'
+import { useRouter } from '@tanstack/react-router'
+// Login feature disabled for auth checking - DO NOT DELETE
+// import { AlertCircle, Loader2 } from 'lucide-react'
+// import { GoogleLogin } from '@react-oauth/google'
+// import { toast } from 'sonner'
+// import { login, loginWithGoogle, } from '@/services/authService'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  // Login feature disabled for auth checking - DO NOT DELETE
+  // FieldSeparator,
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
+  const router = useRouter()
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  // Login feature disabled for auth checking - DO NOT DELETE
+  // const [isLoading, setIsLoading] = useState(false)
+  // const [error, setError] = useState('')
+
+  // Login feature disabled for auth checking - DO NOT DELETE
+  // const handleAuthSuccess = () => {
+  //   router.navigate({ to: '/dashboard' })
+  // }
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   setIsLoading(true)
+  //   setError('')
+
+  //   try {
+  //     await login(email, password)
+  //     handleAuthSuccess()
+  //   } catch (err: any) {
+  //     const msg =
+  //       err.response?.data?.message || 'Login gagal. Cek email/password.'
+  //     setError(msg)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  // const handleGoogleSuccess = async (credentialResponse: any) => {
+  //   const idToken = credentialResponse.credential
+
+  //   if (!idToken) {
+  //     setError('Gagal menerima token dari Google')
+  //     return
+  //   }
+
+  //   setIsLoading(true)
+  //   setError('')
+
+  //   try {
+  //     await loginWithGoogle(idToken)
+  //     handleAuthSuccess()
+  //   } catch (err: any) {
+  //     if (err.response) {
+  //       const msg = err.response.data?.message || 'Login Google gagal.'
+  //       setError(msg)
+  //     } else {
+  //       setError('Gagal menghubungi server.')
+  //     }
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  return (
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <Card>
+        <CardHeader>
+          <div className="relative h-40 w-full mb-4">
+            <img
+              src="/office.webp"
+              alt="Office Background"
+              className="w-full h-full object-cover blur-[1px] rounded-md"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/Logo.webp"
+                alt="Logo Koperasi"
+                className="size-24 object-contain drop-shadow-lg"
+              />
+            </div>
+          </div>
+          <CardTitle className="text-2xl">
+            Akuntansi Koperasi.
+          </CardTitle>
+          <CardDescription className="text-sm">
+            Silakan masukkan kredensial Anda untuk mengakses dashboard
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Login feature disabled for auth checking - DO NOT DELETE */}
+          <form>
+            <FieldGroup>
+              {/* Login feature disabled for auth checking - DO NOT DELETE */}
+              {/* {error && (
+                <div className="flex items-center gap-2 p-3 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md">
+                  <AlertCircle className="h-4 w-4" />
+                  {error}
+                </div>
+              )} */}
+              <Field className="gap-0">
+                <FieldLabel
+                  htmlFor="email"
+                  className="text-muted-foreground font-bold"
+                >
+                  Email
+                </FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Masukkan Email"
+                  // required
+                  className="p-5"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  // Login feature disabled for auth checking - DO NOT DELETE
+                  // disabled={isLoading}
+                />
+              </Field>
+              <Field className="gap-0">
+                <div className="flex items-center">
+                  <FieldLabel
+                    htmlFor="password"
+                    className="text-muted-foreground font-bold"
+                  >
+                    Password
+                  </FieldLabel>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Masukkan Password"
+                  // required
+                  className="p-5"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  // Login feature disabled for auth checking - DO NOT DELETE
+                  // disabled={isLoading}
+                />
+              </Field>
+              {/* Login feature disabled for auth checking - DO NOT DELETE */}
+              {/* <FieldSeparator>Atau lanjutkan dengan</FieldSeparator> */}
+              {/* <Field>
+                <div className="relative w-full h-12">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="absolute inset-0 w-full h-full font-bold p-5 z-0"
+                    disabled={isLoading}
+                  >
+                    <img
+                      src="/google.svg"
+                      alt="Google Logo"
+                      className="h-4 w-4 mr-2"
+                    />
+                    Masuk Dengan Google
+                  </Button>
+                  <div className="absolute inset-0 z-10 opacity-0 overflow-hidden">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => {
+                        setError('Gagal inisialisasi Google Login')
+                        toast.error('Google Login Failed')
+                      }}
+                      useOneTap={false}
+                      width="500"
+                      text="signin_with"
+                    />
+                  </div>
+                </div>
+              </Field> */}
+              <Field>
+                {/* Login feature disabled for auth checking - DO NOT DELETE */}
+                <Button
+                  type="button"
+                  className="font-bold bg-primary p-6 cursor-pointer"
+                  // Login feature disabled for auth checking - DO NOT DELETE
+                  // disabled={isLoading}
+                  onClick={() => router.navigate({ to: '/dashboard' })}
+                >
+                  Masuk
+                </Button>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
