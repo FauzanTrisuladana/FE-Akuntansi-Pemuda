@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Calendar } from "lucide-react";
 
 interface HistoryRiilTableProps {
   data: Array<HistoryRiilRecord>;
@@ -71,7 +72,8 @@ export function HistoryRiilTable({
         accessorKey: "tanggal",
         header: "Tanggal",
         cell: ({ row }) => (
-          <span className="font-semibold text-slate-900 text-sm">
+          <span className="font-semibold text-slate-900 text-sm flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-slate-800" />
             {row.original.tanggal}
           </span>
         ),
@@ -119,7 +121,7 @@ export function HistoryRiilTable({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 cursor-pointer"
+              className="h-8 cursor-pointer bg-green-100 text-green-700 border-green-200 hover:bg-green-200 hover:text-green-800 hover:border-green-300"
               onClick={() => setRecordToVerify(row.original)}
             >
               Verifikasi
