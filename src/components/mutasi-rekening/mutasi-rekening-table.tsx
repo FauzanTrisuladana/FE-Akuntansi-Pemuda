@@ -200,24 +200,29 @@ export function MutasiRekeningTable({
   });
 
   return (
-    <Card>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
+    <>
+      <Card className="shadow-lg border-3 border-slate-200 p-0">
+        <CardContent className="p-0">
           <Table>
-            <TableHeader>
+            <TableHeader className="bg-slate-50/50">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.column.id}
-                      className="text-slate-700 font-semibold"
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </TableHead>
-                  ))}
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  {headerGroup.headers.map((header, index) => {
+                    let alignClass = "text-center";
+                    if (index === 1 || index === 2 || index === 3)
+                      alignClass = "text-left";
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={`font-semibold text-slate-900 ${alignClass}`}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
               ))}
             </TableHeader>
@@ -226,63 +231,67 @@ export function MutasiRekeningTable({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-muted-foreground"
                   >
-                    Loading...
+                    Memuat data mutasi rekening...
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.column.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
+                  <TableRow key={row.id} className="hover:bg-slate-50">
+                    {row.getVisibleCells().map((cell, index) => {
+                      let alignClass = "text-center";
+                      if (index === 1 || index === 2 || index === 3)
+                        alignClass = "text-left";
+                      return (
+                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-muted-foreground"
                   >
-                    Tidak ada data.
+                    Tidak ada data mutasi rekening
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        </div>
 
-        <DataTablePagination
-          pageCount={pagination.pageCount}
-          pageIndex={pagination.pageIndex}
-          pageSize={pagination.pageSize}
-          total={pagination.total}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-        />
+          <DataTablePagination
+            pageIndex={pagination.pageIndex}
+            pageSize={pagination.pageSize}
+            pageCount={pagination.pageCount}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </CardContent>
+      </Card>
 
-        <MutasiRekeningEditDialog
-          open={!!mutasiToEdit}
-          onOpenChange={(open) => !open && setMutasiToEdit(null)}
-          data={mutasiToEdit}
-          onUpdate={onUpdate}
-          errors={editErrors}
-          akunOptions={akunOptions ?? []}
-        />
+      <MutasiRekeningEditDialog
+        open={!!mutasiToEdit}
+        onOpenChange={(open) => !open && setMutasiToEdit(null)}
+        data={mutasiToEdit}
+        onUpdate={onUpdate}
+        errors={editErrors}
+        akunOptions={akunOptions ?? []}
+      />
 
-        <MutasiRekeningDeleteDialog
-          open={!!mutasiToDelete}
-          onOpenChange={(open) => !open && setMutasiToDelete(null)}
-          data={mutasiToDelete}
-          onDelete={onDelete}
-        />
-      </CardContent>
-    </Card>
+      <MutasiRekeningDeleteDialog
+        open={!!mutasiToDelete}
+        onOpenChange={(open) => !open && setMutasiToDelete(null)}
+        data={mutasiToDelete}
+        onDelete={onDelete}
+      />
+    </>
   );
 }

@@ -215,7 +215,7 @@ export function PenanggungJawabTable({
                       let alignClass = "text-center";
                       if (index === 1) alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={alignClass}>
+                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -237,17 +237,17 @@ export function PenanggungJawabTable({
               )}
             </TableBody>
           </Table>
+
+          <DataTablePagination
+            pageIndex={pagination.pageIndex}
+            pageSize={pagination.pageSize}
+            pageCount={pagination.pageCount}
+            total={pagination.total}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </CardContent>
       </Card>
-
-      <DataTablePagination
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        pageCount={pagination.pageCount}
-        total={pagination.total}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-      />
 
       <PenanggungJawabEditDialog
         open={!!pjToEdit}

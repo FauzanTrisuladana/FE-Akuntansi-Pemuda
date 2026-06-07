@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Pencil, Power, Trash2 } from "lucide-react";
+import { Pencil, Power, Trash2 } from "lucide-react";
 import { UserDeleteDialog } from "./user-delete-dialog";
 import { UserEditDialog } from "./user-edit-dialog";
 import { UserDeactivateDialog } from "./user-deactivate-dialog";
@@ -104,16 +104,7 @@ export function UsersTable({
       },
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 hover:bg-transparent font-bold text-slate-900 justify-start cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Nama
-            <ArrowUpDown className="ml-2 h-4 w-4 text-muted-foreground" />
-          </Button>
-        ),
+        header: "Nama",
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9 border border-slate-200">

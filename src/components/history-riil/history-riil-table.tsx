@@ -189,7 +189,7 @@ export function HistoryRiilTable({
                       if (index === 1 || index === 2 || index === 3)
                         alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={alignClass}>
+                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -211,16 +211,16 @@ export function HistoryRiilTable({
               )}
             </TableBody>
           </Table>
+
+          <DataTablePagination
+            pageIndex={pagination.pageIndex}
+            pageSize={pagination.pageSize}
+            pageCount={pagination.pageCount}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </CardContent>
       </Card>
-
-      <DataTablePagination
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        pageCount={pagination.pageCount}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-      />
 
       <HistoryRiilVerifyDialog
         open={!!recordToVerify}
