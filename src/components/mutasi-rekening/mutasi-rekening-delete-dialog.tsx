@@ -46,7 +46,7 @@ export function MutasiRekeningDeleteDialog({
           <div className="flex items-center gap-2 text-rose-600">
             <AlertTriangle className="h-5 w-5" />
             <AlertDialogTitle>
-              Hapus Transaksi Mutasi Rekening?
+              Hapus Transaksi Mutasi Akun?
             </AlertDialogTitle>
           </div>
           <AlertDialogDescription>

@@ -94,7 +94,7 @@ export function MutasiRekeningAddDialog({
         resetForm();
       }
     } catch {
-      toast.error("Gagal membuat mutasi rekening baru");
+      toast.error("Gagal membuat mutasi akun baru");
     } finally {
       setIsLoading(false);
     }
@@ -117,10 +117,10 @@ export function MutasiRekeningAddDialog({
         <DialogForm onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
-              Lakukan Mutasi Rekening
+              Lakukan Mutasi Akun
             </DialogTitle>
             <DialogDescription>
-              Isi form berikut untuk menambahkan mutasi rekening baru
+              Isi form berikut untuk menambahkan mutasi akun baru
             </DialogDescription>
           </DialogHeader>
 

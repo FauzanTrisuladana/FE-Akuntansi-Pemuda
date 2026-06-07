@@ -233,7 +233,7 @@ export function MutasiRekeningTable({
                     colSpan={columns.length}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Memuat data mutasi rekening...
+                    Memuat data mutasi akun...
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows.length ? (
@@ -260,7 +260,7 @@ export function MutasiRekeningTable({
                     colSpan={columns.length}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Tidak ada data mutasi rekening
+                    Tidak ada data mutasi akun
                   </TableCell>
                 </TableRow>
               )}

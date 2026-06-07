@@ -26,7 +26,7 @@ export const navItems = [
     icon: Banknote,
   },
   {
-    title: "Mutasi Rekening",
+    title: "Mutasi Akun",
     url: "/mutasi-rekening",
     icon: ArrowRightLeft,
   },

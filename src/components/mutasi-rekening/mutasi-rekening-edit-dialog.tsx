@@ -73,7 +73,7 @@ export function MutasiRekeningEditDialog({
         onOpenChange(false);
       }
     } catch {
-      toast.error("Gagal memperbarui mutasi rekening");
+      toast.error("Gagal memperbarui mutasi akun");
     } finally {
       setIsLoading(false);
     }
@@ -91,10 +91,10 @@ export function MutasiRekeningEditDialog({
         <DialogForm onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
-              Edit Mutasi Rekening
+              Edit Mutasi Akun
             </DialogTitle>
             <DialogDescription>
-              Silakan ubah data mutasi rekening
+              Silakan ubah data mutasi akun
             </DialogDescription>
           </DialogHeader>
 

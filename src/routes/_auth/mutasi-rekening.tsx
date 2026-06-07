@@ -242,7 +242,7 @@ function RouteComponent() {
     keterangan?: string;
   }) => {
     setAddErrors(null);
-    toast.success("Mutasi rekening berhasil ditambahkan");
+    toast.success("Mutasi akun berhasil ditambahkan");
     queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
     return true;
   };
@@ -264,14 +264,14 @@ function RouteComponent() {
     keterangan?: string;
   }) => {
     setEditErrors(null);
-    toast.success("Mutasi rekening berhasil diperbarui");
+    toast.success("Mutasi akun berhasil diperbarui");
     queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
     return true;
   };
 
   // TODO: Ganti dengan API call ketika backend siap
   const handleDelete = (id: number) => {
-    toast.success("Mutasi rekening berhasil dihapus");
+    toast.success("Mutasi akun berhasil dihapus");
     queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
     return true;
   };
@@ -279,15 +279,15 @@ function RouteComponent() {
   return (
     <>
       <HeaderComp
-        title="Mutasi Rekening"
+        title="Mutasi Akun"
         description="Lakukan Transaksi antar akun di kas yang sama"
         icon={<Plus />}
-        actionLabel={"Lakukan Mutasi Rekening"}
+        actionLabel={"Lakukan Mutasi Akun"}
         onAction={() => setOpen(true)}
       />
 
       <SearchBar
-        placeholder="Cari Mutasi Rekening..."
+        placeholder="Cari Mutasi Akun..."
         className="mb-1"
         value={searchQuery ?? ""}
         onChange={(event) => handleSearchChange(event.target.value)}
