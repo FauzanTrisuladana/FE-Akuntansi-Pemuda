@@ -18,14 +18,8 @@ const usersSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  role: z
-    .array(z.string())
-    .catch(MOCK_ROLE_OPTIONS.map((o) => o.name))
-    .default(MOCK_ROLE_OPTIONS.map((o) => o.name)),
-  status: z
-    .array(z.string())
-    .catch(["aktif", "pending", "tidak_aktif"])
-    .default(["aktif", "pending", "tidak_aktif"]),
+  role: z.array(z.string()).catch(MOCK_ROLE_OPTIONS.map((o) => o.name)),
+  status: z.array(z.string()).catch(["aktif", "pending", "tidak_aktif"]),
 });
 
 export const Route = createFileRoute("/_auth/users")({

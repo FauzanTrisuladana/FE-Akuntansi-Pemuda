@@ -22,10 +22,7 @@ const akunKeuanganSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  kas: z
-    .array(z.string())
-    .catch(MOCK_KAS_OPTIONS.map((o) => o.nama))
-    .default(MOCK_KAS_OPTIONS.map((o) => o.nama)),
+  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
 });
 
 export const Route = createFileRoute("/_auth/pengaturan-akun-keuangan")({
