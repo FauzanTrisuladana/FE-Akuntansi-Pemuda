@@ -4,6 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Calendar } from "lucide-react";
 import { formatCurrency } from "./types";
 import { HistoryRiilVerifyDialog } from "./history-riil-verify-dialog";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -21,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
 
 interface HistoryRiilTableProps {
   data: Array<HistoryRiilRecord>;

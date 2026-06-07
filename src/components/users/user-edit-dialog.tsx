@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { FormEvent } from "react";
-import type { UserFormErrors, UserRecord, RoleOption } from "./types";
+import type { RoleOption, UserFormErrors, UserRecord } from "./types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -104,14 +104,12 @@ export function UserEditDialog({
                     <Badge
                       key={r.id}
                       variant="outline"
-                      className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold cursor-pointer transition-all ${
+                      className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
                         isSelected
                           ? isBiasa
                             ? "bg-rose-50 text-rose-600 border-rose-200"
                             : "bg-amber-50 text-amber-600 border-amber-200"
-                          : isBiasa
-                            ? "bg-rose-50 text-rose-500 border-rose-200"
-                            : "bg-amber-50 text-amber-500 border-amber-200"
+                          : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
                       onClick={() => setRole(r.id.toString())}
                     >

@@ -156,7 +156,7 @@ function RouteComponent() {
 
       <SearchBar
         placeholder="Cari Penanggung Jawab..."
-        className="mb-1"
+        className="mb-4"
         value={searchQuery}
         onChange={(event) => handleSearchChange(event.target.value)}
       />

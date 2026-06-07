@@ -193,6 +193,13 @@ function RouteComponent() {
         description="Berikut ini adalah riwayat uang riil"
       />
 
+      <SearchBar
+        placeholder="Cari History Riil..."
+        className="mb-1"
+        value={searchQuery}
+        onChange={(event) => handleSearchChange(event.target.value)}
+      />
+
       <HistoryRiilFilterBar
         tanggalMulai={tanggal_mulai}
         tanggalSelesai={tanggal_selesai}
@@ -201,13 +208,7 @@ function RouteComponent() {
         onTanggalSelesaiChange={handleTanggalSelesaiChange}
         onKasChange={handleKasChange}
         isLoading={historyRiilQuery.isLoading}
-      />
-
-      <SearchBar
-        placeholder="Cari History Riil..."
-        className="mb-1"
-        value={searchQuery}
-        onChange={(event) => handleSearchChange(event.target.value)}
+        className="mb-4"
       />
 
       <HistoryRiilTable
