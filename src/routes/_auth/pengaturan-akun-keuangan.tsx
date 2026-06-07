@@ -196,7 +196,7 @@ function RouteComponent() {
       />
 
       <SearchBar
-        placeholder="Akun Keuangan..."
+        placeholder="Cari Akun Keuangan..."
         className="mb-1"
         value={searchQuery}
         onChange={(event) => handleSearchChange(event.target.value)}
