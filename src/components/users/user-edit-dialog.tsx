@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { FormEvent } from "react";
-import type { UserFormErrors, UserRecord } from "./types";
+import type { UserFormErrors, UserRecord, RoleOption } from "./types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 import {
   Dialog,
@@ -15,13 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface UserEditDialogProps {
   open: boolean;
@@ -101,27 +95,31 @@ export function UserEditDialog({
 
             {/* Role */}
             <div className="grid gap-2">
-              <Label
-                htmlFor="role-select"
-                className="text-slate-600 font-medium"
-              >
-                Role*
-              </Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger
-                  id="role-select"
-                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                >
-                  <SelectValue placeholder="Pilih Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roleOptions.map((r) => (
-                    <SelectItem key={r.id} value={r.id.toString()}>
+              <Label className="text-slate-600 font-medium">Role*</Label>
+              <div className="flex gap-3">
+                {roleOptions.map((r) => {
+                  const isSelected = role === r.id.toString();
+                  const isBiasa = r.name === "Biasa";
+                  return (
+                    <Badge
+                      key={r.id}
+                      variant="outline"
+                      className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold cursor-pointer transition-all ${
+                        isSelected
+                          ? isBiasa
+                            ? "bg-rose-50 text-rose-600 border-rose-200"
+                            : "bg-amber-50 text-amber-600 border-amber-200"
+                          : isBiasa
+                            ? "bg-rose-50 text-rose-500 border-rose-200"
+                            : "bg-amber-50 text-amber-500 border-amber-200"
+                      }`}
+                      onClick={() => setRole(r.id.toString())}
+                    >
                       {r.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    </Badge>
+                  );
+                })}
+              </div>
               {roleError ? (
                 <p className="text-sm text-destructive">{roleError}</p>
               ) : null}

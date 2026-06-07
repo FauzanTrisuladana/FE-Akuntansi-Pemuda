@@ -145,10 +145,15 @@ export function UsersTable({
         header: "Role",
         cell: ({ row }) => {
           const peran = row.original.peran || "-";
+          const isBiasa = peran === "Biasa";
           return (
             <Badge
               variant="outline"
-              className="cursor-default bg-amber-50 text-amber-600 border-amber-200 rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold"
+              className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                isBiasa
+                  ? "bg-rose-50 text-rose-600 border-rose-200"
+                  : "bg-amber-50 text-amber-600 border-amber-200"
+              }`}
             >
               {capitalize(peran)}
             </Badge>
