@@ -23,7 +23,7 @@ export const formatCurrency = (value: number): string => {
 export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   {
     id: 1,
-    tanggal: "2024-01-15",
+    tanggal: "2026-06-01",
     nama_akun: "Kas Modal",
     kas: "Kas Utama",
     nilai_riil: 500000,
@@ -31,7 +31,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 2,
-    tanggal: "2024-01-16",
+    tanggal: "2026-06-02",
     nama_akun: "Kas Operasional",
     kas: "Kas Operasional",
     nilai_riil: 750000,
@@ -39,7 +39,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 3,
-    tanggal: "2024-01-17",
+    tanggal: "2026-06-03",
     nama_akun: "Kas Kasbon",
     kas: "Kas Utama",
     nilai_riil: 1000000,
@@ -47,7 +47,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 4,
-    tanggal: "2024-01-18",
+    tanggal: "2026-06-04",
     nama_akun: "Kas Serba Guna",
     kas: "Kas Khusus",
     nilai_riil: 250000,
@@ -55,7 +55,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 5,
-    tanggal: "2024-01-19",
+    tanggal: "2026-06-05",
     nama_akun: "Kas Dana Darurat",
     kas: "Kas Utama",
     nilai_riil: 1500000,
@@ -63,7 +63,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 6,
-    tanggal: "2024-01-20",
+    tanggal: "2026-06-06",
     nama_akun: "Kas Investasi",
     kas: "Kas Operasional",
     nilai_riil: 300000,
@@ -71,7 +71,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 7,
-    tanggal: "2024-01-21",
+    tanggal: "2026-06-07",
     nama_akun: "Kas Pendidikan",
     kas: "Kas Khusus",
     nilai_riil: 2000000,
@@ -79,7 +79,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 8,
-    tanggal: "2024-01-22",
+    tanggal: "2026-06-08",
     nama_akun: "Kas Kesehatan",
     kas: "Kas Utama",
     nilai_riil: 125000,
@@ -87,7 +87,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 9,
-    tanggal: "2024-01-23",
+    tanggal: "2026-06-09",
     nama_akun: "Kas Rumahtangga",
     kas: "Kas Operasional",
     nilai_riil: 800000,
@@ -95,7 +95,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 10,
-    tanggal: "2024-01-24",
+    tanggal: "2026-06-10",
     nama_akun: "Kas Hiburan",
     kas: "Kas Utama",
     nilai_riil: 450000,
@@ -103,7 +103,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 11,
-    tanggal: "2024-01-25",
+    tanggal: "2026-06-11",
     nama_akun: "Kas Tabungan",
     kas: "Kas Khusus",
     nilai_riil: 600000,
@@ -111,7 +111,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 12,
-    tanggal: "2024-01-26",
+    tanggal: "2026-06-12",
     nama_akun: "Kas Emas",
     kas: "Kas Operasional",
     nilai_riil: 900000,
@@ -119,7 +119,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 13,
-    tanggal: "2024-01-27",
+    tanggal: "2026-06-13",
     nama_akun: "Kas Tunai",
     kas: "Kas Utama",
     nilai_riil: 1100000,
@@ -127,7 +127,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 14,
-    tanggal: "2024-01-28",
+    tanggal: "2026-06-14",
     nama_akun: "Kas Bank BRI",
     kas: "Kas Khusus",
     nilai_riil: 400000,
@@ -135,7 +135,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 15,
-    tanggal: "2024-01-29",
+    tanggal: "2026-06-15",
     nama_akun: "Kas Bank BCA",
     kas: "Kas Operasional",
     nilai_riil: 750000,
@@ -143,7 +143,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 16,
-    tanggal: "2024-01-30",
+    tanggal: "2026-06-16",
     nama_akun: "Kas Bank Mandiri",
     kas: "Kas Utama",
     nilai_riil: 1250000,
@@ -151,7 +151,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 17,
-    tanggal: "2024-02-01",
+    tanggal: "2026-06-17",
     nama_akun: "Kas Bank BNI",
     kas: "Kas Khusus",
     nilai_riil: 350000,
@@ -159,7 +159,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 18,
-    tanggal: "2024-02-02",
+    tanggal: "2026-06-18",
     nama_akun: "Kas Bank CIMB",
     kas: "Kas Utama",
     nilai_riil: 850000,
@@ -167,7 +167,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 19,
-    tanggal: "2024-02-03",
+    tanggal: "2026-06-19",
     nama_akun: "Kas Bank Danamon",
     kas: "Kas Operasional",
     nilai_riil: 1750000,
@@ -175,7 +175,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 20,
-    tanggal: "2024-02-04",
+    tanggal: "2026-06-20",
     nama_akun: "Kas Bank BTN",
     kas: "Kas Khusus",
     nilai_riil: 225000,
@@ -183,7 +183,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 21,
-    tanggal: "2024-02-05",
+    tanggal: "2026-06-21",
     nama_akun: "Kas Bank BRI Syariah",
     kas: "Kas Utama",
     nilai_riil: 950000,
@@ -191,7 +191,7 @@ export const MOCK_HISTORY_RIIL: Array<HistoryRiilRecord> = [
   },
   {
     id: 22,
-    tanggal: "2024-02-06",
+    tanggal: "2026-06-22",
     nama_akun: "Kas Bank BCA Syariah",
     kas: "Kas Operasional",
     nilai_riil: 650000,

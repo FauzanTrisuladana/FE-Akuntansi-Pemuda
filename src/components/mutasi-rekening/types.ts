@@ -33,7 +33,7 @@ export const MOCK_KAS_OPTIONS: Array<AkunOption> = [
 export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   {
     id: 1,
-    tanggal: "2024-01-15",
+    tanggal: "2026-06-01",
     akun_debit: "Kas Operasional",
     akun_kredit: "Kas Modal",
     kas: "17 an",
@@ -42,7 +42,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 2,
-    tanggal: "2024-01-16",
+    tanggal: "2026-06-02",
     akun_debit: "Bank BCA",
     akun_kredit: "Kas Operasional",
     kas: "kas pemuda",
@@ -51,7 +51,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 3,
-    tanggal: "2024-01-17",
+    tanggal: "2026-06-03",
     akun_debit: "Kas Modal",
     akun_kredit: "Bank Mandiri",
     kas: "17 an",
@@ -60,7 +60,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 4,
-    tanggal: "2024-01-18",
+    tanggal: "2026-06-04",
     akun_debit: "Kas Lainnya",
     akun_kredit: "Kas Operasional",
     kas: "kas pemuda",
@@ -69,7 +69,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 5,
-    tanggal: "2024-01-19",
+    tanggal: "2026-06-05",
     akun_debit: "Bank BCA",
     akun_kredit: "Kas Modal",
     kas: "17 an",
@@ -78,7 +78,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 6,
-    tanggal: "2024-01-20",
+    tanggal: "2026-06-06",
     akun_debit: "Kas Operasional",
     akun_kredit: "Kas Lainnya",
     kas: "kas pemuda",
@@ -87,7 +87,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 7,
-    tanggal: "2024-01-21",
+    tanggal: "2026-06-07",
     akun_debit: "Bank Mandiri",
     akun_kredit: "Bank BCA",
     kas: "17 an",
@@ -96,7 +96,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 8,
-    tanggal: "2024-01-22",
+    tanggal: "2026-06-08",
     akun_debit: "Kas Modal",
     akun_kredit: "Kas Operasional",
     kas: "kas pemuda",
@@ -105,7 +105,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 9,
-    tanggal: "2024-01-23",
+    tanggal: "2026-06-09",
     akun_debit: "Kas Lainnya",
     akun_kredit: "Bank Mandiri",
     kas: "17 an",
@@ -114,7 +114,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 10,
-    tanggal: "2024-01-24",
+    tanggal: "2026-06-10",
     akun_debit: "Bank BCA",
     akun_kredit: "Kas Lainnya",
     kas: "kas pemuda",
@@ -123,7 +123,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 11,
-    tanggal: "2024-01-25",
+    tanggal: "2026-06-11",
     akun_debit: "Kas Operasional",
     akun_kredit: "Bank BCA",
     kas: "17 an",
@@ -132,7 +132,7 @@ export const MOCK_MUTASI_REKENING: Array<MutasiRekeningRecord> = [
   },
   {
     id: 12,
-    tanggal: "2024-01-26",
+    tanggal: "2026-06-12",
     akun_debit: "Kas Modal",
     akun_kredit: "Kas Lainnya",
     kas: "kas pemuda",
