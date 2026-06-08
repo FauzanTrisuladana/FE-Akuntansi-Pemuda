@@ -4,12 +4,16 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Calendar, Pencil, Trash2 } from "lucide-react";
-import { MutasiRekeningEditDialog } from "./mutasi-rekening-edit-dialog";
-import { MutasiRekeningDeleteDialog } from "./mutasi-rekening-delete-dialog";
+import { ArrowDownRight, ArrowUpRight, Calendar, Pencil, Trash2 } from "lucide-react";
+import { TransaksiKeuanganEditDialog } from "./transaksi-keuangan-edit-dialog";
+import { TransaksiKeuanganDeleteDialog } from "./transaksi-keuangan-delete-dialog";
+import { TransaksiKeuanganEvidenceDialog } from "./transaksi-keuangan-evidence-dialog";
 import { formatCurrency } from "./types";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
+import type {
+  TransaksiKeuanganFormErrors,
+  TransaksiKeuanganRecord,
+} from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
 
 import {
@@ -22,9 +26,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-interface MutasiRekeningTableProps {
-  data: Array<MutasiRekeningRecord>;
+interface TransaksiKeuanganTableProps {
+  data: Array<TransaksiKeuanganRecord>;
   isLoading?: boolean;
   pagination: {
     pageIndex: number;
@@ -37,17 +43,23 @@ interface MutasiRekeningTableProps {
   onUpdate?: (payload: {
     id: number;
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    deskripsi: string;
+    akun_transaksi: string;
+    penanggung_jawab: string;
+    penginput: string;
+    kas: string;
+    tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
-    keterangan?: string;
+    bukti?: string;
   }) => boolean;
   onDelete?: (id: number) => boolean;
   akunOptions?: Array<{ id: number; nama: string }>;
-  editErrors?: MutasiRekeningFormErrors;
+  kasOptions?: Array<{ id: number; nama: string }>;
+  penginputOptions?: Array<{ id: number; nama: string; email: string }>;
+  editErrors?: TransaksiKeuanganFormErrors;
 }
 
-export function MutasiRekeningTable({
+export function TransaksiKeuanganTable({
   data,
   isLoading,
   pagination,
@@ -56,12 +68,16 @@ export function MutasiRekeningTable({
   onUpdate,
   onDelete,
   akunOptions,
+  kasOptions,
+  penginputOptions,
   editErrors,
-}: MutasiRekeningTableProps) {
-  const [mutasiToEdit, setMutasiToEdit] =
-    React.useState<MutasiRekeningRecord | null>(null);
-  const [mutasiToDelete, setMutasiToDelete] =
-    React.useState<MutasiRekeningRecord | null>(null);
+}: TransaksiKeuanganTableProps) {
+  const [transaksiToEdit, setTransaksiToEdit] =
+    React.useState<TransaksiKeuanganRecord | null>(null);
+  const [transaksiToDelete, setTransaksiToDelete] =
+    React.useState<TransaksiKeuanganRecord | null>(null);
+  const [transaksiToViewEvidence, setTransaksiToViewEvidence] =
+    React.useState<TransaksiKeuanganRecord | null>(null);
 
   const handlePageChange = (newPageIndex: number) => {
     if (typeof onPageChange === "function") onPageChange(newPageIndex);
@@ -71,7 +87,7 @@ export function MutasiRekeningTable({
     if (typeof onPageSizeChange === "function") onPageSizeChange(newPageSize);
   };
 
-  const columns = React.useMemo<Array<ColumnDef<MutasiRekeningRecord>>>(
+  const columns = React.useMemo<Array<ColumnDef<TransaksiKeuanganRecord>>>(
     () => [
       {
         id: "index",
@@ -90,57 +106,136 @@ export function MutasiRekeningTable({
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-slate-500" />
-            <span className="text-sm font-semibold text-slate-700">
+            <span className="text-sm font-semibold text-slate-900">
               {row.original.tanggal}
             </span>
           </div>
         ),
       },
       {
-        accessorKey: "akun_debit",
-        header: "Akun Debit",
+        accessorKey: "deskripsi",
+        header: "Deskripsi",
         cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-700">
-            {row.original.akun_debit}
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.deskripsi}
           </span>
         ),
       },
       {
-        accessorKey: "akun_kredit",
-        header: "Akun Kredit",
+        accessorKey: "akun_transaksi",
+        header: "Akun Transaksi",
         cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-700">
-            {row.original.akun_kredit}
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.akun_transaksi}
           </span>
         ),
+      },
+      {
+        accessorKey: "penanggung_jawab",
+        header: "Penanggung Jawab",
+        cell: ({ row }) => (
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.penanggung_jawab}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "penginput",
+        header: "Penginput",
+        cell: ({ row }) => {
+          const penginput = row.original.penginput;
+          return (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9 border border-slate-200">
+                <AvatarImage src={penginput.avatar} alt={penginput.nama} />
+                <AvatarFallback className="bg-orange-100 text-orange-600 font-medium">
+                  {penginput.nama.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col text-left">
+                <span className="font-semibold text-slate-900 text-sm">
+                  {penginput.nama}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  @{penginput.email}
+                </span>
+              </div>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "kas",
         header: "Kas",
         cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-700">{row.original.kas}</span>
+          <span className="text-sm font-semibold text-slate-900">{row.original.kas}</span>
         ),
+      },
+      {
+        accessorKey: "tipe",
+        header: "Tipe",
+        cell: ({ row }) => {
+          const tipe = row.original.tipe;
+          const isPemasukan = tipe === "pemasukan";
+          return (
+            <Badge
+              variant="outline"
+              className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                isPemasukan
+                  ? "bg-green-100 text-green-700 border-green-200"
+                  : "bg-red-100 text-red-700 border-red-200"
+              }`}
+            >
+              {isPemasukan ? (
+                <>
+                  <ArrowUpRight className="h-4 w-4" />
+                  Pemasukan
+                </>
+              ) : (
+                <>
+                  <ArrowDownRight className="h-4 w-4" />
+                  Pengeluaran
+                </>
+              )}
+            </Badge>
+          );
+        },
       },
       {
         accessorKey: "jumlah",
         header: "Jumlah",
         cell: ({ row }) => {
           const jumlah = row.original.jumlah;
+          const isPemasukan = row.original.tipe === "pemasukan";
           return (
-            <span className="text-sm font-semibold text-green-600">
+            <span
+              className={`text-sm font-medium ${
+                isPemasukan ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {formatCurrency(jumlah)}
             </span>
           );
         },
       },
       {
-        accessorKey: "keterangan",
-        header: "Keterangan",
-        cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-700">
-            {row.original.keterangan ?? "-"}
-          </span>
-        ),
+        id: "bukti",
+        header: "Bukti",
+        cell: ({ row }) => {
+          const bukti = row.original.bukti;
+          return bukti ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 cursor-pointer"
+              onClick={() => setTransaksiToViewEvidence(row.original)}
+            >
+              Lihat Bukti
+            </Button>
+          ) : (
+            <span className="text-sm text-slate-400">-</span>
+          );
+        },
       },
       {
         id: "actions",
@@ -152,7 +247,7 @@ export function MutasiRekeningTable({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-50 cursor-pointer"
-                onClick={() => setMutasiToEdit(row.original)}
+                onClick={() => setTransaksiToEdit(row.original)}
                 title="Edit"
               >
                 <Pencil className="h-4 w-4" />
@@ -162,7 +257,7 @@ export function MutasiRekeningTable({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-rose-500 hover:text-rose-600 hover:bg-rose-50 cursor-pointer"
-                onClick={() => setMutasiToDelete(row.original)}
+                onClick={() => setTransaksiToDelete(row.original)}
                 title="Hapus"
               >
                 <Trash2 className="h-4 w-4" />
@@ -233,7 +328,7 @@ export function MutasiRekeningTable({
                     colSpan={columns.length}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Memuat data mutasi akun...
+                    Memuat data transaksi...
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows.length ? (
@@ -244,7 +339,10 @@ export function MutasiRekeningTable({
                       if (index === 1 || index === 2 || index === 3)
                         alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
+                        <TableCell
+                          key={cell.id}
+                          className={`py-3 ${alignClass}`}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -260,7 +358,7 @@ export function MutasiRekeningTable({
                     colSpan={columns.length}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Tidak ada data mutasi akun
+                    Tidak ada data transaksi
                   </TableCell>
                 </TableRow>
               )}
@@ -277,20 +375,28 @@ export function MutasiRekeningTable({
         </CardContent>
       </Card>
 
-      <MutasiRekeningEditDialog
-        open={!!mutasiToEdit}
-        onOpenChange={(open) => !open && setMutasiToEdit(null)}
-        data={mutasiToEdit}
+      <TransaksiKeuanganEditDialog
+        open={!!transaksiToEdit}
+        onOpenChange={(open) => !open && setTransaksiToEdit(null)}
+        data={transaksiToEdit}
         onUpdate={onUpdate}
         errors={editErrors}
         akunOptions={akunOptions ?? []}
+        kasOptions={kasOptions ?? []}
+        penginputOptions={penginputOptions ?? []}
       />
 
-      <MutasiRekeningDeleteDialog
-        open={!!mutasiToDelete}
-        onOpenChange={(open) => !open && setMutasiToDelete(null)}
-        data={mutasiToDelete}
+      <TransaksiKeuanganDeleteDialog
+        open={!!transaksiToDelete}
+        onOpenChange={(open) => !open && setTransaksiToDelete(null)}
+        data={transaksiToDelete}
         onDelete={onDelete}
+      />
+
+      <TransaksiKeuanganEvidenceDialog
+        open={!!transaksiToViewEvidence}
+        onOpenChange={(open) => !open && setTransaksiToViewEvidence(null)}
+        data={transaksiToViewEvidence}
       />
     </>
   );
