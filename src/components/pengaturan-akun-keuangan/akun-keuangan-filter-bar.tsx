@@ -33,9 +33,13 @@ export function AkunKeuanganFilterBar({
   }, [defaultSelectedKas]);
 
   const handleKasChange = (kasNama: string, checked: boolean) => {
-    const newSelectedKas = checked
+    let newSelectedKas = checked
       ? [...selectedKas, kasNama]
       : selectedKas.filter((k) => k !== kasNama);
+    // Prevent empty selection - if all unchecked, keep all checked
+    if (newSelectedKas.length === 0) {
+      newSelectedKas = [...defaultAllKas];
+    }
     setSelectedKas(newSelectedKas);
     onKasFilterChange(newSelectedKas);
   };

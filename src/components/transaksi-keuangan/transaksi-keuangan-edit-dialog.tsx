@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { MOCK_KARYAWAN_OPTIONS } from "./types";
 import type { FormEvent } from "react";
 import type {
   TransaksiKeuanganFormErrors,
@@ -9,7 +10,6 @@ import type {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MOCK_KARYAWAN_OPTIONS } from "./types";
 
 import {
   Dialog,

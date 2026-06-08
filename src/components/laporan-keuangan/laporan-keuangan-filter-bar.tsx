@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
-interface TransaksiKeuanganFilterBarProps {
+interface LaporanKeuanganFilterBarProps {
   tanggalMulai?: string;
   tanggalSelesai?: string;
   kas?: string;
@@ -28,10 +29,10 @@ interface TransaksiKeuanganFilterBarProps {
   className?: string;
 }
 
-export function TransaksiKeuanganFilterBar({
+export function LaporanKeuanganFilterBar({
   tanggalMulai,
   tanggalSelesai,
-  kas,
+  kas = "Kas Pemuda",
   akun,
   tipe,
   onTanggalMulaiChange,
@@ -43,7 +44,7 @@ export function TransaksiKeuanganFilterBar({
   akunOptions,
   isLoading,
   className,
-}: TransaksiKeuanganFilterBarProps) {
+}: LaporanKeuanganFilterBarProps) {
   return (
     <div
       className={cn(
@@ -90,21 +91,32 @@ export function TransaksiKeuanganFilterBar({
           </div>
 
           <div className="flex-1">
-            <Select value={kas ?? "all"} onValueChange={onKasChange}>
-              <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder="Pilih Kas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kas</SelectItem>
-                {kasOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.nama}>
+            <div className="flex gap-3">
+              {kasOptions.map((option) => {
+                const isSelected = kas === option.nama;
+                const isKasPemuda = option.nama.toLowerCase() === "kas pemuda";
+                return (
+                  <Badge
+                    key={option.id}
+                    variant="outline"
+                    className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                      isSelected
+                        ? isKasPemuda
+                          ? "bg-green-100 text-green-700 border-green-200"
+                          : "bg-amber-50 text-amber-600 border-amber-200"
+                        : "bg-gray-50 text-gray-500 border-gray-200"
+                    }`}
+                    onClick={() => onKasChange(option.nama)}
+                  >
                     {option.nama}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  </Badge>
+                );
+              })}
+            </div>
           </div>
+        </div>
 
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Akun:</span>

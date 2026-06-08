@@ -1,0 +1,262 @@
+import * as React from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ArrowDownRight, ArrowUpRight, Calendar } from "lucide-react";
+import { formatCurrency } from "./types";
+import type { ColumnDef } from "@tanstack/react-table";
+import type { LaporanKeuanganTransaksiRecord } from "./types";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+interface LaporanKeuanganTransaksiTableProps {
+  data: Array<LaporanKeuanganTransaksiRecord>;
+  isLoading?: boolean;
+  kasNama?: string;
+  tanggalMulai?: string;
+  tanggalSelesai?: string;
+}
+
+export function LaporanKeuanganTransaksiTable({
+  data,
+  isLoading,
+  kasNama = "Kas Keuangan",
+  tanggalMulai,
+  tanggalSelesai,
+}: LaporanKeuanganTransaksiTableProps) {
+  const columns = React.useMemo<Array<ColumnDef<LaporanKeuanganTransaksiRecord>>>(
+    () => [
+      {
+        id: "index",
+        header: "No.",
+        cell: ({ row }) => (
+          <span className="text-muted-foreground font-medium">
+            {row.index + 1}.
+          </span>
+        ),
+      },
+      {
+        accessorKey: "tanggal",
+        header: "Tanggal",
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-slate-500" />
+            <span className="text-sm font-semibold text-slate-900">
+              {row.original.tanggal}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "deskripsi",
+        header: "Deskripsi",
+        cell: ({ row }) => (
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.deskripsi}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "akun_transaksi",
+        header: "Akun Transaksi",
+        cell: ({ row }) => (
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.akun_transaksi}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "penanggung_jawab",
+        header: "Penanggung Jawab",
+        cell: ({ row }) => (
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.penanggung_jawab}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "penginput",
+        header: "Penginput",
+        cell: ({ row }) => {
+          const penginput = row.original.penginput;
+          return (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9 border border-slate-200">
+                <AvatarImage src={penginput.avatar} alt={penginput.nama} />
+                <AvatarFallback className="bg-orange-100 text-orange-600 font-medium">
+                  {penginput.nama.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col text-left">
+                <span className="font-semibold text-slate-900 text-sm">
+                  {penginput.nama}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  @{penginput.email}
+                </span>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "tipe",
+        header: "Tipe",
+        cell: ({ row }) => {
+          const tipe = row.original.tipe;
+          const isPemasukan = tipe === "pemasukan";
+          return (
+            <Badge
+              variant="outline"
+              className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                isPemasukan
+                  ? "bg-green-100 text-green-700 border-green-200"
+                  : "bg-red-100 text-red-700 border-red-200"
+              }`}
+            >
+              {isPemasukan ? (
+                <>
+                  <ArrowUpRight className="h-4 w-4" />
+                  Pemasukan
+                </>
+              ) : (
+                <>
+                  <ArrowDownRight className="h-4 w-4" />
+                  Pengeluaran
+                </>
+              )}
+            </Badge>
+          );
+        },
+      },
+      {
+        accessorKey: "jumlah",
+        header: "Jumlah",
+        cell: ({ row }) => {
+          const jumlah = row.original.jumlah;
+          const isPemasukan = row.original.tipe === "pemasukan";
+          return (
+            <span
+              className={`text-sm font-medium ${
+                isPemasukan ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {formatCurrency(jumlah)}
+            </span>
+          );
+        },
+      },
+      {
+        id: "bukti",
+        header: "Bukti",
+        cell: ({ row }) => {
+          const bukti = row.original.bukti;
+          return bukti ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 cursor-pointer"
+              onClick={() => window.open(bukti, "_blank")}
+            >
+              Lihat Bukti
+            </Button>
+          ) : (
+            <span className="text-sm text-slate-400">-</span>
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h3 className="text-lg font-semibold text-slate-900">
+          Transaksi Keuangan ({kasNama})
+        </h3>
+        {tanggalMulai && tanggalSelesai && (
+          <p className="text-sm text-gray-500">
+            Transaksi dari {tanggalMulai} - {tanggalSelesai}
+          </p>
+        )}
+      </div>
+      <div className="rounded-lg border-2 border-slate-200 bg-white overflow-hidden">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="border-slate-200">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="bg-slate-50">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Memuat data...
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="border-slate-200"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-3">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Tidak ada data.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}

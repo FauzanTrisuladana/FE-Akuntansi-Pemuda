@@ -44,17 +44,25 @@ export function FilterBar({
   }, [defaultSelectedRoles, defaultSelectedStatuses]);
 
   const handleRoleChange = (roleName: string, checked: boolean) => {
-    const newSelectedRoles = checked
+    let newSelectedRoles = checked
       ? [...selectedRoles, roleName]
       : selectedRoles.filter((r) => r !== roleName);
+    // Prevent empty selection - if all unchecked, keep all checked
+    if (newSelectedRoles.length === 0) {
+      newSelectedRoles = [...defaultAllRoles];
+    }
     setSelectedRoles(newSelectedRoles);
     onRoleFilterChange(newSelectedRoles);
   };
 
   const handleStatusChange = (status: string, checked: boolean) => {
-    const newSelectedStatuses = checked
+    let newSelectedStatuses = checked
       ? [...selectedStatuses, status]
       : selectedStatuses.filter((s) => s !== status);
+    // Prevent empty selection - if all unchecked, keep all checked
+    if (newSelectedStatuses.length === 0) {
+      newSelectedStatuses = [...defaultAllStatuses];
+    }
     setSelectedStatuses(newSelectedStatuses);
     onStatusFilterChange(newSelectedStatuses);
   };

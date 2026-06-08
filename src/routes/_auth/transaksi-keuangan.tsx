@@ -39,9 +39,9 @@ const transaksiKeuanganSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.string().optional(),
-  akun: z.string().optional(),
-  tipe: z.string().optional(),
+  kas: z.string().catch("all"),
+  akun: z.string().catch("all"),
+  tipe: z.array(z.string()).catch(["pemasukan", "pengeluaran"]),
 });
 
 export const Route = createFileRoute("/_auth/transaksi-keuangan")({
@@ -117,8 +117,8 @@ function RouteComponent() {
       }
 
       // Apply tipe filter
-      if (tipeFilter && tipeFilter !== "all") {
-        filtered = filtered.filter((t) => t.tipe === tipeFilter);
+      if (tipeFilter.length > 0) {
+        filtered = filtered.filter((t) => tipeFilter.includes(t.tipe));
       }
 
       const total = filtered.length;
@@ -264,12 +264,12 @@ function RouteComponent() {
     });
   };
 
-  const handleTipeChange = (value: string) => {
+  const handleTipeChange = (selectedTipes: Array<string>) => {
     navigate({
       to: "/transaksi-keuangan",
       search: (prev: any) => ({
         ...prev,
-        tipe: value === "" ? undefined : value,
+        tipe: selectedTipes.length === 0 ? undefined : selectedTipes,
         page: 1,
       }),
       replace: true,
@@ -370,7 +370,6 @@ function RouteComponent() {
         errors={addErrors}
         akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
-        penginputOptions={karyawanDropdownQuery.data ?? []}
       />
 
       <TransaksiKeuanganTable
