@@ -134,7 +134,6 @@ export function TransaksiKeuanganEditDialog({
   // Keep previewUrl as string | undefined for type compatibility
   const previewUrlString = previewUrl ?? undefined;
 
-  const generalError = _errors?.general?.[0];
   const tanggalError = _errors?.tanggal?.[0];
   const deskripsiError = _errors?.deskripsi?.[0];
   const jumlahError = _errors?.jumlah?.[0];
@@ -244,76 +243,82 @@ export function TransaksiKeuanganEditDialog({
               </div>
             </div>
 
-            {/* Akun Transaksi */}
-            <div className="grid gap-2">
-              <Label htmlFor="akun" className="text-slate-600 font-medium">
-                Akun Transaksi<span className="text-red-500">*</span>
-              </Label>
-              <Select value={akunTransaksi} onValueChange={setAkunTransaksi}>
-                <SelectTrigger
-                  id="akun"
-                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                  disabled={isLoading}
+            {/* Akun Transaksi - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label htmlFor="akun" className="text-slate-600 font-medium">
+                  Akun Transaksi<span className="text-red-500">*</span>
+                </Label>
+                <Select value={akunTransaksi} onValueChange={setAkunTransaksi}>
+                  <SelectTrigger
+                    id="akun"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Akun Transaksi" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {akunOptions?.map((option) => (
+                      <SelectItem key={option.id} value={option.nama}>
+                        {option.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Penginput - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label htmlFor="penginput" className="text-slate-600 font-medium">
+                  Penginput
+                </Label>
+                <Select
+                  value={penginput}
+                  onValueChange={setPenginput}
                 >
-                  <SelectValue placeholder="Pilih Akun Transaksi" />
-                </SelectTrigger>
-                <SelectContent>
-                  {akunOptions?.map((option) => (
-                    <SelectItem key={option.id} value={option.nama}>
-                      {option.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  <SelectTrigger
+                    id="penginput"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Penginput" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(penginputOptions ?? MOCK_KARYAWAN_OPTIONS).map((option) => (
+                      <SelectItem key={option.id} value={option.nama}>
+                        {option.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
-            {/* Penginput */}
-            <div className="grid gap-2">
-              <Label htmlFor="penginput" className="text-slate-600 font-medium">
-                Penginput
-              </Label>
-              <Select
-                value={penginput}
-                onValueChange={setPenginput}
-              >
-                <SelectTrigger
-                  id="penginput"
-                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+            {/* Jumlah - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label htmlFor="jumlah" className="text-slate-600 font-medium">
+                  Jumlah<span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="jumlah"
+                  type="number"
+                  value={jumlah}
+                  onChange={(e) => setJumlah(e.target.value)}
+                  placeholder="Masukkan jumlah"
+                  className="h-12"
                   disabled={isLoading}
-                >
-                  <SelectValue placeholder="Pilih Penginput" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(penginputOptions ?? MOCK_KARYAWAN_OPTIONS).map((option) => (
-                    <SelectItem key={option.id} value={option.nama}>
-                      {option.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                />
+                {jumlahError ? (
+                  <p className="text-sm text-destructive">{jumlahError}</p>
+                ) : null}
+              </div>
+            )}
 
-            {/* Jumlah */}
-            <div className="grid gap-2">
-              <Label htmlFor="jumlah" className="text-slate-600 font-medium">
-                Jumlah<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="jumlah"
-                type="number"
-                value={jumlah}
-                onChange={(e) => setJumlah(e.target.value)}
-                placeholder="Masukkan jumlah"
-                className="h-12"
-                disabled={isLoading}
-              />
-              {jumlahError ? (
-                <p className="text-sm text-destructive">{jumlahError}</p>
-              ) : null}
-            </div>
-
-            {/* Preview Bukti */}
-            {previewUrl && (
+            {/* Preview Bukti - hanya tampil jika kas sudah dipilih */}
+            {kas && previewUrl && (
               <div className="grid gap-2">
                 <Label className="text-slate-600 font-medium">
                   Preview Bukti
@@ -328,24 +333,22 @@ export function TransaksiKeuanganEditDialog({
               </div>
             )}
 
-            {/* Upload File Bukti */}
-            <div className="grid gap-2">
-              <Label htmlFor="bukti" className="text-slate-600 font-medium">
-                File Bukti
-              </Label>
-              <Input
-                id="bukti"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="h-12"
-                disabled={isLoading}
-              />
-            </div>
-
-            {generalError ? (
-              <p className="text-sm text-destructive">{generalError}</p>
-            ) : null}
+            {/* Upload File Bukti - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label htmlFor="bukti" className="text-slate-600 font-medium">
+                  File Bukti
+                </Label>
+                <Input
+                  id="bukti"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="h-12"
+                  disabled={isLoading}
+                />
+              </div>
+            )}
           </DialogBody>
 
           <DialogFooter>
