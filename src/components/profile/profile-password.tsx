@@ -70,7 +70,9 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
               className="w-full md:w-auto h-11 font-semibold"
               disabled
             >
-              {hasPassword ? "Perbarui Kata Sandi (Mock)" : "Simpan Kata Sandi (Mock)"}
+              {hasPassword
+                ? "Perbarui Kata Sandi (Mock)"
+                : "Simpan Kata Sandi (Mock)"}
             </Button>
           </div>
         </form>

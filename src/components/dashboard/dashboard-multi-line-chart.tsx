@@ -83,9 +83,7 @@ export function DashboardMultiLineChart({
               }`}
               onClick={() => {
                 if (isSelected) {
-                  setSelectedAkun(
-                    selectedAkun.filter((k) => k !== option.key),
-                  );
+                  setSelectedAkun(selectedAkun.filter((k) => k !== option.key));
                 } else {
                   setSelectedAkun([...selectedAkun, option.key]);
                 }

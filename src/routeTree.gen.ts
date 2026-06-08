@@ -8,270 +8,270 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthUsersRouteImport } from './routes/_auth/users'
-import { Route as AuthTransaksiKeuanganRouteImport } from './routes/_auth/transaksi-keuangan'
-import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
-import { Route as AuthPengaturanAkunKeuanganRouteImport } from './routes/_auth/pengaturan-akun-keuangan'
-import { Route as AuthPenanggungJawabRouteImport } from './routes/_auth/penanggung-jawab'
-import { Route as AuthMutasiRekeningRouteImport } from './routes/_auth/mutasi-rekening'
-import { Route as AuthLaporanKeuanganRouteImport } from './routes/_auth/laporan-keuangan'
-import { Route as AuthHistoryRiilRouteImport } from './routes/_auth/history-riil'
-import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as AuthRouteImport } from "./routes/_auth";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AuthUsersRouteImport } from "./routes/_auth/users";
+import { Route as AuthTransaksiKeuanganRouteImport } from "./routes/_auth/transaksi-keuangan";
+import { Route as AuthProfileRouteImport } from "./routes/_auth/profile";
+import { Route as AuthPengaturanAkunKeuanganRouteImport } from "./routes/_auth/pengaturan-akun-keuangan";
+import { Route as AuthPenanggungJawabRouteImport } from "./routes/_auth/penanggung-jawab";
+import { Route as AuthMutasiRekeningRouteImport } from "./routes/_auth/mutasi-rekening";
+import { Route as AuthLaporanKeuanganRouteImport } from "./routes/_auth/laporan-keuangan";
+import { Route as AuthHistoryRiilRouteImport } from "./routes/_auth/history-riil";
+import { Route as AuthDashboardRouteImport } from "./routes/_auth/dashboard";
 
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
+  id: "/_auth",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthUsersRoute = AuthUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
+  id: "/users",
+  path: "/users",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthTransaksiKeuanganRoute = AuthTransaksiKeuanganRouteImport.update({
-  id: '/transaksi-keuangan',
-  path: '/transaksi-keuangan',
+  id: "/transaksi-keuangan",
+  path: "/transaksi-keuangan",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthProfileRoute = AuthProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthPengaturanAkunKeuanganRoute =
   AuthPengaturanAkunKeuanganRouteImport.update({
-    id: '/pengaturan-akun-keuangan',
-    path: '/pengaturan-akun-keuangan',
+    id: "/pengaturan-akun-keuangan",
+    path: "/pengaturan-akun-keuangan",
     getParentRoute: () => AuthRoute,
-  } as any)
+  } as any);
 const AuthPenanggungJawabRoute = AuthPenanggungJawabRouteImport.update({
-  id: '/penanggung-jawab',
-  path: '/penanggung-jawab',
+  id: "/penanggung-jawab",
+  path: "/penanggung-jawab",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthMutasiRekeningRoute = AuthMutasiRekeningRouteImport.update({
-  id: '/mutasi-rekening',
-  path: '/mutasi-rekening',
+  id: "/mutasi-rekening",
+  path: "/mutasi-rekening",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthLaporanKeuanganRoute = AuthLaporanKeuanganRouteImport.update({
-  id: '/laporan-keuangan',
-  path: '/laporan-keuangan',
+  id: "/laporan-keuangan",
+  path: "/laporan-keuangan",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthHistoryRiilRoute = AuthHistoryRiilRouteImport.update({
-  id: '/history-riil',
-  path: '/history-riil',
+  id: "/history-riil",
+  path: "/history-riil",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: "/dashboard",
+  path: "/dashboard",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/history-riil': typeof AuthHistoryRiilRoute
-  '/laporan-keuangan': typeof AuthLaporanKeuanganRoute
-  '/mutasi-rekening': typeof AuthMutasiRekeningRoute
-  '/penanggung-jawab': typeof AuthPenanggungJawabRoute
-  '/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
-  '/profile': typeof AuthProfileRoute
-  '/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
-  '/users': typeof AuthUsersRoute
+  "/": typeof IndexRoute;
+  "/login": typeof LoginRoute;
+  "/dashboard": typeof AuthDashboardRoute;
+  "/history-riil": typeof AuthHistoryRiilRoute;
+  "/laporan-keuangan": typeof AuthLaporanKeuanganRoute;
+  "/mutasi-rekening": typeof AuthMutasiRekeningRoute;
+  "/penanggung-jawab": typeof AuthPenanggungJawabRoute;
+  "/pengaturan-akun-keuangan": typeof AuthPengaturanAkunKeuanganRoute;
+  "/profile": typeof AuthProfileRoute;
+  "/transaksi-keuangan": typeof AuthTransaksiKeuanganRoute;
+  "/users": typeof AuthUsersRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/dashboard': typeof AuthDashboardRoute
-  '/history-riil': typeof AuthHistoryRiilRoute
-  '/laporan-keuangan': typeof AuthLaporanKeuanganRoute
-  '/mutasi-rekening': typeof AuthMutasiRekeningRoute
-  '/penanggung-jawab': typeof AuthPenanggungJawabRoute
-  '/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
-  '/profile': typeof AuthProfileRoute
-  '/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
-  '/users': typeof AuthUsersRoute
+  "/": typeof IndexRoute;
+  "/login": typeof LoginRoute;
+  "/dashboard": typeof AuthDashboardRoute;
+  "/history-riil": typeof AuthHistoryRiilRoute;
+  "/laporan-keuangan": typeof AuthLaporanKeuanganRoute;
+  "/mutasi-rekening": typeof AuthMutasiRekeningRoute;
+  "/penanggung-jawab": typeof AuthPenanggungJawabRoute;
+  "/pengaturan-akun-keuangan": typeof AuthPengaturanAkunKeuanganRoute;
+  "/profile": typeof AuthProfileRoute;
+  "/transaksi-keuangan": typeof AuthTransaksiKeuanganRoute;
+  "/users": typeof AuthUsersRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
-  '/login': typeof LoginRoute
-  '/_auth/dashboard': typeof AuthDashboardRoute
-  '/_auth/history-riil': typeof AuthHistoryRiilRoute
-  '/_auth/laporan-keuangan': typeof AuthLaporanKeuanganRoute
-  '/_auth/mutasi-rekening': typeof AuthMutasiRekeningRoute
-  '/_auth/penanggung-jawab': typeof AuthPenanggungJawabRoute
-  '/_auth/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
-  '/_auth/profile': typeof AuthProfileRoute
-  '/_auth/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
-  '/_auth/users': typeof AuthUsersRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/_auth": typeof AuthRouteWithChildren;
+  "/login": typeof LoginRoute;
+  "/_auth/dashboard": typeof AuthDashboardRoute;
+  "/_auth/history-riil": typeof AuthHistoryRiilRoute;
+  "/_auth/laporan-keuangan": typeof AuthLaporanKeuanganRoute;
+  "/_auth/mutasi-rekening": typeof AuthMutasiRekeningRoute;
+  "/_auth/penanggung-jawab": typeof AuthPenanggungJawabRoute;
+  "/_auth/pengaturan-akun-keuangan": typeof AuthPengaturanAkunKeuanganRoute;
+  "/_auth/profile": typeof AuthProfileRoute;
+  "/_auth/transaksi-keuangan": typeof AuthTransaksiKeuanganRoute;
+  "/_auth/users": typeof AuthUsersRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/login'
-    | '/dashboard'
-    | '/history-riil'
-    | '/laporan-keuangan'
-    | '/mutasi-rekening'
-    | '/penanggung-jawab'
-    | '/pengaturan-akun-keuangan'
-    | '/profile'
-    | '/transaksi-keuangan'
-    | '/users'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/login"
+    | "/dashboard"
+    | "/history-riil"
+    | "/laporan-keuangan"
+    | "/mutasi-rekening"
+    | "/penanggung-jawab"
+    | "/pengaturan-akun-keuangan"
+    | "/profile"
+    | "/transaksi-keuangan"
+    | "/users";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/login'
-    | '/dashboard'
-    | '/history-riil'
-    | '/laporan-keuangan'
-    | '/mutasi-rekening'
-    | '/penanggung-jawab'
-    | '/pengaturan-akun-keuangan'
-    | '/profile'
-    | '/transaksi-keuangan'
-    | '/users'
+    | "/"
+    | "/login"
+    | "/dashboard"
+    | "/history-riil"
+    | "/laporan-keuangan"
+    | "/mutasi-rekening"
+    | "/penanggung-jawab"
+    | "/pengaturan-akun-keuangan"
+    | "/profile"
+    | "/transaksi-keuangan"
+    | "/users";
   id:
-    | '__root__'
-    | '/'
-    | '/_auth'
-    | '/login'
-    | '/_auth/dashboard'
-    | '/_auth/history-riil'
-    | '/_auth/laporan-keuangan'
-    | '/_auth/mutasi-rekening'
-    | '/_auth/penanggung-jawab'
-    | '/_auth/pengaturan-akun-keuangan'
-    | '/_auth/profile'
-    | '/_auth/transaksi-keuangan'
-    | '/_auth/users'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/_auth"
+    | "/login"
+    | "/_auth/dashboard"
+    | "/_auth/history-riil"
+    | "/_auth/laporan-keuangan"
+    | "/_auth/mutasi-rekening"
+    | "/_auth/penanggung-jawab"
+    | "/_auth/pengaturan-akun-keuangan"
+    | "/_auth/profile"
+    | "/_auth/transaksi-keuangan"
+    | "/_auth/users";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
-  LoginRoute: typeof LoginRoute
+  IndexRoute: typeof IndexRoute;
+  AuthRoute: typeof AuthRouteWithChildren;
+  LoginRoute: typeof LoginRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth/users': {
-      id: '/_auth/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthUsersRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/transaksi-keuangan': {
-      id: '/_auth/transaksi-keuangan'
-      path: '/transaksi-keuangan'
-      fullPath: '/transaksi-keuangan'
-      preLoaderRoute: typeof AuthTransaksiKeuanganRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/profile': {
-      id: '/_auth/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthProfileRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/pengaturan-akun-keuangan': {
-      id: '/_auth/pengaturan-akun-keuangan'
-      path: '/pengaturan-akun-keuangan'
-      fullPath: '/pengaturan-akun-keuangan'
-      preLoaderRoute: typeof AuthPengaturanAkunKeuanganRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/penanggung-jawab': {
-      id: '/_auth/penanggung-jawab'
-      path: '/penanggung-jawab'
-      fullPath: '/penanggung-jawab'
-      preLoaderRoute: typeof AuthPenanggungJawabRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/mutasi-rekening': {
-      id: '/_auth/mutasi-rekening'
-      path: '/mutasi-rekening'
-      fullPath: '/mutasi-rekening'
-      preLoaderRoute: typeof AuthMutasiRekeningRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/laporan-keuangan': {
-      id: '/_auth/laporan-keuangan'
-      path: '/laporan-keuangan'
-      fullPath: '/laporan-keuangan'
-      preLoaderRoute: typeof AuthLaporanKeuanganRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/history-riil': {
-      id: '/_auth/history-riil'
-      path: '/history-riil'
-      fullPath: '/history-riil'
-      preLoaderRoute: typeof AuthHistoryRiilRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardRouteImport
-      parentRoute: typeof AuthRoute
-    }
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_auth": {
+      id: "/_auth";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_auth/users": {
+      id: "/_auth/users";
+      path: "/users";
+      fullPath: "/users";
+      preLoaderRoute: typeof AuthUsersRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/transaksi-keuangan": {
+      id: "/_auth/transaksi-keuangan";
+      path: "/transaksi-keuangan";
+      fullPath: "/transaksi-keuangan";
+      preLoaderRoute: typeof AuthTransaksiKeuanganRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/profile": {
+      id: "/_auth/profile";
+      path: "/profile";
+      fullPath: "/profile";
+      preLoaderRoute: typeof AuthProfileRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/pengaturan-akun-keuangan": {
+      id: "/_auth/pengaturan-akun-keuangan";
+      path: "/pengaturan-akun-keuangan";
+      fullPath: "/pengaturan-akun-keuangan";
+      preLoaderRoute: typeof AuthPengaturanAkunKeuanganRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/penanggung-jawab": {
+      id: "/_auth/penanggung-jawab";
+      path: "/penanggung-jawab";
+      fullPath: "/penanggung-jawab";
+      preLoaderRoute: typeof AuthPenanggungJawabRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/mutasi-rekening": {
+      id: "/_auth/mutasi-rekening";
+      path: "/mutasi-rekening";
+      fullPath: "/mutasi-rekening";
+      preLoaderRoute: typeof AuthMutasiRekeningRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/laporan-keuangan": {
+      id: "/_auth/laporan-keuangan";
+      path: "/laporan-keuangan";
+      fullPath: "/laporan-keuangan";
+      preLoaderRoute: typeof AuthLaporanKeuanganRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/history-riil": {
+      id: "/_auth/history-riil";
+      path: "/history-riil";
+      fullPath: "/history-riil";
+      preLoaderRoute: typeof AuthHistoryRiilRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/_auth/dashboard": {
+      id: "/_auth/dashboard";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof AuthDashboardRouteImport;
+      parentRoute: typeof AuthRoute;
+    };
   }
 }
 
 interface AuthRouteChildren {
-  AuthDashboardRoute: typeof AuthDashboardRoute
-  AuthHistoryRiilRoute: typeof AuthHistoryRiilRoute
-  AuthLaporanKeuanganRoute: typeof AuthLaporanKeuanganRoute
-  AuthMutasiRekeningRoute: typeof AuthMutasiRekeningRoute
-  AuthPenanggungJawabRoute: typeof AuthPenanggungJawabRoute
-  AuthPengaturanAkunKeuanganRoute: typeof AuthPengaturanAkunKeuanganRoute
-  AuthProfileRoute: typeof AuthProfileRoute
-  AuthTransaksiKeuanganRoute: typeof AuthTransaksiKeuanganRoute
-  AuthUsersRoute: typeof AuthUsersRoute
+  AuthDashboardRoute: typeof AuthDashboardRoute;
+  AuthHistoryRiilRoute: typeof AuthHistoryRiilRoute;
+  AuthLaporanKeuanganRoute: typeof AuthLaporanKeuanganRoute;
+  AuthMutasiRekeningRoute: typeof AuthMutasiRekeningRoute;
+  AuthPenanggungJawabRoute: typeof AuthPenanggungJawabRoute;
+  AuthPengaturanAkunKeuanganRoute: typeof AuthPengaturanAkunKeuanganRoute;
+  AuthProfileRoute: typeof AuthProfileRoute;
+  AuthTransaksiKeuanganRoute: typeof AuthTransaksiKeuanganRoute;
+  AuthUsersRoute: typeof AuthUsersRoute;
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -284,24 +284,24 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
   AuthTransaksiKeuanganRoute: AuthTransaksiKeuanganRoute,
   AuthUsersRoute: AuthUsersRoute,
-}
+};
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   LoginRoute: LoginRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }
