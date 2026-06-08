@@ -189,7 +189,10 @@ export function HistoryRiilTable({
                       if (index === 1 || index === 2 || index === 3)
                         alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
+                        <TableCell
+                          key={cell.id}
+                          className={`py-3 ${alignClass}`}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),

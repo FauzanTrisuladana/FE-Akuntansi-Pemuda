@@ -93,9 +93,7 @@ export function MutasiRekeningEditDialog({
             <DialogTitle className="text-2xl font-bold">
               Edit Mutasi Akun
             </DialogTitle>
-            <DialogDescription>
-              Silakan ubah data mutasi akun
-            </DialogDescription>
+            <DialogDescription>Silakan ubah data mutasi akun</DialogDescription>
           </DialogHeader>
 
           <DialogBody className="grid gap-4 py-4">

@@ -36,7 +36,9 @@ export function LaporanKeuanganTransaksiTable({
   tanggalMulai,
   tanggalSelesai,
 }: LaporanKeuanganTransaksiTableProps) {
-  const columns = React.useMemo<Array<ColumnDef<LaporanKeuanganTransaksiRecord>>>(
+  const columns = React.useMemo<
+    Array<ColumnDef<LaporanKeuanganTransaksiRecord>>
+  >(
     () => [
       {
         id: "index",

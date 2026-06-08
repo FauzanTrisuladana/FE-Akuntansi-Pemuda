@@ -271,13 +271,13 @@ export function TransaksiKeuanganEditDialog({
             {/* Penginput - hanya tampil jika kas sudah dipilih */}
             {kas && (
               <div className="grid gap-2">
-                <Label htmlFor="penginput" className="text-slate-600 font-medium">
+                <Label
+                  htmlFor="penginput"
+                  className="text-slate-600 font-medium"
+                >
                   Penginput
                 </Label>
-                <Select
-                  value={penginput}
-                  onValueChange={setPenginput}
-                >
+                <Select value={penginput} onValueChange={setPenginput}>
                   <SelectTrigger
                     id="penginput"
                     className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
@@ -286,11 +286,13 @@ export function TransaksiKeuanganEditDialog({
                     <SelectValue placeholder="Pilih Penginput" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(penginputOptions ?? MOCK_KARYAWAN_OPTIONS).map((option) => (
-                      <SelectItem key={option.id} value={option.nama}>
-                        {option.nama}
-                      </SelectItem>
-                    ))}
+                    {(penginputOptions ?? MOCK_KARYAWAN_OPTIONS).map(
+                      (option) => (
+                        <SelectItem key={option.id} value={option.nama}>
+                          {option.nama}
+                        </SelectItem>
+                      ),
+                    )}
                   </SelectContent>
                 </Select>
               </div>

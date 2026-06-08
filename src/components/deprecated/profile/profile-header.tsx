@@ -1,4 +1,3 @@
-import { User } from "lucide-react";
 import HeaderComp from "@/components/shared/header-comp";
 
 export function ProfileHeader() {
@@ -6,7 +5,6 @@ export function ProfileHeader() {
     <HeaderComp
       title="Profile Settings"
       description="Kelola informasi profil Anda"
-      icon={<User className="h-4 w-4" />}
     />
   );
 }

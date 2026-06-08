@@ -1,13 +1,17 @@
 # Requirement Slicing: Halaman Transaksi Keuangan
 
 ## Deskripsi Umum
+
 Halaman untuk mengelola transaksi keuangan yang mencakup pencatatan pemasukan dan pengeluaran kas. Halaman ini terdiri dari tabel data transaksi, filter pencarian, dan dialog untuk tambah/edit/hapus transaksi serta melihat bukti transaksi.
 
 ## Panduan Implementasi (Untuk AI)
+
 Ikuti standar coding yang ada di project `FE-Akuntansi-Pemuda`. Pastikan struktur komponen konsisten dengan modul lain (seperti `mutasi-rekening` atau `penanggung-jawab`).
 
 ### 1. Standar Pagination & Data
+
 Sesuai dengan `ai-slicing-guide-fauzan.md`:
+
 - **Default per_page**: Set schema `per_page` default ke `10` (gunakan `.catch(10)`).
 - **Logika Paging**:
   - `pageIndex = page - 1`
@@ -15,6 +19,7 @@ Sesuai dengan `ai-slicing-guide-fauzan.md`:
 - **Mock Data**: Buat data mock yang realistis untuk transaksi keuangan (Tanggal, Deskripsi, Akun Transaksi, Penanggung Jawab, Karyawan, Kas, Tipe, Jumlah, Bukti).
 
 ### 2. Struktur Komponen
+
 - **Route**: Implementasikan di `src/routes/_auth/transaksi-keuangan.tsx`.
 - **Komponen**: Buat folder baru di `src/components/transaksi-keuangan/` yang berisi:
   - `transaksi-keuangan-table.tsx`: Tabel utama dan logika pagination.
@@ -29,6 +34,7 @@ Sesuai dengan `ai-slicing-guide-fauzan.md`:
 ### 3. Detail UI & Komponen (Sesuai Gambar)
 
 #### A. Halaman Utama
+
 - **Header**: Judul "Transaksi Keuangan" dengan sub-deskripsi "Lakukan Transaksi antar akun di kas yang sama".
 - **Action Button**: Tombol "Lakukan Mutasi Rekening" (Warna Hijau) di pojok kanan atas.
 - **Search Bar**: Input pencarian "Akun Keuangan".
@@ -39,7 +45,9 @@ Sesuai dengan `ai-slicing-guide-fauzan.md`:
   - Checkbox/Toggle untuk "Pemasukan" dan "Pengeluaran".
 
 #### B. Tabel Transaksi
+
 Kolom yang harus ada:
+
 - **No**: Nomor urut.
 - **Tanggal**: Format YYYY-MM-DD.
 - **Deskripsi**: Teks deskripsi transaksi.
@@ -55,6 +63,7 @@ Kolom yang harus ada:
 - **Aksi**: Icon Edit (Kuning) dan Icon Trash (Merah).
 
 #### C. Dialog Tambah/Edit Transaksi
+
 - **Judul**: "Lakukan Transaksi" (Tambah) atau "Edit Transaksi" (Edit).
 - **Fields**:
   - **Deskripsi** (Input Text, Required).
@@ -69,19 +78,24 @@ Kolom yang harus ada:
 - **Footer**: Tombol "Batal" (Merah) dan "Simpan" (Hitam).
 
 #### D. Dialog Hapus
+
 - **Judul**: "Hapus Transaksi Mutasi Rekening".
 - **Pesan**: "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan."
 - **Footer**: Tombol "Batal" (Hitam) dan "Ya, Hapus" (Merah).
 
 #### E. Dialog Bukti Transaksi
+
 - **Judul**: "Bukti Transaksi {deskripsi}".
 - **Content**: Area preview gambar bukti transaksi.
 - **Footer**: Tombol "Batal" (Hitam).
 
 ## Verifikasi Akhir
+
 Setelah implementasi, jalankan:
+
 ```bash
 cd FE-Akuntansi-Pemuda
 pnpm fix
 ```
+
 Pastikan tidak ada lint error dan UI konsisten dengan halaman lain.

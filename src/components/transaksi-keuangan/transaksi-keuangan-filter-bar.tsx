@@ -141,12 +141,17 @@ export function TransaksiKeuanganFilterBar({
                 onCheckedChange={(checked) => {
                   const newTipe = [...(tipe ?? ["pemasukan", "pengeluaran"])];
                   if (checked) {
-                    if (!newTipe.includes("pemasukan")) newTipe.push("pemasukan");
+                    if (!newTipe.includes("pemasukan"))
+                      newTipe.push("pemasukan");
                   } else {
                     const idx = newTipe.indexOf("pemasukan");
                     if (idx > -1) newTipe.splice(idx, 1);
                   }
-                  onTipeChange(newTipe.length === 0 ? ["pemasukan", "pengeluaran"] : newTipe);
+                  onTipeChange(
+                    newTipe.length === 0
+                      ? ["pemasukan", "pengeluaran"]
+                      : newTipe,
+                  );
                 }}
                 disabled={isLoading}
               />
@@ -162,12 +167,17 @@ export function TransaksiKeuanganFilterBar({
                 onCheckedChange={(checked) => {
                   const newTipe = [...(tipe ?? ["pemasukan", "pengeluaran"])];
                   if (checked) {
-                    if (!newTipe.includes("pengeluaran")) newTipe.push("pengeluaran");
+                    if (!newTipe.includes("pengeluaran"))
+                      newTipe.push("pengeluaran");
                   } else {
                     const idx = newTipe.indexOf("pengeluaran");
                     if (idx > -1) newTipe.splice(idx, 1);
                   }
-                  onTipeChange(newTipe.length === 0 ? ["pemasukan", "pengeluaran"] : newTipe);
+                  onTipeChange(
+                    newTipe.length === 0
+                      ? ["pemasukan", "pengeluaran"]
+                      : newTipe,
+                  );
                 }}
                 disabled={isLoading}
               />

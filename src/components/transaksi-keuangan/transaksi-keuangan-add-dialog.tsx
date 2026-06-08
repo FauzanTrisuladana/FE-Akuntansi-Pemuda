@@ -228,7 +228,8 @@ export function TransaksiKeuanganAddDialog({
               <div className="flex gap-3">
                 {kasOptions.map((option) => {
                   const isSelected = kas === option.nama;
-                  const isKasPemuda = option.nama.toLowerCase() === "kas pemuda";
+                  const isKasPemuda =
+                    option.nama.toLowerCase() === "kas pemuda";
                   return (
                     <Badge
                       key={option.id}

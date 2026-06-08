@@ -118,7 +118,9 @@ export function MutasiRekeningTable({
         accessorKey: "kas",
         header: "Kas",
         cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-700">{row.original.kas}</span>
+          <span className="text-sm font-semibold text-slate-700">
+            {row.original.kas}
+          </span>
         ),
       },
       {
@@ -244,7 +246,10 @@ export function MutasiRekeningTable({
                       if (index === 1 || index === 2 || index === 3)
                         alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
+                        <TableCell
+                          key={cell.id}
+                          className={`py-3 ${alignClass}`}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),

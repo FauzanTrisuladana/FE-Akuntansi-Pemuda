@@ -215,7 +215,10 @@ export function PenanggungJawabTable({
                       let alignClass = "text-center";
                       if (index === 1) alignClass = "text-left";
                       return (
-                        <TableCell key={cell.id} className={`py-3 ${alignClass}`}>
+                        <TableCell
+                          key={cell.id}
+                          className={`py-3 ${alignClass}`}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),

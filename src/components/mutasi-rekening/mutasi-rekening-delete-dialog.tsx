@@ -45,9 +45,7 @@ export function MutasiRekeningDeleteDialog({
         <AlertDialogHeader>
           <div className="flex items-center gap-2 text-rose-600">
             <AlertTriangle className="h-5 w-5" />
-            <AlertDialogTitle>
-              Hapus Transaksi Mutasi Akun?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Hapus Transaksi Mutasi Akun?</AlertDialogTitle>
           </div>
           <AlertDialogDescription>
             Apakah Anda yakin ingin menghapus data ini?

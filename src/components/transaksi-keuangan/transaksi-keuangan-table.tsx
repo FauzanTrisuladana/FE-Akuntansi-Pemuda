@@ -4,7 +4,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDownRight, ArrowUpRight, Calendar, Pencil, Trash2 } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Calendar,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { TransaksiKeuanganEditDialog } from "./transaksi-keuangan-edit-dialog";
 import { TransaksiKeuanganDeleteDialog } from "./transaksi-keuangan-delete-dialog";
 import { TransaksiKeuanganEvidenceDialog } from "./transaksi-keuangan-evidence-dialog";
@@ -168,7 +174,9 @@ export function TransaksiKeuanganTable({
         accessorKey: "kas",
         header: "Kas",
         cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-900">{row.original.kas}</span>
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.kas}
+          </span>
         ),
       },
       {

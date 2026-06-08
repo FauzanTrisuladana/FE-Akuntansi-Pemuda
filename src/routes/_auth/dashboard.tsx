@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchBar } from "@/components/nav-sidebar/search-bar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
+import { DashboardLineChart } from "@/components/dashboard/dashboard-line-chart";
+import { DashboardBarChart } from "@/components/dashboard/dashboard-bar-chart";
+import { DashboardMultiLineChart } from "@/components/dashboard/dashboard-multi-line-chart";
+import { DashboardMultiBarChart } from "@/components/dashboard/dashboard-multi-bar-chart";
+import {
+  MOCK_DASHBOARD_STATS,
+  MOCK_REKONSIALIASI,
+  MOCK_SALDO_HARIAN,
+  MOCK_SALDO_PER_AKUN,
+  MOCK_WEEKLY_CASHFLOW,
+} from "@/components/dashboard/types";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   component: RouteComponent,
@@ -12,42 +19,16 @@ export const Route = createFileRoute("/_auth/dashboard")({
 
 function RouteComponent() {
   return (
-    <div className="m-10 gap-4 flex flex-col">
-      <div className="flex gap-4">
-        <Button>Tes Button</Button>
-        <Button variant={"destructive"}>Tes Button</Button>
-        <Button variant={"outline"}>Tes Button</Button>
-        <Button variant={"secondary"}>Tes Button</Button>
-        <Button variant={"ghost"}>Tes Button</Button>
-        <Button variant={"link"}>Tes Button</Button>
-        <Button variant={"green"}>Tes Button</Button>
-        <Button variant={"purple"}>Tes Button</Button>
-        <Button variant={"orange"}>Tes Button</Button>
-      </div>
-      <div className="flex gap-4">
-        <Checkbox></Checkbox>
-        <Checkbox checked={true}></Checkbox>
-        <RadioGroup defaultValue="1" className="flex">
-          <RadioGroupItem value="1" id="r1" />
-          <RadioGroupItem value="2" id="r2" />
-        </RadioGroup>
-      </div>
-      <Switch />
-      <div className="flex gap-4">
-        <Badge>Hello</Badge>
-        <Badge variant={"secondary"}>Hello</Badge>
-        <Badge variant={"destructive"}>Hello</Badge>
-        <Badge variant={"outline"}>Hello</Badge>
-        <Badge variant={"ghost"}>Hello</Badge>
-        <Badge variant={"link"}>Hello</Badge>
-        <Badge variant={"green"}>Hello</Badge>
-        <Badge variant={"blue"}>Hello</Badge>
-        <Badge variant={"orange"}>Hello</Badge>
-        <Badge variant={"purple"}>Hello</Badge>
-      </div>
-      <div className="max-w-sm">
-        <SearchBar />
-      </div>
-    </div>
+    <>
+      <DashboardHeader />
+
+      <DashboardSummaryCards stats={MOCK_DASHBOARD_STATS} />
+
+      <DashboardLineChart chartData={MOCK_SALDO_HARIAN} />
+      <DashboardBarChart chartData={MOCK_WEEKLY_CASHFLOW} />
+
+      <DashboardMultiLineChart chartData={MOCK_SALDO_PER_AKUN} />
+      <DashboardMultiBarChart chartData={MOCK_REKONSIALIASI} />
+    </>
   );
 }
