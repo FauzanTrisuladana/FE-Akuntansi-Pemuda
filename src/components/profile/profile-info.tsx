@@ -4,15 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function ProfileInfo({
-  user,
-}: {
-  user: { name: string; email: string } & Record<string, any> & {
-      has_password?: boolean;
-    };
-}) {
+interface ProfileInfoProps {
+  user: {
+    name: string;
+    email: string;
+  };
+}
+
+export function ProfileInfo({ user }: ProfileInfoProps) {
   return (
-    <Card>
+    <Card className="shadow-lg border-3 border-slate-200">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base font-medium">
           <User className="w-4 h-4" />
@@ -20,15 +21,10 @@ export function ProfileInfo({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <form className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">Nama</Label>
-            <Input
-              id="name"
-              value={user.name}
-              disabled
-              className="bg-slate-50 cursor-not-allowed"
-            />
+            <Input id="name" defaultValue={user.name} />
           </div>
 
           <div className="space-y-2">
@@ -38,20 +34,22 @@ export function ProfileInfo({
               <Input
                 id="email"
                 type="email"
-                value={user.email}
-                disabled
-                className="pl-9 bg-slate-50 cursor-not-allowed"
+                defaultValue={user.email}
+                className="pl-9"
               />
             </div>
           </div>
 
-          <Button
-            className="bg-slate-900 text-white hover:bg-slate-800 gap-2"
-            disabled
-          >
-            Simpan Perubahan (Mock)
-          </Button>
-        </div>
+          <div className="flex gap-2">
+            <Button type="submit" className="gap-2">
+              <i className="bi bi-check-circle" />
+              Simpan Perubahan
+            </Button>
+            <Button type="reset" variant="outline">
+              Batal
+            </Button>
+          </div>
+        </form>
       </CardContent>
     </Card>
   );

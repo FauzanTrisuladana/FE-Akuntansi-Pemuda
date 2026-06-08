@@ -1,7 +1,7 @@
-import { AlertCircle, Camera } from "lucide-react";
+import { Camera } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ProfileAvatarProps {
   user: {
@@ -12,29 +12,42 @@ interface ProfileAvatarProps {
 }
 
 export function ProfileAvatar({ user }: ProfileAvatarProps) {
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n.charAt(0).toUpperCase())
+      .join("");
+  };
+
+  const isExternalImage = user.profile_image?.startsWith("http://") || user.profile_image?.startsWith("https://");
+
   return (
-    <Card>
+    <Card className="shadow-lg border-3 border-slate-200">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base font-medium">
+          Foto Profil
+        </CardTitle>
+      </CardHeader>
       <CardContent className="flex flex-col items-center justify-center p-6 gap-4">
-        <div className="relative">
+        {user.profile_image ? (
           <Avatar className="h-24 w-24 border-2 border-slate-100">
             <AvatarImage
-              src={user.profile_image || undefined}
+              src={isExternalImage ? user.profile_image : `/storage/${user.profile_image}`}
               className="object-cover"
             />
             <AvatarFallback className="bg-slate-100 text-slate-600 font-bold text-xl">
-              {user.name.charAt(0).toUpperCase()}
+              {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
-        </div>
-
-        <div className="text-center space-y-1">
-          <h3 className="font-semibold text-lg">{user.name}</h3>
-          <p className="text-sm text-muted-foreground">@{user.username}</p>
-        </div>
+        ) : (
+          <div className="bg-destructive text-white rounded-full flex items-center justify-center mb-3" style={{ width: "100px", height: "100px", fontSize: "48px" }}>
+            {getInitials(user.name)}
+          </div>
+        )}
 
         <Button variant="outline" className="gap-2" disabled>
           <Camera className="w-4 h-4" />
-          Ubah Foto (Mock)
+          Ubah Foto
         </Button>
       </CardContent>
     </Card>

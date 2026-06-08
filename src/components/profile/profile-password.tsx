@@ -10,69 +10,52 @@ interface ProfilePasswordProps {
 
 export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
   return (
-    <Card className="border-slate-200 shadow-sm">
+    <Card className="shadow-lg border-3 border-slate-200">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base font-bold text-slate-800">
+        <CardTitle className="flex items-center gap-2 text-base font-medium">
           {hasPassword ? (
-            <Lock className="w-4 h-4 text-slate-800" />
+            <Lock className="w-4 h-4" />
           ) : (
-            <KeyRound className="w-4 h-4 text-slate-800" />
+            <KeyRound className="w-4 h-4" />
           )}
-          {hasPassword ? "Ganti Kata Sandi" : "Buat Kata Sandi"}
+          {hasPassword ? "Ubah Kata Sandi" : "Atur Kata Sandi"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form className="space-y-5">
           {hasPassword && (
             <div className="space-y-2">
-              <Label htmlFor="current-password">Kata Sandi Saat Ini</Label>
-              <div className="relative">
-                <Input
-                  id="current-password"
-                  type="password"
-                  placeholder="Masukkan kata sandi lama"
-                  disabled
-                  className="bg-slate-50 cursor-not-allowed"
-                />
-              </div>
+              <Label htmlFor="currentPassword">Kata Sandi Saat Ini</Label>
+              <Input
+                id="currentPassword"
+                type="password"
+                placeholder="Masukkan kata sandi lama"
+              />
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="new-password">Kata Sandi Baru</Label>
-            <div className="relative">
-              <Input
-                id="new-password"
-                type="password"
-                placeholder="Minimal 6 karakter"
-                disabled
-                className="bg-slate-50 cursor-not-allowed"
-              />
-            </div>
+            <Label htmlFor="newPassword">Kata Sandi Baru</Label>
+            <Input
+              id="newPassword"
+              type="password"
+              placeholder="Minimal 6 karakter"
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Konfirmasi Kata Sandi Baru</Label>
-            <div className="relative">
-              <Input
-                id="confirm-password"
-                type="password"
-                placeholder="Ulangi kata sandi baru"
-                disabled
-                className="bg-slate-50 cursor-not-allowed"
-              />
-            </div>
+            <Label htmlFor="newPassword_confirmation">Konfirmasi Kata Sandi Baru</Label>
+            <Input
+              id="newPassword_confirmation"
+              type="password"
+              placeholder="Ulangi kata sandi baru"
+            />
           </div>
 
           <div className="pt-2">
-            <Button
-              type="submit"
-              className="w-full md:w-auto h-11 font-semibold"
-              disabled
-            >
-              {hasPassword
-                ? "Perbarui Kata Sandi (Mock)"
-                : "Simpan Kata Sandi (Mock)"}
+            <Button type="submit" className="gap-2">
+              <i className="bi bi-shield-lock" />
+              Perbarui Kata Sandi
             </Button>
           </div>
         </form>
