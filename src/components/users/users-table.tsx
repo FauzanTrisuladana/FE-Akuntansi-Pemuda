@@ -118,17 +118,10 @@ export function UsersTable({
                 {row.original.name}
               </span>
               <span className="text-xs text-muted-foreground">
-                @{row.original.username}
+                {row.original.email}
               </span>
             </div>
           </div>
-        ),
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-          <span className="text-sm text-slate-700">{row.original.email}</span>
         ),
       },
       {

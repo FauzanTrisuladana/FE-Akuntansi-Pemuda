@@ -44,7 +44,9 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="newPassword_confirmation">Konfirmasi Kata Sandi Baru</Label>
+            <Label htmlFor="newPassword_confirmation">
+              Konfirmasi Kata Sandi Baru
+            </Label>
             <Input
               id="newPassword_confirmation"
               type="password"

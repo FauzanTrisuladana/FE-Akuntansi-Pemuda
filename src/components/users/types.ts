@@ -3,7 +3,6 @@ export type UserStatus = "aktif" | "pending" | "tidak_aktif";
 export type UserRecord = {
   id: number;
   name: string;
-  username: string;
   email: string;
   peran?: string | null;
   profile_image?: string | null;
@@ -42,7 +41,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 1,
     name: "Alice Smith",
     email: "alicesmith@example.com",
-    username: "alicesmith",
     peran: "Bendahara",
     role: { id: 1, name: "Bendahara" },
     status: "aktif",
@@ -52,7 +50,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 2,
     name: "Bob Johnson",
     email: "bobjohnson@example.com",
-    username: "bobjohnson",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "pending",
@@ -62,7 +59,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 3,
     name: "Clara Garcia",
     email: "claragarcia@example.com",
-    username: "claragarcia",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -72,7 +68,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 4,
     name: "David Brown",
     email: "davidbrown@example.com",
-    username: "davidbrown",
     peran: "Bendahara",
     role: { id: 1, name: "Bendahara" },
     status: "tidak_aktif",
@@ -82,7 +77,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 5,
     name: "Emma Lee",
     email: "emmalex@example.com",
-    username: "emmalex",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -92,7 +86,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 6,
     name: "Frank Wong",
     email: "frankwong@example.com",
-    username: "frankwong",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -102,7 +95,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 7,
     name: "Grace Taylor",
     email: "gracetaylor@example.com",
-    username: "gracetaylor",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -112,7 +104,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 8,
     name: "Isabella Clark",
     email: "isabellaclark@example.com",
-    username: "isabellaclark",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -122,7 +113,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 9,
     name: "Henry Ford",
     email: "henryford@example.com",
-    username: "henryford",
     peran: "Biasa",
     role: { id: 2, name: "Biasa" },
     status: "tidak_aktif",
@@ -132,7 +122,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 10,
     name: "Ivy Martinez",
     email: "ivymartinez@example.com",
-    username: "ivymartinez",
     peran: "Bendahara",
     role: { id: 1, name: "Bendahara" },
     status: "tidak_aktif",
@@ -142,7 +131,6 @@ export const MOCK_USERS: Array<UserRecord> = [
     id: 11,
     name: "Jack Wilson",
     email: "jackwilson@example.com",
-    username: "jackwilson",
     peran: "Bendahara",
     role: { id: 1, name: "Bendahara" },
     status: "tidak_aktif",

@@ -6,11 +6,6 @@ export type LaporanKeuanganTransaksiRecord = {
   deskripsi: string;
   akun_transaksi: string;
   penanggung_jawab: string;
-  penginput: {
-    nama: string;
-    email: string;
-    avatar?: string;
-  };
   tipe: "pemasukan" | "pengeluaran";
   jumlah: number;
   bukti?: string;
@@ -47,12 +42,6 @@ export type KasOption = {
   nama: string;
 };
 
-export type KaryawanOption = {
-  id: number;
-  nama: string;
-  email: string;
-};
-
 // ─── Mock Data ───────────────────────────────────────────────────────────────
 
 export const MOCK_AKUN_OPTIONS: Array<AkunOption> = [
@@ -68,14 +57,6 @@ export const MOCK_KAS_OPTIONS: Array<KasOption> = [
   { id: 2, nama: "17 an" },
 ];
 
-export const MOCK_KARYAWAN_OPTIONS: Array<KaryawanOption> = [
-  { id: 1, nama: "Alice Smith", email: "alicesmith" },
-  { id: 2, nama: "Bob Johnson", email: "bobjohnson" },
-  { id: 3, nama: "Carol Williams", email: "carolwilliams" },
-  { id: 4, nama: "David Brown", email: "davidbrown" },
-  { id: 5, nama: "Eve Davis", email: "evedavis" },
-];
-
 export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
   {
     id: 1,
@@ -83,7 +64,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Setoran awal kas",
     akun_transaksi: "Kas Ditangan (Retail)",
     penanggung_jawab: "fauzan",
-    penginput: { nama: "Alice Smith", email: "alicesmith" },
     tipe: "pemasukan",
     jumlah: 500000,
     bukti: "https://placehold.co/400x300?text=Bukti+1",
@@ -94,7 +74,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Pembelian perlengkapan kantor",
     akun_transaksi: "Kas Operasional",
     penanggung_jawab: "Rizky",
-    penginput: { nama: "Bob Johnson", email: "bobjohnson" },
     tipe: "pengeluaran",
     jumlah: 750000,
     bukti: "https://placehold.co/400x300?text=Bukti+2",
@@ -105,7 +84,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Transfer dana ke bank",
     akun_transaksi: "Bank BCA",
     penanggung_jawab: "Ahmad",
-    penginput: { nama: "Carol Williams", email: "carolwilliams" },
     tipe: "pengeluaran",
     jumlah: 1000000,
     bukti: "https://placehold.co/400x300?text=Bukti+3",
@@ -116,7 +94,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Setoran dari anggota",
     akun_transaksi: "Kas Modal",
     penanggung_jawab: "fauzan",
-    penginput: { nama: "David Brown", email: "davidbrown" },
     tipe: "pemasukan",
     jumlah: 250000,
     bukti: "https://placehold.co/400x300?text=Bukti+4",
@@ -127,7 +104,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Bayar listrik",
     akun_transaksi: "Kas Operasional",
     penanggung_jawab: "Siti",
-    penginput: { nama: "Eve Davis", email: "evedavis" },
     tipe: "pengeluaran",
     jumlah: 350000,
     bukti: "https://placehold.co/400x300?text=Bukti+5",
@@ -138,7 +114,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Penjualan produk",
     akun_transaksi: "Kas Ditangan (Retail)",
     penanggung_jawab: "fauzan",
-    penginput: { nama: "Alice Smith", email: "alicesmith" },
     tipe: "pemasukan",
     jumlah: 1250000,
     bukti: "https://placehold.co/400x300?text=Bukti+6",
@@ -149,7 +124,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Gaji karyawan",
     akun_transaksi: "Kas Operasional",
     penanggung_jawab: "Rizky",
-    penginput: { nama: "Bob Johnson", email: "bobjohnson" },
     tipe: "pengeluaran",
     jumlah: 1500000,
     bukti: "https://placehold.co/400x300?text=Bukti+7",
@@ -160,7 +134,6 @@ export const MOCK_LAPORAN_TRANSAKSI: Array<LaporanKeuanganTransaksiRecord> = [
     deskripsi: "Donasi sponsor",
     akun_transaksi: "Kas Modal",
     penanggung_jawab: "Ahmad",
-    penginput: { nama: "Carol Williams", email: "carolwilliams" },
     tipe: "pemasukan",
     jumlah: 2000000,
     bukti: "https://placehold.co/400x300?text=Bukti+8",

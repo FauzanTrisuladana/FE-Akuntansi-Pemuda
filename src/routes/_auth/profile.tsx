@@ -22,7 +22,7 @@ function ProfilePage() {
   return (
     <div className="flex flex-col gap-6">
       <ProfileHeader />
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Main Content - Profile Info & Password */}
         <div className="md:col-span-2 flex flex-col gap-4">

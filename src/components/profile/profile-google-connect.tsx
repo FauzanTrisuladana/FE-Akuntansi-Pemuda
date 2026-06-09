@@ -6,7 +6,9 @@ interface ProfileGoogleConnectProps {
   isConnected: boolean;
 }
 
-export function ProfileGoogleConnect({ isConnected }: ProfileGoogleConnectProps) {
+export function ProfileGoogleConnect({
+  isConnected,
+}: ProfileGoogleConnectProps) {
   if (isConnected) return null;
 
   return (

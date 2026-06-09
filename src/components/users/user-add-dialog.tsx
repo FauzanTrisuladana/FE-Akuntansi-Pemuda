@@ -24,7 +24,6 @@ type UserAddDialogProps = {
   onOpenChange?: (open: boolean) => void;
   onCreate: (payload: {
     name: string;
-    username: string;
     email: string;
     role_id: number;
   }) => boolean;
@@ -49,20 +48,15 @@ export function UserAddDialog({
     : setInternalOpen;
 
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [roleId, setRoleId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const isFormValid =
-    name.trim() !== "" &&
-    username.trim() !== "" &&
-    email.trim() !== "" &&
-    roleId !== "";
+    name.trim() !== "" && email.trim() !== "" && roleId !== "";
 
   const resetForm = () => {
     setName("");
-    setUsername("");
     setEmail("");
     setRoleId("");
   };
@@ -75,7 +69,6 @@ export function UserAddDialog({
     try {
       const success = await onCreate({
         name: name.trim(),
-        username: username.trim(),
         email: email.trim(),
         role_id: parseInt(roleId, 10),
       });
@@ -97,7 +90,6 @@ export function UserAddDialog({
 
   const generalError = _errors?.general?.[0];
   const nameError = _errors?.name?.[0];
-  const usernameError = _errors?.username?.[0];
   const emailError = _errors?.email?.[0];
   const roleError = _errors?.role_id?.[0] ?? _errors?.role?.[0];
 
@@ -130,24 +122,6 @@ export function UserAddDialog({
               />
               {nameError ? (
                 <p className="text-sm text-destructive">{nameError}</p>
-              ) : null}
-            </div>
-
-            {/* Username */}
-            <div className="grid gap-2">
-              <Label htmlFor="username" className="text-slate-600 font-medium">
-                Username*
-              </Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Masukkan username"
-                className="h-12"
-                disabled={isLoading}
-              />
-              {usernameError ? (
-                <p className="text-sm text-destructive">{usernameError}</p>
               ) : null}
             </div>
 

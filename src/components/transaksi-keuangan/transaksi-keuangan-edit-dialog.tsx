@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { MOCK_KARYAWAN_OPTIONS } from "./types";
 import type { FormEvent } from "react";
 import type {
   TransaksiKeuanganFormErrors,
@@ -286,7 +285,7 @@ export function TransaksiKeuanganEditDialog({
                     <SelectValue placeholder="Pilih Penginput" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(penginputOptions ?? MOCK_KARYAWAN_OPTIONS).map(
+                    {(penginputOptions ?? []).map(
                       (option) => (
                         <SelectItem key={option.id} value={option.nama}>
                           {option.nama}

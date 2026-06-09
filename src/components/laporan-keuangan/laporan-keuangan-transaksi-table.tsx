@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface LaporanKeuanganTransaksiTableProps {
   data: Array<LaporanKeuanganTransaksiRecord>;
@@ -87,31 +86,6 @@ export function LaporanKeuanganTransaksiTable({
             {row.original.penanggung_jawab}
           </span>
         ),
-      },
-      {
-        accessorKey: "penginput",
-        header: "Penginput",
-        cell: ({ row }) => {
-          const penginput = row.original.penginput;
-          return (
-            <div className="flex items-center gap-3">
-              <Avatar className="h-9 w-9 border border-slate-200">
-                <AvatarImage src={penginput.avatar} alt={penginput.nama} />
-                <AvatarFallback className="bg-orange-100 text-orange-600 font-medium">
-                  {penginput.nama.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col text-left">
-                <span className="font-semibold text-slate-900 text-sm">
-                  {penginput.nama}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  @{penginput.email}
-                </span>
-              </div>
-            </div>
-          );
-        },
       },
       {
         accessorKey: "tipe",

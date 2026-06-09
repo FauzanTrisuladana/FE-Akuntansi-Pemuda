@@ -163,7 +163,7 @@ export function TransaksiKeuanganTable({
                   {penginput.nama}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  @{penginput.email}
+                  {penginput.email}
                 </span>
               </div>
             </div>

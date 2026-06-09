@@ -35,7 +35,6 @@ export function UserEditDialog({
   errors,
 }: UserEditDialogProps) {
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +42,6 @@ export function UserEditDialog({
   useEffect(() => {
     if (user) {
       setName(user.name);
-      setUsername(user.username);
       setEmail(user.email);
       setRole(user.role?.id ? String(user.role.id) : "");
     }
@@ -64,8 +62,7 @@ export function UserEditDialog({
     }
   };
 
-  const isFormValid =
-    name.trim() !== "" && username.trim() !== "" && email.trim() !== "";
+  const isFormValid = name.trim() !== "" && email.trim() !== "";
 
   const generalError = errors?.general?.[0];
   const roleError = errors?.role_id?.[0] ?? errors?.role?.[0];

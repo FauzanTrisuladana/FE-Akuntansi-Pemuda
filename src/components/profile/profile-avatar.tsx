@@ -19,7 +19,9 @@ export function ProfileAvatar({ user }: ProfileAvatarProps) {
       .join("");
   };
 
-  const isExternalImage = user.profile_image?.startsWith("http://") || user.profile_image?.startsWith("https://");
+  const isExternalImage =
+    user.profile_image?.startsWith("http://") ||
+    user.profile_image?.startsWith("https://");
 
   return (
     <Card className="shadow-lg border-3 border-slate-200">
@@ -32,7 +34,11 @@ export function ProfileAvatar({ user }: ProfileAvatarProps) {
         {user.profile_image ? (
           <Avatar className="h-24 w-24 border-2 border-slate-100">
             <AvatarImage
-              src={isExternalImage ? user.profile_image : `/storage/${user.profile_image}`}
+              src={
+                isExternalImage
+                  ? user.profile_image
+                  : `/storage/${user.profile_image}`
+              }
               className="object-cover"
             />
             <AvatarFallback className="bg-slate-100 text-slate-600 font-bold text-xl">
@@ -40,7 +46,10 @@ export function ProfileAvatar({ user }: ProfileAvatarProps) {
             </AvatarFallback>
           </Avatar>
         ) : (
-          <div className="bg-destructive text-white rounded-full flex items-center justify-center mb-3" style={{ width: "100px", height: "100px", fontSize: "48px" }}>
+          <div
+            className="bg-destructive text-white rounded-full flex items-center justify-center mb-3"
+            style={{ width: "100px", height: "100px", fontSize: "48px" }}
+          >
             {getInitials(user.name)}
           </div>
         )}
