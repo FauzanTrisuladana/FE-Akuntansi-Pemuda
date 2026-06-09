@@ -4,8 +4,8 @@
 
 - Frontend memakai TanStack Start, TanStack Query, Zod, Sonner, Axios, dan service layer di `src/services`.
 - Route aktif ada di `src/routes/_auth/**` dan beberapa halaman masih memakai pola lokal/mock, jadi jangan bikin arsitektur baru kalau pola existing sudah ada.
-- Backend memakai Laravel 12, Sanctum token-based auth, dan Spatie Permission.
-- Axios frontend mengirim `Authorization: Bearer <token>` dan header `X-Koperasi-ID` dari `localStorage.koperasiActive`.
+- Backend memakai Laravel 12, Sanctum token-based auth.
+- Axios frontend mengirim `Authorization: Bearer <token>`
 
 ## Tujuan
 
@@ -15,52 +15,22 @@ Integrasikan halaman yang diberikan ke backend Laravel secara penuh, dengan meng
 
 1. Route TanStack Start untuk halaman itu.
 2. Controller Laravel terkait.
-3. Form Request, Resource, Model, policy/permission, enum/constant, dan relasi yang dipakai controller.
+3. Form Request, Resource, Model, policy/permission dari role, enum/constant, dan relasi yang dipakai controller.
 4. Service/API client dan route frontend lain yang mirip.
 5. `routes/api.php` untuk memastikan endpoint memang ada.
+6. contoh response yang ada di documentation backend atau di hoppscotch collection.
 
 ## Pola Frontend Yang Harus Diikuti
 
 - Tempatkan logika API di `src/services`.
+- logika service harus menggunakan createServerFn sehingga bisa berjalan di server.
+- Kemudian token dibuat di cookies http-only untuk token, jadi tidak perlu baca localStorage di service. kalau data lain disimpan maka pakai cookie tanpa http-only.
 - Gunakan `createFileRoute`, `validateSearch`, dan search params untuk page/filter/sort/search.
 - Gunakan TanStack Query untuk fetch dan mutation.
 - Sinkronkan URL dengan state UI.
 - Tampilkan loading, empty, error, dan submit state.
 - Ikuti pattern komponen yang sudah ada di `src/components`.
 - Jangan pakai `any` kalau bisa dihindari.
-
-## Permission Frontend
-
-- Jangan baca `localStorage.permissions` langsung di setiap route.
-- Pakai helper terpusat di `src/services/permissionService.ts`.
-- Pattern yang dipakai adalah `getPermissionAccess(prefix)`.
-- Hasilnya selalu:
-  - `canView` untuk `prefix.lihat`, `prefix.modifikasi`, atau `prefix.admin`.
-  - `canManage` untuk `prefix.modifikasi` atau `prefix.admin`.
-  - `canDelete` hanya untuk `prefix.admin`.
-- Gunakan prefix sesuai modul, misalnya `pengurus` atau `jabatan`.
-- Kalau user tidak punya akses sama sekali untuk prefix tersebut, route boleh diarahkan ke `notFound()` atau tampilan akses ditolak sesuai pola halaman yang ada.
-- Kalau permission ada tetapi action tertentu tidak, sembunyikan tombolnya, jangan tetap render lalu berharap backend menolak.
-
-## Permission Yang Wajib Dicek Saat Integrasi
-
-- `lihat`: halaman bisa dibuka, tabel/list boleh tampil, semua tombol aksi disembunyikan.
-- `modifikasi`: halaman bisa dibuka, tombol tambah dan edit boleh tampil, tombol hapus disembunyikan.
-- `admin`: halaman bisa dibuka, semua aksi termasuk delete boleh tampil.
-- Terapkan aturan ini di route dan komponen tabel/dialog, bukan hanya di backend.
-- Kalau modul punya dropdown atau action tambahan, cocokkan dengan level permission yang benar sebelum memanggil endpoint.
-
-## Helper Permission
-
-- File helper yang dipakai saat ini: `src/services/permissionService.ts`.
-- Format pemakaian:
-
-```ts
-const { canView, canManage, canDelete } = getPermissionAccess("jabatan");
-```
-
-- Jangan duplikasi logic baca storage di route baru kalau prefix dan aturan levelnya sama.
-- Jika perlu modul lain, cukup ganti prefix.
 
 ## Endpoint Laravel Yang Sudah Ada Di Proyek Ini
 
@@ -82,18 +52,10 @@ Kalau route frontend butuh data / backend minta data yang tidak ada inputnya / a
 - Pastikan validasi frontend mengikuti FormRequest Laravel.
 - Pastikan state submit tidak dobel dan error backend tampil jelas.
 
-## Terapkan permssion yang diminta
-
-- baca apa saja permission yang ada pada route
-- setiap permission bisa apa saja. di permssion ada class dan level yang dipisahkan titik
-- level lihat (tingkatan paling rendah bisa menakses halaman saja hanya melihat semua tombol disembunyikan)
-- level modifikasi (tingkatan atasnya lihat dia bisa mengakses halaman, menambahkan dan mengedit data sembuyikan tombol delete atau yang sejenis (tentunya yang diminta di route itu))
-- level admin (tingkatan puncak bisa segalanya termasuk hapus data)
-
 ## Toast
 
 - pemanggilan api pasti ada message setiap api yang interaksi, yang menggubah data (selain get) tambahkan toast bahwa berhasil atau error
-- penerapannya baca dari component yang sudah menerapkan di `src/components` atau di route `src/routes`
+- penerapannya baca dari component yang sudah menerapkan di `src/components/deprecated` atau di route `src/routes`
 
 ## Checklist Verifikasi
 
@@ -101,9 +63,7 @@ Jalankan ini setelah perubahan:
 
 ```bash
 cd Frontend
-pnpm lint
-pnpm exec eslint --ext .ts,.tsx src --fix
-pnpm exec tsc --noEmit
+pnpm fix
 ```
 
 Target akhir:

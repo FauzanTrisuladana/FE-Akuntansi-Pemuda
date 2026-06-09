@@ -285,13 +285,11 @@ export function TransaksiKeuanganEditDialog({
                     <SelectValue placeholder="Pilih Penginput" />
                   </SelectTrigger>
                   <SelectContent>
-                    {(penginputOptions ?? []).map(
-                      (option) => (
-                        <SelectItem key={option.id} value={option.nama}>
-                          {option.nama}
-                        </SelectItem>
-                      ),
-                    )}
+                    {(penginputOptions ?? []).map((option) => (
+                      <SelectItem key={option.id} value={option.nama}>
+                        {option.nama}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

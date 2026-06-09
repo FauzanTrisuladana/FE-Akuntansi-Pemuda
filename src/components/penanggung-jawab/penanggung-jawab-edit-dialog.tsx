@@ -38,9 +38,7 @@ export function PenanggungJawabEditDialog({
   const isControlled =
     typeof open === "boolean" && typeof onOpenChange === "function";
   const dialogOpen = isControlled ? open : internalOpen;
-  const setDialogOpen = isControlled
-    ? (onOpenChange as (o: boolean) => void)
-    : setInternalOpen;
+  const setDialogOpen = isControlled ? onOpenChange : setInternalOpen;
 
   const [nama, setNama] = useState("");
   const [isLoading, setIsLoading] = useState(false);

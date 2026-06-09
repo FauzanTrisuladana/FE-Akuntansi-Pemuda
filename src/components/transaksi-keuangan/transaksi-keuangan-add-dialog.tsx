@@ -59,9 +59,7 @@ export function TransaksiKeuanganAddDialog({
   const isControlled =
     typeof open === "boolean" && typeof onOpenChange === "function";
   const dialogOpen = isControlled ? open : internalOpen;
-  const setDialogOpen = isControlled
-    ? (onOpenChange as (o: boolean) => void)
-    : setInternalOpen;
+  const setDialogOpen = isControlled ? onOpenChange : setInternalOpen;
 
   const [tanggal, setTanggal] = useState("");
   const [deskripsi, setDeskripsi] = useState("");

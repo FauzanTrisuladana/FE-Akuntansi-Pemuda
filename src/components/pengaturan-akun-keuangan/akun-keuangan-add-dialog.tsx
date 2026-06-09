@@ -49,9 +49,7 @@ export function AkunKeuanganAddDialog({
   const isControlled =
     typeof open === "boolean" && typeof onOpenChange === "function";
   const dialogOpen = isControlled ? open : internalOpen;
-  const setDialogOpen = isControlled
-    ? (onOpenChange as (o: boolean) => void)
-    : setInternalOpen;
+  const setDialogOpen = isControlled ? onOpenChange : setInternalOpen;
 
   const [namaAkun, setNamaAkun] = useState("");
   const [kasId, setKasId] = useState("");
