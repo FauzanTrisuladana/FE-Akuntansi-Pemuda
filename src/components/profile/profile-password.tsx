@@ -1,14 +1,55 @@
 import { KeyRound, Lock } from "lucide-react";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { updatePassword } from "@/services/profileService";
 
 interface ProfilePasswordProps {
   hasPassword: boolean;
 }
 
 export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const updatePasswordFn = useServerFn(updatePassword);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== passwordConfirmation) {
+      toast.error("Konfirmasi kata sandi tidak cocok");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await updatePasswordFn({
+        data: {
+          current_password: hasPassword ? currentPassword : undefined,
+          password,
+          password_confirmation: passwordConfirmation,
+        },
+      });
+      setCurrentPassword("");
+      setPassword("");
+      setPasswordConfirmation("");
+      toast.success("Kata sandi berhasil diperbarui!");
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui kata sandi";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Card className="shadow-lg border-3 border-slate-200">
       <CardHeader>
@@ -22,7 +63,7 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {hasPassword && (
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Kata Sandi Saat Ini</Label>
@@ -30,6 +71,8 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
                 id="currentPassword"
                 type="password"
                 placeholder="Masukkan kata sandi lama"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
               />
             </div>
           )}
@@ -40,6 +83,8 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
               id="newPassword"
               type="password"
               placeholder="Minimal 6 karakter"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
@@ -51,13 +96,15 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
               id="newPassword_confirmation"
               type="password"
               placeholder="Ulangi kata sandi baru"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
             />
           </div>
 
           <div className="pt-2">
-            <Button type="submit" className="gap-2">
+            <Button type="submit" className="gap-2" disabled={isSubmitting}>
               <i className="bi bi-shield-lock" />
-              Perbarui Kata Sandi
+              {isSubmitting ? "Memperbarui..." : "Perbarui Kata Sandi"}
             </Button>
           </div>
         </form>

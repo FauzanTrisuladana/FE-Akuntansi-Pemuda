@@ -19,25 +19,22 @@ export type UpdatePasswordPayload = {
   password_confirmation: string;
 };
 
-export const getProfile = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const response = await api.get<ProfileResponse>(
-      "/profile/me",
-    );
-    return response.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-});
+export const getProfile = createServerFn({ method: "GET" }).handler(
+  async () => {
+    try {
+      const response = await api.get<ProfileResponse>("/profile/me");
+      return response.data.data;
+    } catch (error) {
+      handleApiError(error);
+    }
+  },
+);
 
 export const updateProfile = createServerFn({ method: "POST" })
   .validator((data: UpdateProfilePayload) => data)
   .handler(async ({ data }) => {
     try {
-      const response = await api.put<ProfileResponse>(
-        "/profile/update",
-        data,
-      );
+      const response = await api.put<ProfileResponse>("/profile/update", data);
       return response.data.data;
     } catch (error) {
       handleApiError(error);

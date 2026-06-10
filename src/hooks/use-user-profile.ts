@@ -1,28 +1,22 @@
-import { useQuery } from '@tanstack/react-query'
-import { getProfile } from '@/services/profileService'
-import { User } from '@/services/authService'
-import { useServerFn } from '@tanstack/react-start';
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import type { User } from "@/services/authService";
+import { getProfile } from "@/services/profileService";
 
 export function useUserProfile() {
-  const profilefn = useServerFn(getProfile)
-  return useQuery<User>({
-    queryKey: ['profile'],
+  const profilefn = useServerFn(getProfile);
+  return useQuery<User | undefined>({
+    queryKey: ["profile"],
     queryFn: async () => {
-      const data = await profilefn()
-      if (typeof window !== 'undefined') {
-        localStorage.setItem("user", JSON.stringify(data))
+      console.log("Fetching user profile...");
+      const data = await profilefn();
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(data));
       }
-      return data as unknown as User
+      console.log("User profile fetched:", data);
+      return data;
     },
-    initialData: () => {
-      try {
-        if (typeof window === 'undefined') return undefined
-        const stored = localStorage.getItem("user")
-        return stored ? JSON.parse(stored) : undefined
-      } catch {
-        return undefined
-      }
-    },
+    initialData: undefined,
     staleTime: 1000 * 60 * 5,
-  })
+  });
 }

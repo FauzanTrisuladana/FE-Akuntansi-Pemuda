@@ -5,6 +5,7 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { login, loginWithGoogle } from "@/services/authService";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +41,10 @@ export function LoginForm({
   const loginFn = useServerFn(login);
   const loginWithGoogleFn = useServerFn(loginWithGoogle);
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = async () => {
+    await queryClient.refetchQueries({
+      queryKey: ["profile"],
+    });
     router.navigate({ to: "/dashboard", replace: true });
   };
 
@@ -96,21 +101,24 @@ export function LoginForm({
         <CardHeader>
           <div className="relative h-40 w-full mb-4">
             <img
-              src="/office.webp"
+              src="/ngt5.webp"
               alt="Office Background"
               className="w-full h-full object-cover blur-[1px] rounded-md"
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <img
                 src="/Logo.webp"
-                alt="Logo Koperasi"
+                alt="Logo Nogotirto V"
                 className="size-24 object-contain drop-shadow-lg"
               />
             </div>
           </div>
-          <CardTitle className="text-2xl">Akuntansi Koperasi.</CardTitle>
+          <CardTitle className="text-2xl">
+            Keuangan Pemuda Nogotirto V
+          </CardTitle>
           <CardDescription className="text-sm">
-            Silakan masukkan kredensial Anda untuk mengakses dashboard
+            Silakan login untuk mengakses dashboard keuangan. Gunakan akun yang
+            telah terdaftar atau daftar dengan AkunGoogle.
           </CardDescription>
         </CardHeader>
         <CardContent>

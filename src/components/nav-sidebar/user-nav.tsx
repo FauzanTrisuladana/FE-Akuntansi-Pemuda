@@ -1,9 +1,9 @@
-import {useRouter } from "@tanstack/react-router";
-import {
-  ChevronDown,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { useRouter } from "@tanstack/react-router";
+import { ChevronDown, LogOut, User as UserIcon } from "lucide-react";
+import { logout } from "src/services/authService";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -16,18 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { logout } from "src/services/authService";
-import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 export function UserNav() {
-  const { data: user } = useUserProfile()
+  const { data: user } = useUserProfile();
   const router = useRouter();
 
   const logoutfn = useServerFn(logout);
   const queryClient = useQueryClient();
-  
+
   const getInitials = (name: string) => {
     return (name || "User")
       .split(" ")
@@ -41,9 +37,10 @@ export function UserNav() {
     try {
       await logoutfn();
       toast.success("Logout berhasil!");
+      localStorage.removeItem("user");
       queryClient.removeQueries({
-        queryKey: ['profile'],
-      })
+        queryKey: ["profile"],
+      });
       router.navigate({ to: "/login", replace: true });
     } catch (err: any) {
       const msg =
@@ -51,8 +48,8 @@ export function UserNav() {
         err?.message ||
         "Logout gagal. Coba lagi.";
       toast.error(msg);
-    } 
-  }
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -60,7 +57,7 @@ export function UserNav() {
         <Button variant="ghost" className="hover:bg-slate-100 h-12 gap-2 px-2">
           <Avatar className="h-9 w-9 border border-slate-200">
             <AvatarImage
-              src={user?.profile_image || undefined}
+              src={user?.profile_image}
               alt={user?.name || "User"}
               className="object-cover"
             />
@@ -86,6 +83,7 @@ export function UserNav() {
                 {user.role}
               </p>
             )}
+            <span>{user?.profile_image}</span>
           </div>
         </DropdownMenuLabel>
 

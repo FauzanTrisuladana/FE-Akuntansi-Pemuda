@@ -3,9 +3,12 @@
 import * as React from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { LogOut, User } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { navItems } from "./nav-data";
 import { SearchBar } from "./search-bar";
-import { useUserProfile} from "@/hooks/use-user-profile";
+import { useUserProfile } from "@/hooks/use-user-profile";
 import {
   Sidebar,
   SidebarContent,
@@ -19,9 +22,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { logout } from "@/services/authService";
-import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 export function AppSidebar({
   pathname,
@@ -46,10 +46,10 @@ export function AppSidebar({
     try {
       await logoutfn();
       toast.success("Logout berhasil!");
-      localStorage.removeItem("user")
+      localStorage.removeItem("user");
       queryClient.removeQueries({
-        queryKey: ['profile'],
-      })
+        queryKey: ["profile"],
+      });
       router.navigate({ to: "/login", replace: true });
     } catch (err: any) {
       const msg =
@@ -58,7 +58,7 @@ export function AppSidebar({
         "Logout gagal. Coba lagi.";
       toast.error(msg);
     }
-  }
+  };
 
   return (
     <Sidebar collapsible="icon" {...props} className="pt-4">
@@ -133,7 +133,7 @@ export function AppSidebar({
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage
-                      src={user?.profile_image || undefined}
+                      src={user?.profile_image}
                       alt={user?.name || "User"}
                       className="object-cover"
                     />
@@ -149,7 +149,7 @@ export function AppSidebar({
 
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-semibold">
-                    {user?.name || "Pengguna"}
+                    {user?.name || "Memuat..."}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
                     {user?.email || "Memuat..."}
