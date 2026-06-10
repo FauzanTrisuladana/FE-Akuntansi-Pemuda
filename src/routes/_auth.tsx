@@ -1,4 +1,11 @@
-import { Outlet, createFileRoute, useLocation } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  useLocation,
+  useRouter,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
+import { isAuthenticated } from "src/services/authService";
 import { AppSidebar } from "@/components/nav-sidebar/app-sidebar";
 import {
   SidebarInset,
@@ -11,17 +18,6 @@ import { UserNav } from "@/components/nav-sidebar/user-nav";
 import Notifications from "@/components/nav-sidebar/notifications";
 
 export const Route = createFileRoute("/_auth")({
-  // Tidak dipakai karena menyebabkan flicker
-  // beforeLoad: ({ location }) => {
-  //   if (!isAuthenticated()) {
-  //     throw redirect({
-  //       to: '/login',
-  //       search: {
-  //         redirect: location.href,
-  //       },
-  //     })
-  //   }
-  // },
   component: AuthLayout,
 });
 
@@ -30,20 +26,20 @@ function AuthLayout() {
     select: (location) => location.pathname,
   });
 
+  const router = useRouter();
+
   // Autentikasi dan authorisasi dengan client-side
-  // const [isAuthorized, setIsAuthorized] = useState(false)
+  const isAuthorized = isAuthenticated();
 
-  // useEffect(() => {
-  //   if (isAuthenticated()) {
-  //     setIsAuthorized(true)
-  //   } else {
-  //     router.navigate({ to: '/login', replace: true })
-  //   }
-  // }, [router])
+  useEffect(() => {
+    if (!isAuthorized) {
+      router.navigate({ to: "/login", replace: true });
+    }
+  }, [isAuthorized, router]);
 
-  // if (!isAuthorized) {
-  //   return null
-  // }
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <SidebarProvider

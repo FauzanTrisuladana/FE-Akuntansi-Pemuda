@@ -1,4 +1,5 @@
 import axios from "axios";
+import { deleteCookie, getCookie, getEvent } from "vinxi/http";
 import { env } from "@/env";
 
 export const api = axios.create({
@@ -11,20 +12,14 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const koperasi =
-    typeof window !== "undefined"
-      ? localStorage.getItem("koperasiActive")
-      : null;
-
-  if (koperasi) {
-    config.headers["X-Koperasi-ID"] =
-      JSON.parse(koperasi).koperasi.id.toString();
-  }
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof document === "undefined") {
+    try {
+      const event = getEvent();
+      const token = getCookie(event, "token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {}
   }
   return config;
 });
@@ -32,25 +27,21 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("koperasiList");
-        localStorage.removeItem("koperasiActive");
-        localStorage.removeItem("anggota");
-        localStorage.removeItem("permissions");
+    const status = error?.response?.status;
 
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+    if (status === 401) {
+      if (typeof document !== "undefined") {
+        deleteCookie("token");
+        deleteCookie("user");
+        window.location.href = "/login";
+      } else {
+        const event = getEvent();
+        deleteCookie(event, "token");
+        deleteCookie(event, "user");
+        // redirect("/login"); --- IGNORE ---
       }
     }
 
-    if (error.code === "ECONNABORTED") {
-      console.warn("Request timed out (10s limit exceeded)");
-    }
-
     return Promise.reject(error);
-  },
+  }
 );
