@@ -1,6 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Toaster } from "sonner";
 import { LoginForm } from "@/components/login/login-form";
 import { isAuthenticated } from "@/services/authService";
 
@@ -22,7 +21,6 @@ function RouteComponent() {
       <div className="w-full max-w-md">
         <LoginForm />
       </div>
-      <Toaster position="top-right" richColors closeButton theme="light" />
     </div>
   );
 }
