@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getEvent, setCookie } from "vinxi/http";
+import { serialize } from "cookie";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
 import { env } from "@/env";
@@ -43,23 +43,31 @@ export const login = createServerFn({ method: "POST" })
       const { token, token_type } = response.data.auth;
       const user = response.data.data;
 
-      const event = getEvent();
-
-      setCookie(event, "token", token, {
+      const tokenCookie = serialize("token", token, {
         httpOnly: true,
         secure: env.VITE_ENV === "production",
         sameSite: "strict",
+        path: "/",
         maxAge: 60 * 60 * 24 * 5, // 5 days
       });
 
-      setCookie(event, "user", JSON.stringify(user.id), {
+      const userCookie = serialize("user", JSON.stringify(user.id), {
         httpOnly: false,
         secure: env.VITE_ENV === "production",
         sameSite: "strict",
+        path: "/",
         maxAge: 60 * 60 * 24 * 5, // 5 days
       });
 
-      return { ...response.data, token, token_type };
+      return new Response(
+        JSON.stringify({ ...response.data, token, token_type }),
+        {
+          headers: {
+            "Set-Cookie": [tokenCookie, userCookie].join(", "),
+            "Content-Type": "application/json",
+          },
+        },
+      );
     } catch (error) {
       handleApiError(error);
     }
@@ -73,23 +81,31 @@ export const loginWithGoogle = createServerFn({ method: "POST" })
       const { token, token_type } = response.data.auth;
       const user = response.data.data;
 
-      const event = getEvent();
-
-      setCookie(event, "token", token, {
+      const tokenCookie = serialize("token", token, {
         httpOnly: true,
         secure: env.VITE_ENV === "production",
         sameSite: "strict",
+        path: "/",
         maxAge: 60 * 60 * 24 * 5, // 5 days
       });
 
-      setCookie(event, "user", JSON.stringify(user.id), {
+      const userCookie = serialize("user", JSON.stringify(user.id), {
         httpOnly: false,
         secure: env.VITE_ENV === "production",
         sameSite: "strict",
+        path: "/",
         maxAge: 60 * 60 * 24 * 5, // 5 days
       });
 
-      return { ...response.data, token, token_type };
+      return new Response(
+        JSON.stringify({ ...response.data, token, token_type }),
+        {
+          headers: {
+            "Set-Cookie": [tokenCookie, userCookie].join(", "),
+            "Content-Type": "application/json",
+          },
+        },
+      );
     } catch (error) {
       handleApiError(error);
     }
@@ -100,22 +116,26 @@ export const logout = createServerFn({ method: "POST" }).handler(async () => {
     await api.post("/auth/logout");
   } catch (error) {
     handleApiError(error);
-  } finally {
-    const event = getEvent();
-    setCookie(event, "token", "", {
-      httpOnly: true,
-      secure: env.VITE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 0,
-    });
-
-    setCookie(event, "user", "", {
-      httpOnly: false,
-      secure: env.VITE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 0,
-    });
   }
+
+  const tokenCookie = serialize("token", "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+  });
+
+  const userCookie = serialize("user", "", {
+    httpOnly: false,
+    path: "/",
+    maxAge: 0,
+  });
+
+  return new Response(JSON.stringify({ success: true }), {
+    headers: {
+      "Set-Cookie": [tokenCookie, userCookie].join(", "),
+      "Content-Type": "application/json",
+    },
+  });
 });
 
 export const isAuthenticated = (): boolean => {

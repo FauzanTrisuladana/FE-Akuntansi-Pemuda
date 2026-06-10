@@ -1,6 +1,7 @@
 import axios from "axios";
-import { deleteCookie, getCookie, getEvent } from "vinxi/http";
+import { getRequest } from "@tanstack/react-start/server";
 import { redirect } from "@tanstack/react-router";
+import { parse } from "cookie";
 import { env } from "@/env";
 
 export const api = axios.create({
@@ -13,8 +14,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const event = getEvent();
-  const token = event ? getCookie(event, "token") : null;
+  const request = getRequest();
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const cookieHeader = request?.headers.get("cookie") || "";
+  const cookies = parse(cookieHeader);
+  const token = cookies.token;
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -26,12 +30,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      const event = getEvent();
-      if (event) {
-        deleteCookie(event, "token");
-        deleteCookie(event, "user");
-      }
-
       throw redirect({
         to: "/login",
       });

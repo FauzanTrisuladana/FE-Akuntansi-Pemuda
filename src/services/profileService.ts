@@ -1,10 +1,13 @@
+import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
+import { handleApiError } from "./errorService";
 import type { User } from "./authService";
 
-export type ProfileData = {
-  user: User;
+export type ProfileResponse = {
+  status: string;
+  message: string;
+  data: User;
 };
-
 export type UpdateProfilePayload = {
   name: string;
   email: string;
@@ -16,25 +19,41 @@ export type UpdatePasswordPayload = {
   password_confirmation: string;
 };
 
-export const getProfile = async () => {
-  const response = await api.get<{ status: string; data: ProfileData }>(
-    "/profile/me",
-  );
-  return response.data.data;
-};
+export const getProfile = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const response = await api.get<ProfileResponse>(
+      "/profile/me",
+    );
+    return response.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+});
 
-export const updateProfile = async (data: UpdateProfilePayload) => {
-  const response = await api.put<{ status: string; data: ProfileData }>(
-    "/profile/update",
-    data,
-  );
-  return response.data.data;
-};
+export const updateProfile = createServerFn({ method: "POST" })
+  .validator((data: UpdateProfilePayload) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.put<ProfileResponse>(
+        "/profile/update",
+        data,
+      );
+      return response.data.data;
+    } catch (error) {
+      handleApiError(error);
+    }
+  });
 
-export const updatePassword = async (data: UpdatePasswordPayload) => {
-  const response = await api.put<{ status: string; message: string }>(
-    "/profile/update-password",
-    data,
-  );
-  return response.data;
-};
+export const updatePassword = createServerFn({ method: "POST" })
+  .validator((data: UpdatePasswordPayload) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.put<ProfileResponse>(
+        "/profile/update-password",
+        data,
+      );
+      return response.data.data;
+    } catch (error) {
+      handleApiError(error);
+    }
+  });

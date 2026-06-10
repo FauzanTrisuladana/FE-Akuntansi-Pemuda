@@ -40,7 +40,7 @@ export function LoginForm({
   const loginWithGoogleFn = useServerFn(loginWithGoogle);
 
   const handleAuthSuccess = () => {
-    router.navigate({ to: "/dashboard" });
+    router.navigate({ to: "/dashboard", replace: true });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

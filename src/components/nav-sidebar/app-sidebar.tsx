@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { LogOut, User } from "lucide-react";
 import { navItems } from "./nav-data";
 import { SearchBar } from "./search-bar";
-import { useUserProfile } from "@/hooks/use-user-profile";
+import { useUserProfile} from "@/hooks/use-user-profile";
 import {
   Sidebar,
   SidebarContent,
@@ -18,12 +18,20 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { logout } from "@/services/authService";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AppSidebar({
   pathname,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { pathname: string }) {
   const { data: user } = useUserProfile();
+  const router = useRouter();
+
+  const logoutfn = useServerFn(logout);
+  const queryClient = useQueryClient();
 
   const getInitials = (name: string) => {
     return (name || "User")
@@ -33,6 +41,24 @@ export function AppSidebar({
       .toUpperCase()
       .substring(0, 2);
   };
+
+  const logoutAndRedirect = async () => {
+    try {
+      await logoutfn();
+      toast.success("Logout berhasil!");
+      localStorage.removeItem("user")
+      queryClient.removeQueries({
+        queryKey: ['profile'],
+      })
+      router.navigate({ to: "/login", replace: true });
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Logout gagal. Coba lagi.";
+      toast.error(msg);
+    }
+  }
 
   return (
     <Sidebar collapsible="icon" {...props} className="pt-4">
@@ -107,13 +133,13 @@ export function AppSidebar({
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage
-                      src={user.photo_profile || undefined}
-                      alt={user.nama || "User"}
+                      src={user?.profile_image || undefined}
+                      alt={user?.name || "User"}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">
-                      {user.nama ? (
-                        getInitials(user.nama)
+                      {user?.name ? (
+                        getInitials(user.name)
                       ) : (
                         <User className="w-5 h-5" />
                       )}
@@ -123,10 +149,10 @@ export function AppSidebar({
 
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-semibold">
-                    {user.nama || "Pengguna"}
+                    {user?.name || "Pengguna"}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email || "Memuat..."}
+                    {user?.email || "Memuat..."}
                   </span>
                 </div>
               </Link>
@@ -137,9 +163,8 @@ export function AppSidebar({
             <SidebarMenuButton
               size="lg"
               className="bg-[#E11D48] hover:bg-[#BE123C] text-white hover:text-white group-data-[collapsible=icon]:p-2.5! cursor-pointer"
-              onClick={() => {
-                // Login feature disabled for auth checking - DO NOT DELETE
-                // logout()
+              onClick={async () => {
+                await logoutAndRedirect();
               }}
             >
               <LogOut />
