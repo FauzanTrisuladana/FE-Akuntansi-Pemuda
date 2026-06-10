@@ -1,5 +1,6 @@
 import axios from "axios";
 import { deleteCookie, getCookie, getEvent } from "vinxi/http";
+import { redirect } from "@tanstack/react-router";
 import { env } from "@/env";
 
 export const api = axios.create({
@@ -12,14 +13,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  if (typeof document === "undefined") {
-    try {
-      const event = getEvent();
-      const token = getCookie(event, "token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    } catch {}
+  const event = getEvent();
+  const token = event ? getCookie(event, "token") : null;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -27,21 +25,22 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const status = error?.response?.status;
-
-    if (status === 401) {
-      if (typeof document !== "undefined") {
-        deleteCookie("token");
-        deleteCookie("user");
-        window.location.href = "/login";
-      } else {
-        const event = getEvent();
+    if (error.response?.status === 401) {
+      const event = getEvent();
+      if (event) {
         deleteCookie(event, "token");
         deleteCookie(event, "user");
-        // redirect("/login"); --- IGNORE ---
       }
+
+      throw redirect({
+        to: "/login",
+      });
+    }
+
+    if (error.code === "ECONNABORTED") {
+      console.warn("Request timed out (10s limit exceeded)");
     }
 
     return Promise.reject(error);
-  }
+  },
 );
