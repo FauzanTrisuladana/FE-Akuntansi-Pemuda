@@ -6,6 +6,7 @@ export default [
   {
     ignores: [
       ".output/**",
+      ".nitro/**",
       "dist/**",
       "node_modules/**",
       "eslint.config.js",

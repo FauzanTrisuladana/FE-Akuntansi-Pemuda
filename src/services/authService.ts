@@ -1,126 +1,132 @@
+import { createServerFn } from "@tanstack/react-start";
+import { getEvent, setCookie } from "vinxi/http";
 import { api } from "./api";
+import { handleApiError } from "./errorService";
+import { env } from "@/env";
 
-export type User = {
+// Types
+export interface User {
   id: number;
+  name: string;
+  username: string;
   email: string;
-  photo_profile: string | null;
-};
+  role: string;
+  status: string;
+  profile_image: string | null;
+  has_password: boolean;
+}
 
-export type koperasiDetail = {
-  id: number;
-  nama: string;
-};
-
-export type anggota = {
-  id: number;
-  nama: string;
-  email: string;
-  photo_profile: string | null;
-};
-
-export type Koperasi = {
-  koperasi: koperasiDetail;
-  anggota: anggota;
-  permissions: Array<string>;
-};
-
-export type LoginResponse = {
+export interface AuthResponse {
   status: string;
   message: string;
-  data: {
-    token_type: string;
+  data: User;
+  auth: {
     token: string;
-    user: User;
-    koperasi: Array<Koperasi>;
+    token_type: string;
   };
-};
+}
 
-export const fetchUserProfile = async () => {
-  const response = await api.get<{ status: string; data: User }>("/profile/me");
-  return response.data.data;
-};
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
 
-export const login = async (email: string, password: string) => {
-  const response = await api.post<LoginResponse>("/auth/login", {
-    email,
-    password,
+export interface LoginGoogleCredentials {
+  id_token: string;
+}
+
+export const login = createServerFn({ method: "POST" })
+  .validator((data: LoginCredentials) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.post<AuthResponse>("/auth/login", data);
+      const { token, token_type } = response.data.auth;
+      const user = response.data.data;
+
+      const event = getEvent();
+
+      setCookie(event, "token", token, {
+        httpOnly: true,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 5, // 5 days
+      });
+
+      setCookie(event, "user", JSON.stringify(user.id), {
+        httpOnly: false,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 5, // 5 days
+      });
+
+      return { ...response.data, token, token_type };
+    } catch (error) {
+      handleApiError(error);
+    }
   });
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("token", response.data.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.data.user));
-    localStorage.setItem(
-      "koperasiList",
-      JSON.stringify(response.data.data.koperasi),
-    );
-    localStorage.setItem(
-      "koperasiActive",
-      JSON.stringify(response.data.data.koperasi[0]),
-    );
-    localStorage.setItem(
-      "anggota",
-      JSON.stringify(response.data.data.koperasi[0].anggota),
-    );
-    localStorage.setItem(
-      "permissions",
-      JSON.stringify(response.data.data.koperasi[0].permissions),
-    );
-  }
+export const loginWithGoogle = createServerFn({ method: "POST" })
+  .validator((data: LoginGoogleCredentials) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.post<AuthResponse>("/auth/login-google", data);
+      const { token, token_type } = response.data.auth;
+      const user = response.data.data;
 
-  return response.data;
-};
+      const event = getEvent();
 
-export const loginWithGoogle = async (idToken: string) => {
-  const response = await api.post<LoginResponse>("/auth/login-google", {
-    id_token: idToken,
-    device_name: "web",
+      setCookie(event, "token", token, {
+        httpOnly: true,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 5, // 5 days
+      });
+
+      setCookie(event, "user", JSON.stringify(user.id), {
+        httpOnly: false,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 5, // 5 days
+      });
+
+      return { ...response.data, token, token_type };
+    } catch (error) {
+      handleApiError(error);
+    }
   });
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("token", response.data.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.data.user));
-    localStorage.setItem(
-      "koperasiList",
-      JSON.stringify(response.data.data.koperasi),
-    );
-    localStorage.setItem(
-      "koperasiActive",
-      JSON.stringify(response.data.data.koperasi[0]),
-    );
-    localStorage.setItem(
-      "anggota",
-      JSON.stringify(response.data.data.koperasi[0].anggota),
-    );
-    localStorage.setItem(
-      "permissions",
-      JSON.stringify(response.data.data.koperasi[0].permissions),
-    );
-  }
-
-  return response.data;
-};
-
-export const isAuthenticated = () => {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  return !!localStorage.getItem("token");
-};
-
-export const logout = async () => {
+export const logout = createServerFn({ method: "POST" }).handler(async () => {
   try {
     await api.post("/auth/logout");
-  } catch (err) {
-    console.warn("Logout endpoint failed, forcing local logout anyway.", err);
+  } catch (error) {
+    handleApiError(error);
   } finally {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("koperasiList");
-      localStorage.removeItem("koperasiActive");
-      localStorage.removeItem("anggota");
-      localStorage.removeItem("permissions");
-      window.location.href = "/login";
-    }
+    const event = getEvent();
+    setCookie(event, "token", "", {
+      httpOnly: true,
+      secure: env.VITE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 0,
+    });
+
+    setCookie(event, "user", "", {
+      httpOnly: false,
+      secure: env.VITE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 0,
+    });
   }
+});
+
+export const isAuthenticated = (): boolean => {
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const cookies = document.cookie.split(";");
+  const userCookie = cookies.find((cookie) =>
+    cookie.trim().startsWith("user="),
+  );
+
+  return !!userCookie;
 };

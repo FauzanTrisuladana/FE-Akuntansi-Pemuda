@@ -1,9 +1,8 @@
 import { api } from "./api";
-import type { Koperasi, User } from "./authService";
+import type { User } from "./authService";
 
 export type ProfileData = {
   user: User;
-  koperasi: Array<Koperasi>;
 };
 
 export type UpdateProfilePayload = {
@@ -38,23 +37,4 @@ export const updatePassword = async (data: UpdatePasswordPayload) => {
     data,
   );
   return response.data;
-};
-
-export const updatePhoto = async (file: File) => {
-  const formData = new FormData();
-  formData.append("photo", file);
-
-  const response = await api.post<{ status: string; data: ProfileData }>(
-    "/profile/photo",
-    formData,
-    {
-      params: {
-        _method: "PUT",
-      },
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    },
-  );
-  return response.data.data;
 };

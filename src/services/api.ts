@@ -1,4 +1,6 @@
 import axios from "axios";
+import { deleteCookie, getCookie, getEvent } from "vinxi/http";
+import { redirect } from "@tanstack/react-router";
 import { env } from "@/env";
 
 export const api = axios.create({
@@ -11,17 +13,8 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const koperasi =
-    typeof window !== "undefined"
-      ? localStorage.getItem("koperasiActive")
-      : null;
-
-  if (koperasi) {
-    config.headers["X-Koperasi-ID"] =
-      JSON.parse(koperasi).koperasi.id.toString();
-  }
+  const event = getEvent();
+  const token = event ? getCookie(event, "token") : null;
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -33,18 +26,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("koperasiList");
-        localStorage.removeItem("koperasiActive");
-        localStorage.removeItem("anggota");
-        localStorage.removeItem("permissions");
-
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+      const event = getEvent();
+      if (event) {
+        deleteCookie(event, "token");
+        deleteCookie(event, "user");
       }
+
+      throw redirect({
+        to: "/login",
+      });
     }
 
     if (error.code === "ECONNABORTED") {

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
-// Login feature disabled for auth checking - DO NOT DELETE
-// import { AlertCircle, Loader2 } from 'lucide-react'
-// import { GoogleLogin } from '@react-oauth/google'
-// import { toast } from 'sonner'
-// import { login, loginWithGoogle, } from '@/services/authService'
+import { AlertCircle, Loader2 } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { login, loginWithGoogle } from "@/services/authService";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import {
   Field,
   FieldGroup,
   FieldLabel,
+  FieldSeparator,
   // Login feature disabled for auth checking - DO NOT DELETE
   // FieldSeparator,
 } from "@/components/ui/field";
@@ -32,57 +33,62 @@ export function LoginForm({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Login feature disabled for auth checking - DO NOT DELETE
-  // const [isLoading, setIsLoading] = useState(false)
-  // const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Login feature disabled for auth checking - DO NOT DELETE
-  // const handleAuthSuccess = () => {
-  //   router.navigate({ to: '/dashboard' })
-  // }
+  const loginFn = useServerFn(login);
+  const loginWithGoogleFn = useServerFn(loginWithGoogle);
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   setIsLoading(true)
-  //   setError('')
+  const handleAuthSuccess = () => {
+    router.navigate({ to: "/dashboard" });
+  };
 
-  //   try {
-  //     await login(email, password)
-  //     handleAuthSuccess()
-  //   } catch (err: any) {
-  //     const msg =
-  //       err.response?.data?.message || 'Login gagal. Cek email/password.'
-  //     setError(msg)
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
-  // const handleGoogleSuccess = async (credentialResponse: any) => {
-  //   const idToken = credentialResponse.credential
+    try {
+      await loginFn({ data: { email, password } });
+      toast.success("Login berhasil!");
+      handleAuthSuccess();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login gagal. Cek email/password.";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  //   if (!idToken) {
-  //     setError('Gagal menerima token dari Google')
-  //     return
-  //   }
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    const idToken = credentialResponse.credential;
 
-  //   setIsLoading(true)
-  //   setError('')
+    if (!idToken) {
+      setError("Gagal menerima token dari Google");
+      toast.error("Gagal menerima token dari Google");
+      return;
+    }
 
-  //   try {
-  //     await loginWithGoogle(idToken)
-  //     handleAuthSuccess()
-  //   } catch (err: any) {
-  //     if (err.response) {
-  //       const msg = err.response.data?.message || 'Login Google gagal.'
-  //       setError(msg)
-  //     } else {
-  //       setError('Gagal menghubungi server.')
-  //     }
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await loginWithGoogleFn({ data: { id_token: idToken } });
+      toast.success("Login Google berhasil!");
+      handleAuthSuccess();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message || err?.message || "Login Google gagal.";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -108,16 +114,14 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Login feature disabled for auth checking - DO NOT DELETE */}
-          <form>
+          <form onSubmit={handleSubmit} suppressHydrationWarning>
             <FieldGroup>
-              {/* Login feature disabled for auth checking - DO NOT DELETE */}
-              {/* {error && (
+              {error && (
                 <div className="flex items-center gap-2 p-3 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md">
                   <AlertCircle className="h-4 w-4" />
                   {error}
                 </div>
-              )} */}
+              )}
               <Field className="gap-0">
                 <FieldLabel
                   htmlFor="email"
@@ -129,12 +133,10 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="Masukkan Email"
-                  // required
                   className="p-5"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  // Login feature disabled for auth checking - DO NOT DELETE
-                  // disabled={isLoading}
+                  disabled={isLoading}
                 />
               </Field>
               <Field className="gap-0">
@@ -150,17 +152,15 @@ export function LoginForm({
                   id="password"
                   type="password"
                   placeholder="Masukkan Password"
-                  // required
+                  required
                   className="p-5"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  // Login feature disabled for auth checking - DO NOT DELETE
-                  // disabled={isLoading}
+                  disabled={isLoading}
                 />
               </Field>
-              {/* Login feature disabled for auth checking - DO NOT DELETE */}
-              {/* <FieldSeparator>Atau lanjutkan dengan</FieldSeparator> */}
-              {/* <Field>
+              <FieldSeparator>Atau lanjutkan dengan</FieldSeparator>
+              <Field>
                 <div className="relative w-full h-12">
                   <Button
                     variant="outline"
@@ -179,8 +179,8 @@ export function LoginForm({
                     <GoogleLogin
                       onSuccess={handleGoogleSuccess}
                       onError={() => {
-                        setError('Gagal inisialisasi Google Login')
-                        toast.error('Google Login Failed')
+                        setError("Gagal inisialisasi Google Login");
+                        toast.error("Google Login Failed");
                       }}
                       useOneTap={false}
                       width="500"
@@ -188,16 +188,16 @@ export function LoginForm({
                     />
                   </div>
                 </div>
-              </Field> */}
+              </Field>
               <Field>
-                {/* Login feature disabled for auth checking - DO NOT DELETE */}
                 <Button
-                  type="button"
+                  type="submit"
                   className="font-bold bg-primary p-6 cursor-pointer"
-                  // Login feature disabled for auth checking - DO NOT DELETE
-                  // disabled={isLoading}
-                  onClick={() => router.navigate({ to: "/dashboard" })}
+                  disabled={isLoading}
                 >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : null}
                   Masuk
                 </Button>
               </Field>
