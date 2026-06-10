@@ -5,21 +5,29 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { FilterBar } from "src/components/users/filter-bar-user";
+import { useServerFn } from "@tanstack/react-start";
 import type { UserFormErrors } from "@/components/users/types";
-import { MOCK_ROLE_OPTIONS, MOCK_USERS } from "@/components/users/types";
+import { ROLE_OPTIONS } from "@/components/users/types";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+import {
+  createUser,
+  deleteUser,
+  getUsers,
+  toggleUserStatus,
+  updateUser,
+} from "@/services/userService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
 const usersSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  role: z.array(z.string()).catch(MOCK_ROLE_OPTIONS.map((o) => o.name)),
-  status: z.array(z.string()).catch(["aktif", "pending", "tidak_aktif"]),
+  role: z.array(z.string()).catch(ROLE_OPTIONS.map((o) => o.name)),
+  status: z.array(z.string()).catch(["Aktif", "Pending", "Tidak Aktif"]),
 });
 
 export const Route = createFileRoute("/_auth/users")({
@@ -41,7 +49,8 @@ function RouteComponent() {
     status: statusFilter,
   } = search;
 
-  // Mock data query
+  // API query
+  const getUsersFn = useServerFn(getUsers);
   const usersQuery = useQuery({
     queryKey: [
       "users",
@@ -53,57 +62,25 @@ function RouteComponent() {
         status: statusFilter,
       },
     ],
-    queryFn: () => {
-      let filtered = MOCK_USERS;
-
-      // Apply search filter
-      if (searchQuery) {
-        filtered = filtered.filter(
-          (u) =>
-            u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (u.peran ?? "").toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-      }
-
-      if (roleFilter.length === 0) {
-        filtered = [];
-      } else {
-        filtered = filtered.filter((u) => roleFilter.includes(u.peran ?? ""));
-      }
-
-      if (statusFilter.length === 0) {
-        filtered = [];
-      } else {
-        filtered = filtered.filter((u) => statusFilter.includes(u.status));
-      }
-
-      const total = filtered.length;
-      const last_page = Math.max(1, Math.ceil(total / per_page));
-      const current_page = Math.min(Math.max(1, page), last_page);
-      const start = (current_page - 1) * per_page;
-      const data = filtered.slice(start, start + per_page);
-      return {
-        current_page,
-        last_page,
-        per_page,
-        total,
-        data,
-      };
+    queryFn: async () => {
+      const response = await getUsersFn({
+        data: {
+          params: {
+            page,
+            per_page,
+            search: searchQuery,
+            role: roleFilter,
+            status: statusFilter,
+          },
+        },
+      });
+      return response;
     },
     staleTime: 1000 * 60 * 2,
   });
 
-  const roleDropdownQuery = useQuery({
-    queryKey: ["role", "dropdown"],
-    queryFn: () => MOCK_ROLE_OPTIONS,
-    staleTime: 1000 * 60 * 10,
-  });
-
-  const total = usersQuery.data ? usersQuery.data.total : 0;
-  const pageCount = usersQuery.data
-    ? Math.max(1, Math.ceil(usersQuery.data.total / usersQuery.data.per_page))
-    : 1;
+  const total = usersQuery.data ? usersQuery.data.meta.total : 0;
+  const pageCount = usersQuery.data ? usersQuery.data.meta.last_page : 1;
   const safePage = Math.min(Math.max(page, 1), pageCount);
   const pageIndex = safePage - 1;
 
@@ -164,41 +141,88 @@ function RouteComponent() {
     });
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleAdd = (payload: {
+  const createUserFn = useServerFn(createUser);
+  const updateUserFn = useServerFn(updateUser);
+  const deleteUserFn = useServerFn(deleteUser);
+  const toggleUserStatusFn = useServerFn(toggleUserStatus);
+
+  const handleAdd = async (payload: {
     name: string;
-    username: string;
     email: string;
-    role_id: number;
-  }) => {
+    role: string;
+  }): Promise<boolean> => {
     setAddErrors(null);
-    toast.success("User berhasil ditambahkan");
-    queryClient.invalidateQueries({ queryKey: ["users"] });
-    return true;
+    try {
+      await createUserFn({
+        data: { nama: payload.name, email: payload.email, role: payload.role },
+      });
+      toast.success("User berhasil ditambahkan");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setOpen(false);
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as UserFormErrors;
+      setAddErrors(errors);
+      const msg = error?.response?.data?.message || "Gagal menambahkan user";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleEdit = ({ id, role_id }: { id: number; role_id: number }) => {
+  const handleEdit = async ({
+    id,
+    role,
+  }: {
+    id: number;
+    role: string;
+  }): Promise<boolean> => {
     setEditErrors(null);
-    toast.success("User berhasil diperbarui");
-    queryClient.invalidateQueries({ queryKey: ["users"] });
-    return true;
+    try {
+      await updateUserFn({ data: { id, role } });
+      toast.success("User berhasil diperbarui");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as UserFormErrors;
+      setEditErrors(errors);
+      const msg = error?.response?.data?.message || "Gagal memperbarui user";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleDelete = (id: number) => {
-    toast.success("User berhasil dihapus");
-    queryClient.invalidateQueries({ queryKey: ["users"] });
-    return true;
+  const handleDelete = async (id: number): Promise<boolean> => {
+    try {
+      await deleteUserFn({ data: { id } });
+      toast.success("User berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      return true;
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || "Gagal menghapus user";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleToggleStatus = (id: number, nextActive: boolean) => {
-    toast.success(
-      nextActive ? "User berhasil diaktifkan" : "User berhasil dinon-aktifkan",
-    );
-    queryClient.invalidateQueries({ queryKey: ["users"] });
-    return true;
+  const handleToggleStatus = async (
+    id: number,
+    nextActive: boolean,
+  ): Promise<boolean> => {
+    try {
+      await toggleUserStatusFn({ data: { id } });
+      toast.success(
+        nextActive
+          ? "User berhasil diaktifkan"
+          : "User berhasil dinon-aktifkan",
+      );
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      return true;
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message || "Gagal mengubah status user";
+      toast.error(msg);
+      return false;
+    }
   };
 
   return (
@@ -219,7 +243,7 @@ function RouteComponent() {
         }}
         onCreate={handleAdd}
         errors={addErrors}
-        roleOptions={roleDropdownQuery.data ?? []}
+        roleOptions={ROLE_OPTIONS}
       />
 
       <SearchBar
@@ -230,7 +254,7 @@ function RouteComponent() {
       />
 
       <FilterBar
-        roleOptions={roleDropdownQuery.data ?? []}
+        roleOptions={ROLE_OPTIONS}
         onRoleFilterChange={handleRoleFilterChange}
         onStatusFilterChange={handleStatusFilterChange}
         defaultSelectedRoles={roleFilter}
@@ -268,7 +292,7 @@ function RouteComponent() {
         onDelete={handleDelete}
         onToggleStatus={handleToggleStatus}
         editErrors={editErrors}
-        roleOptions={roleDropdownQuery.data ?? []}
+        roleOptions={ROLE_OPTIONS}
       />
     </>
   );

@@ -8,12 +8,10 @@ export function useUserProfile() {
   return useQuery<User | undefined>({
     queryKey: ["profile"],
     queryFn: async () => {
-      console.log("Fetching user profile...");
       const data = await profilefn();
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(data));
       }
-      console.log("User profile fetched:", data);
       return data;
     },
     initialData: undefined,

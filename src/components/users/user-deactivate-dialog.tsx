@@ -16,7 +16,7 @@ interface UserDeactivateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user: UserRecord | null;
-  onConfirm: (id: number) => boolean;
+  onConfirm: (id: number) => Promise<boolean> | boolean;
 }
 
 export function UserDeactivateDialog({

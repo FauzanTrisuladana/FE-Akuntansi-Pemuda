@@ -25,8 +25,8 @@ type UserAddDialogProps = {
   onCreate: (payload: {
     name: string;
     email: string;
-    role_id: number;
-  }) => boolean;
+    role: string;
+  }) => Promise<boolean> | boolean;
   errors?: UserFormErrors;
   roleOptions: Array<{ id: number; name: string }>;
 };
@@ -68,7 +68,7 @@ export function UserAddDialog({
       const success = await onCreate({
         name: name.trim(),
         email: email.trim(),
-        role_id: parseInt(roleId, 10),
+        role: roleId,
       });
       if (success) {
         setDialogOpen(false);
@@ -147,22 +147,22 @@ export function UserAddDialog({
               <Label className="text-slate-600 font-medium">Role*</Label>
               <div className="flex gap-3">
                 {roleOptions.map((role) => {
-                  const isSelected = roleId === role.id.toString();
-                  const isBiasa = role.name === "Biasa";
+                  const isSelected = roleId === role.name;
+                  const isBiasa = role.name === "biasa";
                   return (
                     <Badge
                       key={role.id}
                       variant="outline"
-                      className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                      className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
                         isSelected
                           ? isBiasa
                             ? "bg-rose-50 text-rose-600 border-rose-200"
                             : "bg-amber-50 text-amber-600 border-amber-200"
                           : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
-                      onClick={() => setRoleId(role.id.toString())}
+                      onClick={() => setRoleId(role.name)}
                     >
-                      {role.name}
+                      {role.name === "bendahara" ? "Bendahara" : "Biasa"}
                     </Badge>
                   );
                 })}

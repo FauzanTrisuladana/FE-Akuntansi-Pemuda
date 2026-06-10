@@ -24,7 +24,7 @@ export function FilterBar({
 }: FilterBarProps) {
   // Default: semua checkbox tercheck
   const defaultAllRoles = roleOptions.map((o) => o.name);
-  const defaultAllStatuses = ["aktif", "pending", "tidak_aktif"];
+  const defaultAllStatuses = ["Aktif", "Pending", "Tidak Aktif"];
 
   const [selectedRoles, setSelectedRoles] = React.useState<Array<string>>(
     defaultSelectedRoles ?? defaultAllRoles,
@@ -93,7 +93,7 @@ export function FilterBar({
                   htmlFor={`role-${option.id}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {option.name}
+                  {option.name === "bendahara" ? "Bendahara" : "Biasa"}
                 </label>
               </div>
             ))}
@@ -104,7 +104,7 @@ export function FilterBar({
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Status:</span>
           <div className="flex flex-row gap-4">
-            {["aktif", "pending", "tidak_aktif"].map((status) => (
+            {["Aktif", "Pending", "Tidak Aktif"].map((status) => (
               <div key={status} className="flex items-center space-x-2">
                 <Checkbox
                   id={`status-${status}`}
@@ -118,11 +118,7 @@ export function FilterBar({
                   htmlFor={`status-${status}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {status === "aktif"
-                    ? "Aktif"
-                    : status === "pending"
-                      ? "Pending"
-                      : "Tidak Aktif"}
+                  {status}
                 </label>
               </div>
             ))}

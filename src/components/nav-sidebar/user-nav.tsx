@@ -37,10 +37,6 @@ export function UserNav() {
     try {
       await logoutfn();
       toast.success("Logout berhasil!");
-      localStorage.removeItem("user");
-      queryClient.removeQueries({
-        queryKey: ["profile"],
-      });
       router.navigate({ to: "/login", replace: true });
     } catch (err: any) {
       const msg =
@@ -49,6 +45,10 @@ export function UserNav() {
         "Logout gagal. Coba lagi.";
       toast.error(msg);
     }
+    localStorage.removeItem("user");
+    queryClient.removeQueries({
+      queryKey: ["profile"],
+    });
   };
 
   return (
@@ -83,7 +83,6 @@ export function UserNav() {
                 {user.role}
               </p>
             )}
-            <span>{user?.profile_image}</span>
           </div>
         </DropdownMenuLabel>
 

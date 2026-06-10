@@ -40,9 +40,15 @@ interface UsersTableProps {
   editErrors?: UserFormErrors;
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
-  onUpdate?: (payload: { id: number; role_id: number }) => boolean;
-  onDelete?: (id: number) => boolean;
-  onToggleStatus?: (id: number, nextActive: boolean) => boolean;
+  onUpdate?: (payload: {
+    id: number;
+    role: string;
+  }) => Promise<boolean> | boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
+  onToggleStatus?: (
+    id: number,
+    nextActive: boolean,
+  ) => Promise<boolean> | boolean;
   roleOptions?: Array<{ id: number; name: string }>;
 }
 
@@ -125,11 +131,11 @@ export function UsersTable({
         ),
       },
       {
-        accessorKey: "peran",
+        accessorKey: "role",
         header: "Role",
         cell: ({ row }) => {
-          const peran = row.original.peran || "-";
-          const isBiasa = peran === "Biasa";
+          const role = row.original.role || "-";
+          const isBiasa = role === "biasa";
           return (
             <Badge
               variant="outline"
@@ -139,7 +145,7 @@ export function UsersTable({
                   : "bg-amber-50 text-amber-600 border-amber-200"
               }`}
             >
-              {capitalize(peran)}
+              {capitalize(role)}
             </Badge>
           );
         },
@@ -149,8 +155,8 @@ export function UsersTable({
         header: "Status",
         cell: ({ row }) => {
           const status = row.original.status;
-          const isActive = status === "aktif";
-          const isPending = status === "pending";
+          const isActive = status === "Aktif";
+          const isPending = status === "Pending";
           return (
             <Badge
               variant="outline"
@@ -162,7 +168,7 @@ export function UsersTable({
                     : "bg-rose-50 text-rose-600 border-rose-200"
               }`}
             >
-              {isActive ? "Aktif" : isPending ? "Pending" : "Tidak Aktif"}
+              {status}
             </Badge>
           );
         },
@@ -171,7 +177,7 @@ export function UsersTable({
         id: "actions",
         header: "Action",
         cell: ({ row }) => {
-          const isActive = row.original.status === "aktif";
+          const isActive = row.original.status === "Aktif";
           return (
             <div className="flex items-center gap-2 justify-center">
               <Button
@@ -310,8 +316,8 @@ export function UsersTable({
         open={!!userToEdit}
         onOpenChange={(isOpen) => !isOpen && setUserToEdit(null)}
         user={userToEdit}
-        onSave={(payload) => {
-          if (typeof onUpdate === "function") return onUpdate(payload);
+        onSave={async (payload) => {
+          if (typeof onUpdate === "function") return await onUpdate(payload);
           return false;
         }}
         roleOptions={roleOptions ?? []}
@@ -322,8 +328,8 @@ export function UsersTable({
         open={!!userToDelete}
         onOpenChange={(isOpen) => !isOpen && setUserToDelete(null)}
         user={userToDelete}
-        onConfirm={(id) => {
-          if (typeof onDelete === "function") return onDelete(id);
+        onConfirm={async (id) => {
+          if (typeof onDelete === "function") return await onDelete(id);
           return false;
         }}
       />
@@ -332,9 +338,9 @@ export function UsersTable({
         open={!!userToDeactivate}
         onOpenChange={(isOpen) => !isOpen && setUserToDeactivate(null)}
         user={userToDeactivate}
-        onConfirm={(id) => {
+        onConfirm={async (id) => {
           if (typeof onToggleStatus === "function") {
-            return onToggleStatus(id, false);
+            return await onToggleStatus(id, false);
           }
           return false;
         }}

@@ -21,7 +21,7 @@ interface UserEditDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user: UserRecord | null;
-  onSave: (payload: { id: number; role_id: number }) => boolean;
+  onSave: (payload: { id: number; role: string }) => Promise<boolean> | boolean;
   roleOptions: Array<RoleOption>;
   errors?: UserFormErrors;
 }
@@ -34,16 +34,12 @@ export function UserEditDialog({
   roleOptions,
   errors,
 }: UserEditDialogProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [role, setRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setEmail(user.email);
-      setRole(user.role?.id ? String(user.role.id) : "");
+      setRole(user.role || "");
     }
   }, [user]);
 
@@ -54,7 +50,7 @@ export function UserEditDialog({
     try {
       const success = await onSave({
         id: user.id,
-        role_id: parseInt(role, 10),
+        role,
       });
       if (success) onOpenChange(false);
     } finally {
@@ -62,7 +58,7 @@ export function UserEditDialog({
     }
   };
 
-  const isFormValid = name.trim() !== "" && email.trim() !== "";
+  const isFormValid = role.trim() !== "";
 
   const generalError = errors?.general?.[0];
   const roleError = errors?.role_id?.[0] ?? errors?.role?.[0];
@@ -95,22 +91,22 @@ export function UserEditDialog({
               <Label className="text-slate-600 font-medium">Role*</Label>
               <div className="flex gap-3">
                 {roleOptions.map((r) => {
-                  const isSelected = role === r.id.toString();
-                  const isBiasa = r.name === "Biasa";
+                  const isSelected = role === r.name;
+                  const isBiasa = r.name === "biasa";
                   return (
                     <Badge
                       key={r.id}
                       variant="outline"
-                      className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                      className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
                         isSelected
                           ? isBiasa
                             ? "bg-rose-50 text-rose-600 border-rose-200"
                             : "bg-amber-50 text-amber-600 border-amber-200"
                           : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
-                      onClick={() => setRole(r.id.toString())}
+                      onClick={() => setRole(r.name)}
                     >
-                      {r.name}
+                      {r.name === "bendahara" ? "Bendahara" : "Biasa"}
                     </Badge>
                   );
                 })}

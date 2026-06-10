@@ -46,11 +46,6 @@ export function AppSidebar({
     try {
       await logoutfn();
       toast.success("Logout berhasil!");
-      localStorage.removeItem("user");
-      queryClient.removeQueries({
-        queryKey: ["profile"],
-      });
-      router.navigate({ to: "/login", replace: true });
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
@@ -58,6 +53,11 @@ export function AppSidebar({
         "Logout gagal. Coba lagi.";
       toast.error(msg);
     }
+    localStorage.removeItem("user");
+    queryClient.removeQueries({
+      queryKey: ["profile"],
+    });
+    router.navigate({ to: "/login", replace: true });
   };
 
   return (

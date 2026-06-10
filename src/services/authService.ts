@@ -112,12 +112,6 @@ export const loginWithGoogle = createServerFn({ method: "POST" })
   });
 
 export const logout = createServerFn({ method: "POST" }).handler(async () => {
-  try {
-    await api.post("/auth/logout");
-  } catch (error) {
-    handleApiError(error);
-  }
-
   const tokenCookie = serialize("token", "", {
     httpOnly: true,
     path: "/",
@@ -129,6 +123,12 @@ export const logout = createServerFn({ method: "POST" }).handler(async () => {
     path: "/",
     maxAge: 0,
   });
+
+  try {
+    await api.post("/auth/logout");
+  } catch (error) {
+    handleApiError(error);
+  }
 
   return new Response(JSON.stringify({ success: true }), {
     headers: {
