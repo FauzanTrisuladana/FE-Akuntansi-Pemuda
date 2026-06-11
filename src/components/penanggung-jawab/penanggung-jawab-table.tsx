@@ -1,17 +1,16 @@
 import * as React from "react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Eye, Pencil, Trash2 } from "lucide-react";
 import { PenanggungJawabEditDialog } from "./penanggung-jawab-edit-dialog";
 import { PenanggungJawabDeleteDialog } from "./penanggung-jawab-delete-dialog";
 import { PenanggungJawabTransactionsDialog } from "./penanggung-jawab-transactions-dialog";
-import { formatCurrency } from "./types";
-import type { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency, toTransactionPJRecord } from "./types";
 import type { PenanggungJawabFormErrors, PenanggungJawabRecord } from "./types";
-import { toTransactionPJRecord } from "./types";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { TransactionPJBackend as ServiceTransactionPJBackend } from "@/services/penanggungJawabService";
 import { DataTablePagination } from "@/components/data-table-pagination";
 
@@ -71,9 +70,9 @@ export function PenanggungJawabTable({
     if (pjToView && onGetTransactions) {
       const fetchData = async () => {
         try {
-          const data = await onGetTransactions(pjToView.id);
-          if (data) {
-            setTransactions(data);
+          const result = await onGetTransactions(pjToView.id);
+          if (result) {
+            setTransactions(result);
           }
         } catch {
           setTransactions([]);

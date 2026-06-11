@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 interface AkunKeuanganEditDialogProps {
   open: boolean;
@@ -29,9 +30,10 @@ interface AkunKeuanganEditDialogProps {
   akun: AkunKeuanganRecord | null;
   onSave: (payload: {
     id: number;
+    namaAkun: string;
     kasId: number;
     keterangan?: string;
-  }) => boolean;
+  }) => Promise<boolean> | boolean;
   kasOptions: Array<{ id: number; nama: string }>;
   errors?: AkunKeuanganFormErrors;
 }
@@ -65,6 +67,7 @@ export function AkunKeuanganEditDialog({
     try {
       const success = await onSave({
         id: akun.id,
+        namaAkun,
         kasId: parseInt(kasId, 10),
         keterangan: keterangan.trim() || undefined,
       });
@@ -93,14 +96,22 @@ export function AkunKeuanganEditDialog({
           </DialogHeader>
 
           <DialogBody className="grid gap-4 py-4">
-            {/* Nama Akun (readonly) */}
+            {/* Nama Akun (editable) */}
             <div className="grid gap-2">
-              <Label className="text-slate-600 font-medium">Nama Akun</Label>
-              <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="font-medium text-slate-900">
-                  {akun?.namaAkun ?? "-"}
-                </p>
-              </div>
+              <Label
+                htmlFor="nama-akun"
+                className="text-slate-600 font-medium"
+              >
+                Nama Akun*
+              </Label>
+              <Input
+                id="nama-akun"
+                value={namaAkun}
+                onChange={(e) => setNamaAkun(e.target.value)}
+                placeholder="Masukkan nama akun"
+                className="h-12"
+                disabled={isLoading}
+              />
             </div>
 
             {/* Kas */}

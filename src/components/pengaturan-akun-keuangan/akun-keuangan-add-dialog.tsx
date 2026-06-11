@@ -32,7 +32,7 @@ type AkunKeuanganAddDialogProps = {
     namaAkun: string;
     kasId: number;
     keterangan?: string;
-  }) => boolean;
+  }) => Promise<boolean> | boolean;
   errors?: AkunKeuanganFormErrors;
   kasOptions: Array<{ id: number; nama: string }>;
 };

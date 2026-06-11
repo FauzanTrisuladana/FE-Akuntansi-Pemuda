@@ -1,4 +1,5 @@
 import { Printer } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -122,7 +123,7 @@ export function AkunKeuanganTransactionsDialog({
       printWindow.focus();
       printWindow.print();
     } catch (err) {
-      console.error("print error", err);
+      toast.error('Gagal membuka jendela print. Pastikan pop-up tidak diblokir.');
     }
   };
 

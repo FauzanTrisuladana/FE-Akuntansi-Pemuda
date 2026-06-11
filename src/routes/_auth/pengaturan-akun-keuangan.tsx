@@ -8,8 +8,8 @@ import { useServerFn } from "@tanstack/react-start";
 import type { AkunKeuanganFormErrors } from "@/components/pengaturan-akun-keuangan/types";
 import {
   MOCK_KAS_OPTIONS,
+  toAkunKeuanganRecord,
 } from "@/components/pengaturan-akun-keuangan/types";
-import { toAkunKeuanganRecord } from "@/components/pengaturan-akun-keuangan/types";
 
 import { AkunKeuanganAddDialog } from "@/components/pengaturan-akun-keuangan/akun-keuangan-add-dialog";
 import { AkunKeuanganTable } from "@/components/pengaturan-akun-keuangan/akun-keuangan-table";
@@ -17,11 +17,11 @@ import { AkunKeuanganFilterBar } from "@/components/pengaturan-akun-keuangan/aku
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
 import {
-  getAkunKeuangan,
   createAkunKeuangan,
-  updateAkunKeuangan,
   deleteAkunKeuangan,
+  getAkunKeuangan,
   getAkunKeuanganDetail,
+  updateAkunKeuangan,
 } from "@/services/akunKeuanganService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
@@ -155,10 +155,12 @@ function RouteComponent() {
 
   const handleEdit = async ({
     id,
+    namaAkun,
     kasId,
     keterangan,
   }: {
     id: number;
+    namaAkun: string;
     kasId: number;
     keterangan?: string;
   }) => {
@@ -167,6 +169,7 @@ function RouteComponent() {
       await updateAkunKeuanganFn({
         data: {
           id,
+          nama_akun: namaAkun,
           kas: MOCK_KAS_OPTIONS.find((k) => k.id === kasId)?.nama,
           keterangan,
         },
@@ -189,6 +192,70 @@ function RouteComponent() {
     } catch {
       toast.error("Gagal menghapus akun keuangan");
       return false;
+    }
+  };
+
+  // Wrapper for getAkunKeuanganDetail to extract and merge transactions
+  const handleGetTransactions = async (id: number) => {
+    try {
+      const response = await getAkunKeuanganDetailFn({ data: { id } });
+      const allTransactions: Array<{
+        id: number;
+        akun_id: number;
+        penginput_id: number;
+        penanggung_jawab_id: number;
+        deskripsi: string;
+        date: string;
+        jenis_transaksi: "pemasukan" | "pengeluaran";
+        jumlah: number;
+        bukti: string | null;
+      }> = [];
+
+      // Add regular transactions
+      if (response.data.transaksi) {
+        allTransactions.push(...response.data.transaksi);
+      }
+
+      // Add mutasi_debit as pemasukan (debit increases saldo)
+      if (response.data.mutasi_debit) {
+        response.data.mutasi_debit.forEach((m) => {
+          allTransactions.push({
+            id: m.id,
+            akun_id: m.akun_debit_id,
+            penginput_id: 0,
+            penanggung_jawab_id: 0,
+            deskripsi: m.keterangan,
+            date: m.date,
+            jenis_transaksi: "pemasukan",
+            jumlah: m.jumlah,
+            bukti: null,
+          });
+        });
+      }
+
+      // Add mutasi_kredit as pengeluaran (kredit decreases saldo)
+      if (response.data.mutasi_kredit) {
+        response.data.mutasi_kredit.forEach((m) => {
+          allTransactions.push({
+            id: m.id,
+            akun_id: m.akun_kredit_id,
+            penginput_id: 0,
+            penanggung_jawab_id: 0,
+            deskripsi: m.keterangan,
+            date: m.date,
+            jenis_transaksi: "pengeluaran",
+            jumlah: m.jumlah,
+            bukti: null,
+          });
+        });
+      }
+
+      // Sort by date ascending (oldest first)
+      allTransactions.sort((a, b) => a.date.localeCompare(b.date));
+
+      return allTransactions;
+    } catch {
+      return [];
     }
   };
 
@@ -229,7 +296,7 @@ function RouteComponent() {
       />
 
       <AkunKeuanganTable
-        data={akunKeuanganQuery.data?.data ?? []}
+        data={akunKeuanganQuery.data?.data?.map(toAkunKeuanganRecord) ?? []}
         isLoading={akunKeuanganQuery.isLoading}
         pagination={pagination}
         onPageChange={(newPageIndex: number) => {
@@ -257,7 +324,7 @@ function RouteComponent() {
         onDelete={handleDelete}
         editErrors={editErrors}
         kasOptions={kasDropdownQuery.data ?? []}
-        transactionsData={MOCK_TRANSACTIONS}
+        onGetTransactions={handleGetTransactions}
       />
     </>
   );

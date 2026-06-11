@@ -16,7 +16,7 @@ interface AkunKeuanganDeleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   akun: AkunKeuanganRecord | null;
-  onConfirm: (id: number) => boolean;
+  onConfirm: (id: number) => Promise<boolean> | boolean;
 }
 
 export function AkunKeuanganDeleteDialog({

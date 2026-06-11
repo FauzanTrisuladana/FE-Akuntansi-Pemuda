@@ -8,12 +8,12 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import { AkunKeuanganEditDialog } from "./akun-keuangan-edit-dialog";
 import { AkunKeuanganDeleteDialog } from "./akun-keuangan-delete-dialog";
 import { AkunKeuanganTransactionsDialog } from "./akun-keuangan-transactions-dialog";
-import { formatCurrency } from "./types";
+import { formatCurrency, toTransactionRecord } from "./types";
 import type { ColumnDef } from "@tanstack/react-table";
 import type {
   AkunKeuanganFormErrors,
   AkunKeuanganRecord,
-  TransactionRecord,
+  TransactionBackend,
 } from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
 
@@ -41,13 +41,14 @@ interface AkunKeuanganTableProps {
   onPageSizeChange: (newPageSize: number) => void;
   onUpdate?: (payload: {
     id: number;
+    namaAkun: string;
     kasId: number;
     keterangan?: string;
-  }) => boolean;
-  onDelete?: (id: number) => boolean;
+  }) => Promise<boolean> | boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
   kasOptions?: Array<{ id: number; nama: string }>;
   editErrors?: AkunKeuanganFormErrors;
-  transactionsData?: Record<number, Array<TransactionRecord>>;
+  onGetTransactions?: (id: number) => Promise<Array<TransactionBackend>> | undefined;
 }
 
 export function AkunKeuanganTable({
@@ -60,7 +61,7 @@ export function AkunKeuanganTable({
   onDelete,
   kasOptions,
   editErrors,
-  transactionsData,
+  onGetTransactions,
 }: AkunKeuanganTableProps) {
   const [akunToEdit, setAkunToEdit] = React.useState<AkunKeuanganRecord | null>(
     null,
@@ -69,6 +70,9 @@ export function AkunKeuanganTable({
     React.useState<AkunKeuanganRecord | null>(null);
   const [akunToView, setAkunToView] = React.useState<AkunKeuanganRecord | null>(
     null,
+  );
+  const [transactions, setTransactions] = React.useState<Array<TransactionBackend>>(
+    [],
   );
 
   const handlePageChange = (newPageIndex: number) => {
@@ -185,23 +189,45 @@ export function AkunKeuanganTable({
   const hasRows = table.getRowModel().rows.length > 0;
   const isInitialLoading = Boolean(isLoading) && !hasRows;
 
-  // Get transactions for the selected account
-  const transactions = akunToView
-    ? (transactionsData?.[akunToView.id] ?? [])
-    : [];
-  const formattedTransactions = transactions.map((t) => ({
-    id: t.id,
-    tanggal: t.tanggal,
-    jenisTransaksi: t.jenisTransaksi,
-    deskripsi: t.deskripsi,
-    debitDisplay: formatCurrency(t.debit),
-    kreditDisplay: formatCurrency(t.kredit),
-    saldoDisplay: formatCurrency(t.saldo),
-  }));
+  // Fetch transactions when akunToView changes
+  React.useEffect(() => {
+    if (akunToView && onGetTransactions) {
+      const fetchData = async () => {
+        try {
+          const result = await onGetTransactions(akunToView.id);
+          if (result) {
+            setTransactions(result);
+          }
+        } catch {
+          setTransactions([]);
+        }
+      };
+      fetchData();
+    } else {
+      setTransactions([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [akunToView]);
+
+  // Calculate saldo for each transaction
+  let runningSaldo = 0;
+  const formattedTransactions = transactions.map((t) => {
+    const converted = toTransactionRecord(t);
+    runningSaldo += converted.debit - converted.kredit;
+    return {
+      id: converted.id,
+      tanggal: converted.tanggal,
+      jenisTransaksi: converted.jenisTransaksi,
+      deskripsi: converted.deskripsi,
+      debitDisplay: formatCurrency(converted.debit),
+      kreditDisplay: formatCurrency(converted.kredit),
+      saldoDisplay: formatCurrency(runningSaldo),
+    };
+  });
 
   const finalSaldo =
     transactions.length > 0
-      ? formatCurrency(transactions[transactions.length - 1].saldo)
+      ? formatCurrency(runningSaldo)
       : formatCurrency(0);
 
   return (
@@ -214,7 +240,8 @@ export function AkunKeuanganTable({
                 <TableRow key={headerGroup.id} className="hover:bg-transparent">
                   {headerGroup.headers.map((header, index) => {
                     let alignClass = "text-center";
-                    if (index === 1) alignClass = "text-left";
+                    if (index === 1) alignClass = "text-left"; // Nama Akun
+                    if (index === 4) alignClass = "text-right"; // Jumlah
                     return (
                       <TableHead
                         key={header.id}
@@ -245,7 +272,8 @@ export function AkunKeuanganTable({
                   <TableRow key={row.id} className="hover:bg-slate-50">
                     {row.getVisibleCells().map((cell, index) => {
                       let alignClass = "text-center";
-                      if (index === 1) alignClass = "text-left";
+                      if (index === 1) alignClass = "text-left"; // Nama Akun
+                      if (index === 4) alignClass = "text-right"; // Jumlah
                       return (
                         <TableCell
                           key={cell.id}

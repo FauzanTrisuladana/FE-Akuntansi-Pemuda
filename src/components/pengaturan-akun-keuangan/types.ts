@@ -14,6 +14,7 @@ export type AkunKeuanganBackend = {
   id: number;
   nama_akun: string;
   kas: string;
+  jumlah: string | number;
   keterangan?: string | null;
 };
 
@@ -35,10 +36,19 @@ export const toAkunKeuanganRecord = (a: AkunKeuanganBackend): AkunKeuanganRecord
   id: a.id,
   namaAkun: a.nama_akun,
   kas: a.kas,
-  jumlah: 0,
+  jumlah: typeof a.jumlah === "string" ? parseFloat(a.jumlah) : a.jumlah,
   keterangan: a.keterangan,
   status: "aktif",
 });
+
+// Format currency helper
+export const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
 
 // Convert backend transaction to frontend format
 export const toTransactionRecord = (t: TransactionBackend): TransactionRecord => ({
@@ -136,12 +146,4 @@ export const MOCK_TRANSACTIONS: Record<number, Array<TransactionRecord>> = {
       saldo: 3000000,
     },
   ],
-};
-
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(amount);
 };

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -12,11 +12,11 @@ import { PenanggungJawabTable } from "@/components/penanggung-jawab/penanggung-j
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
 import {
-  getPenanggungJawab,
   createPenanggungJawab,
-  updatePenanggungJawab,
   deletePenanggungJawab,
+  getPenanggungJawab,
   getPenanggungJawabDetail,
+  updatePenanggungJawab,
 } from "@/services/penanggungJawabService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
@@ -214,7 +214,9 @@ function RouteComponent() {
         editErrors={editErrors}
         onGetTransactions={async (id: number) => {
           const response = await getPenanggungJawabDetailFn({ data: { id } });
-          return response?.data?.transaksi || [];
+          const transaksi = response?.data?.transaksi || [];
+          // Sort by date ascending (oldest first)
+          return transaksi.sort((a, b) => a.date.localeCompare(b.date));
         }}
       />
     </>

@@ -9,10 +9,13 @@ export type {
   KasOption,
   AkunKeuanganFormErrors,
   TransactionRecord,
+  TransactionBackend,
 } from "./types";
 export {
   MOCK_KAS_OPTIONS,
   MOCK_AKUN_KEUANGAN,
   MOCK_TRANSACTIONS,
   formatCurrency,
+  toAkunKeuanganRecord,
+  toTransactionRecord,
 } from "./types";
