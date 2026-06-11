@@ -10,11 +10,9 @@ import { PenanggungJawabDeleteDialog } from "./penanggung-jawab-delete-dialog";
 import { PenanggungJawabTransactionsDialog } from "./penanggung-jawab-transactions-dialog";
 import { formatCurrency } from "./types";
 import type { ColumnDef } from "@tanstack/react-table";
-import type {
-  PenanggungJawabFormErrors,
-  PenanggungJawabRecord,
-  TransactionPJRecord,
-} from "./types";
+import type { PenanggungJawabFormErrors, PenanggungJawabRecord } from "./types";
+import { toTransactionPJRecord } from "./types";
+import type { TransactionPJBackend as ServiceTransactionPJBackend } from "@/services/penanggungJawabService";
 import { DataTablePagination } from "@/components/data-table-pagination";
 
 import {
@@ -39,10 +37,10 @@ interface PenanggungJawabTableProps {
   };
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
-  onUpdate?: (payload: { id: number; nama: string }) => boolean;
-  onDelete?: (id: number) => boolean;
+  onUpdate?: (payload: { id: number; nama: string }) => Promise<boolean> | boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
   editErrors?: PenanggungJawabFormErrors;
-  transactionsData?: Record<number, Array<TransactionPJRecord>>;
+  onGetTransactions?: (id: number) => Promise<Array<ServiceTransactionPJBackend>> | undefined;
 }
 
 export function PenanggungJawabTable({
@@ -54,7 +52,7 @@ export function PenanggungJawabTable({
   onUpdate,
   onDelete,
   editErrors,
-  transactionsData,
+  onGetTransactions,
 }: PenanggungJawabTableProps) {
   const [pjToEdit, setPjToEdit] = React.useState<PenanggungJawabRecord | null>(
     null,
@@ -64,6 +62,29 @@ export function PenanggungJawabTable({
   const [pjToView, setPjToView] = React.useState<PenanggungJawabRecord | null>(
     null,
   );
+  const [transactions, setTransactions] = React.useState<
+    Array<ServiceTransactionPJBackend>
+  >([]);
+
+  // Fetch transactions when pjToView changes
+  React.useEffect(() => {
+    if (pjToView && onGetTransactions) {
+      const fetchData = async () => {
+        try {
+          const data = await onGetTransactions(pjToView.id);
+          if (data) {
+            setTransactions(data);
+          }
+        } catch {
+          setTransactions([]);
+        }
+      };
+      fetchData();
+    } else {
+      setTransactions([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pjToView]);
 
   const handlePageChange = (newPageIndex: number) => {
     if (typeof onPageChange === "function") onPageChange(newPageIndex);
@@ -96,10 +117,10 @@ export function PenanggungJawabTable({
         ),
       },
       {
-        accessorKey: "valuasi",
+        accessorKey: "valuasi_transaksi",
         header: "Valuasi Transaksi",
         cell: ({ row }) => {
-          const valuasi = row.original.valuasi;
+          const valuasi = row.original.valuasi_transaksi;
           return (
             <span className="text-sm font-medium text-green-600">
               {formatCurrency(valuasi)}
@@ -161,16 +182,17 @@ export function PenanggungJawabTable({
   const hasRows = table.getRowModel().rows.length > 0;
   const isInitialLoading = Boolean(isLoading) && !hasRows;
 
-  // Get transactions for the selected PJ
-  const transactions = pjToView ? (transactionsData?.[pjToView.id] ?? []) : [];
-  const formattedTransactions = transactions.map((t) => ({
-    id: t.id,
-    tanggal: t.tanggal,
-    deskripsi: t.deskripsi,
-    akun: t.akun,
-    pemasukanDisplay: formatCurrency(t.pemasukan),
-    pengeluaranDisplay: formatCurrency(t.pengeluaran),
-  }));
+  const formattedTransactions = transactions.map((t) => {
+    const converted = toTransactionPJRecord(t);
+    return {
+      id: converted.id,
+      tanggal: converted.tanggal,
+      deskripsi: converted.deskripsi,
+      akun: converted.akun,
+      pemasukanDisplay: formatCurrency(converted.pemasukan),
+      pengeluaranDisplay: formatCurrency(converted.pengeluaran),
+    };
+  });
 
   return (
     <>
@@ -245,7 +267,6 @@ export function PenanggungJawabTable({
             pageIndex={pagination.pageIndex}
             pageSize={pagination.pageSize}
             pageCount={pagination.pageCount}
-            total={pagination.total}
             onPageChange={handlePageChange}
             onPageSizeChange={handlePageSizeChange}
           />

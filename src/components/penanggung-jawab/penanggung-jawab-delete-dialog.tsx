@@ -18,7 +18,7 @@ type PenanggungJawabDeleteDialogProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   data?: PenanggungJawabRecord | null;
-  onDelete?: (id: number) => boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

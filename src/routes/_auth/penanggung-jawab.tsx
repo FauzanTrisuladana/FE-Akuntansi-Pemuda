@@ -1,19 +1,23 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { PenanggungJawabFormErrors } from "@/components/penanggung-jawab/types";
-import {
-  MOCK_PENANGGUNG_JAWAB,
-  MOCK_TRANSACTIONS_PJ,
-} from "@/components/penanggung-jawab/types";
 
 import { PenanggungJawabAddDialog } from "@/components/penanggung-jawab/penanggung-jawab-add-dialog";
 import { PenanggungJawabTable } from "@/components/penanggung-jawab/penanggung-jawab-table";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+import {
+  getPenanggungJawab,
+  createPenanggungJawab,
+  updatePenanggungJawab,
+  deletePenanggungJawab,
+  getPenanggungJawabDetail,
+} from "@/services/penanggungJawabService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
 const penanggungJawabSearchSchema = z.object({
@@ -35,47 +39,28 @@ function RouteComponent() {
 
   const { page, per_page, search: searchQuery } = search;
 
-  // Mock data query
+  // API query
+  const getPenanggungJawabFn = useServerFn(getPenanggungJawab);
+  const getPenanggungJawabDetailFn = useServerFn(getPenanggungJawabDetail);
   const penanggungJawabQuery = useQuery({
     queryKey: ["penanggungJawab", { page, per_page, search: searchQuery }],
-    queryFn: () => {
-      let filtered = MOCK_PENANGGUNG_JAWAB;
-
-      // Apply search filter
-      if (searchQuery) {
-        filtered = filtered.filter((p) =>
-          p.nama.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-      }
-
-      const total = filtered.length;
-      const last_page = Math.max(1, Math.ceil(total / per_page));
-      const current_page = Math.min(Math.max(1, page), last_page);
-      const pageIndex = current_page - 1;
-      const data = filtered.slice(
-        pageIndex * per_page,
-        pageIndex * per_page + per_page,
-      );
-      return {
-        current_page,
-        last_page,
-        per_page,
-        total,
-        data,
-      };
+    queryFn: async () => {
+      const response = await getPenanggungJawabFn({
+        data: {
+          params: {
+            page,
+            per_page,
+            search: searchQuery,
+          },
+        },
+      });
+      return response;
     },
     staleTime: 1000 * 60 * 2,
   });
 
-  const total = penanggungJawabQuery.data ? penanggungJawabQuery.data.total : 0;
-  const pageCount = penanggungJawabQuery.data
-    ? Math.max(
-        1,
-        Math.ceil(
-          penanggungJawabQuery.data.total / penanggungJawabQuery.data.per_page,
-        ),
-      )
-    : 1;
+  const total = penanggungJawabQuery.data?.meta?.total ?? 0;
+  const pageCount = penanggungJawabQuery.data?.meta?.last_page ?? 1;
   const safePage = Math.min(Math.max(page, 1), pageCount);
   const pageIndex = safePage - 1;
 
@@ -91,13 +76,15 @@ function RouteComponent() {
   const [editErrors, setEditErrors] = useState<PenanggungJawabFormErrors>(null);
 
   // Handle safe page navigation
-  if (safePage !== page) {
-    navigate({
-      to: "/penanggung-jawab",
-      search: (prev: any) => ({ ...prev, page: safePage }),
-      replace: true,
-    });
-  }
+  useEffect(() => {
+    if (safePage !== page) {
+      navigate({
+        to: "/penanggung-jawab",
+        search: (prev: any) => ({ ...prev, page: safePage }),
+        replace: true,
+      });
+    }
+  }, [navigate, page, safePage]);
 
   const handleSearchChange = (value: string) => {
     navigate({
@@ -111,27 +98,63 @@ function RouteComponent() {
     });
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleAdd = (payload: { nama: string }) => {
+  const createPenanggungJawabFn = useServerFn(createPenanggungJawab);
+  const updatePenanggungJawabFn = useServerFn(updatePenanggungJawab);
+  const deletePenanggungJawabFn = useServerFn(deletePenanggungJawab);
+
+  const handleAdd = async (payload: { nama: string }): Promise<boolean> => {
     setAddErrors(null);
-    toast.success("Penanggung jawab berhasil ditambahkan");
-    queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
-    return true;
+    try {
+      await createPenanggungJawabFn({ data: payload });
+      toast.success("Penanggung jawab berhasil ditambahkan");
+      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      setOpen(false);
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
+      setAddErrors(errors);
+      const msg =
+        error?.response?.data?.message || "Gagal menambahkan penanggung jawab";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleEdit = ({ id, nama }: { id: number; nama: string }) => {
+  const handleEdit = async ({
+    id,
+    nama,
+  }: {
+    id: number;
+    nama: string;
+  }): Promise<boolean> => {
     setEditErrors(null);
-    toast.success("Penanggung jawab berhasil diperbarui");
-    queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
-    return true;
+    try {
+      await updatePenanggungJawabFn({ data: { id, nama } });
+      toast.success("Penanggung jawab berhasil diperbarui");
+      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
+      setEditErrors(errors);
+      const msg =
+        error?.response?.data?.message || "Gagal memperbarui penanggung jawab";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleDelete = (id: number) => {
-    toast.success("Penanggung jawab berhasil dihapus");
-    queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
-    return true;
+  const handleDelete = async (id: number): Promise<boolean> => {
+    try {
+      await deletePenanggungJawabFn({ data: { id } });
+      toast.success("Penanggung jawab berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      return true;
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message || "Gagal menghapus penanggung jawab";
+      toast.error(msg);
+      return false;
+    }
   };
 
   return (
@@ -189,7 +212,10 @@ function RouteComponent() {
         onUpdate={handleEdit}
         onDelete={handleDelete}
         editErrors={editErrors}
-        transactionsData={MOCK_TRANSACTIONS_PJ}
+        onGetTransactions={async (id: number) => {
+          const response = await getPenanggungJawabDetailFn({ data: { id } });
+          return response?.data?.transaksi || [];
+        }}
       />
     </>
   );

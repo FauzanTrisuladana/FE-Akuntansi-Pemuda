@@ -21,7 +21,7 @@ import {
 type PenanggungJawabAddDialogProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  onCreate: (payload: { nama: string }) => boolean;
+  onCreate: (payload: { nama: string }) => Promise<boolean> | boolean;
   errors?: PenanggungJawabFormErrors;
 };
 

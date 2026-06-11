@@ -3,6 +3,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MOCK_HISTORY_RIIL } from "@/components/history-riil/types";
+import { MOCK_KAS_OPTIONS } from "@/components/pengaturan-akun-keuangan/types";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";
 import { HistoryRiilFilterBar } from "@/components/history-riil/history-riil-filter-bar";
@@ -29,7 +30,7 @@ const historyRiilSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.string().optional(),
+  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
 });
 
 export const Route = createFileRoute("/_auth/history-riil")({
@@ -51,6 +52,13 @@ function RouteComponent() {
     tanggal_selesai,
     kas,
   } = search;
+
+  // Mock kas dropdown query
+  const kasDropdownQuery = useQuery({
+    queryKey: ["kas", "dropdown"],
+    queryFn: () => MOCK_KAS_OPTIONS,
+    staleTime: 1000 * 60 * 10,
+  });
 
   // Mock data query
   const historyRiilQuery = useQuery({
@@ -84,8 +92,10 @@ function RouteComponent() {
       }
 
       // Apply kas filter
-      if (kas && kas !== "all") {
-        filtered = filtered.filter((h) => h.kas === kas);
+      if (kas.length === 0) {
+        filtered = [];
+      } else {
+        filtered = filtered.filter((h) => kas.includes(h.kas));
       }
 
       const total = filtered.length;
@@ -167,12 +177,12 @@ function RouteComponent() {
     });
   };
 
-  const handleKasChange = (value: string) => {
+  const handleKasChange = (selectedKas: Array<string>) => {
     navigate({
       to: "/history-riil",
       search: (prev: any) => ({
         ...prev,
-        kas: value === "all" ? undefined : value,
+        kas: selectedKas,
         page: 1,
       }),
       replace: true,
@@ -208,6 +218,7 @@ function RouteComponent() {
         onTanggalSelesaiChange={handleTanggalSelesaiChange}
         onKasChange={handleKasChange}
         isLoading={historyRiilQuery.isLoading}
+        kasOptions={kasDropdownQuery.data ?? []}
         className="mb-4"
       />
 

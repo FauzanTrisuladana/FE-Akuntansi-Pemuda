@@ -1,7 +1,7 @@
 export type PenanggungJawabRecord = {
   id: number;
   nama: string;
-  valuasi: number;
+  valuasi_transaksi: number;
 };
 
 export type TransactionPJRecord = {
@@ -13,6 +13,34 @@ export type TransactionPJRecord = {
   pengeluaran: number;
 };
 
+// Helper to format date from ISO to YYYY-MM-DD
+const formatDate = (dateString: string): string => {
+  return dateString.split("T")[0] ?? dateString;
+};
+
+// Convert backend transaction to frontend format
+export const toTransactionPJRecord = (
+  t: {
+    id: number;
+    akun_id: number;
+    penginput_id: number;
+    penanggung_jawab_id: number;
+    deskripsi: string;
+    date: string;
+    jenis_transaksi: "pemasukan" | "pengeluaran";
+    jumlah: number;
+    bukti: string | null;
+    akun?: { id: number; nama: string };
+  },
+): TransactionPJRecord => ({
+  id: t.id,
+  tanggal: formatDate(t.date),
+  deskripsi: t.deskripsi,
+  akun: t.akun?.nama ?? "-",
+  pemasukan: t.jenis_transaksi === "pemasukan" ? t.jumlah : 0,
+  pengeluaran: t.jenis_transaksi === "pengeluaran" ? t.jumlah : 0,
+});
+
 export type PenanggungJawabFormErrors = Partial<
   Record<string, Array<string>>
 > | null;
@@ -21,62 +49,62 @@ export const MOCK_PENANGGUNG_JAWAB: Array<PenanggungJawabRecord> = [
   {
     id: 1,
     nama: "Fauzan",
-    valuasi: 15000000,
+    valuasi_transaksi: 15000000,
   },
   {
     id: 2,
     nama: "Rizky",
-    valuasi: 12500000,
+    valuasi_transaksi: 12500000,
   },
   {
     id: 3,
     nama: "Ahmad",
-    valuasi: 8000000,
+    valuasi_transaksi: 8000000,
   },
   {
     id: 4,
     nama: "Budi",
-    valuasi: 5000000,
+    valuasi_transaksi: 5000000,
   },
   {
     id: 5,
     nama: "Siti",
-    valuasi: 3000000,
+    valuasi_transaksi: 3000000,
   },
   {
     id: 6,
     nama: "Dewi",
-    valuasi: 2500000,
+    valuasi_transaksi: 2500000,
   },
   {
     id: 7,
     nama: "Agus",
-    valuasi: 1000000,
+    valuasi_transaksi: 1000000,
   },
   {
     id: 8,
     nama: "Rina",
-    valuasi: 750000,
+    valuasi_transaksi: 750000,
   },
   {
     id: 9,
     nama: "Tono",
-    valuasi: 500000,
+    valuasi_transaksi: 500000,
   },
   {
     id: 10,
     nama: "Lisa",
-    valuasi: 250000,
+    valuasi_transaksi: 250000,
   },
   {
     id: 11,
     nama: "Eka",
-    valuasi: 100000,
+    valuasi_transaksi: 100000,
   },
   {
     id: 12,
     nama: "Joko",
-    valuasi: 50000,
+    valuasi_transaksi: 50000,
   },
 ];
 

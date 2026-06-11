@@ -1,25 +1,19 @@
+import * as React from "react";
 import { Filter } from "lucide-react";
-import { KAS_OPTIONS } from "./types";
 import { cn } from "@/lib/utils";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 
 interface HistoryRiilFilterBarProps {
   tanggalMulai?: string;
   tanggalSelesai?: string;
-  kas?: string;
+  kas?: Array<string>;
   onTanggalMulaiChange: (value: string) => void;
   onTanggalSelesaiChange: (value: string) => void;
-  onKasChange: (value: string) => void;
+  onKasChange: (selectedKas: Array<string>) => void;
   isLoading?: boolean;
   className?: string;
+  kasOptions?: Array<{ id: number; nama: string }>;
 }
 
 export function HistoryRiilFilterBar({
@@ -31,7 +25,34 @@ export function HistoryRiilFilterBar({
   onKasChange,
   isLoading,
   className,
+  kasOptions,
 }: HistoryRiilFilterBarProps) {
+  // Default: semua checkbox tercheck
+  const defaultAllKas = kasOptions?.map((o) => o.nama) ?? [];
+
+  const [selectedKas, setSelectedKas] = React.useState<Array<string>>(
+    kas ?? defaultAllKas,
+  );
+
+  // Sync state with URL params
+  React.useEffect(() => {
+    if (kas !== undefined) {
+      setSelectedKas(kas);
+    }
+  }, [kas]);
+
+  const handleKasChange = (kasNama: string, checked: boolean) => {
+    let newSelectedKas = checked
+      ? [...selectedKas, kasNama]
+      : selectedKas.filter((k) => k !== kasNama);
+    // Prevent empty selection - if all unchecked, keep all checked
+    if (newSelectedKas.length === 0) {
+      newSelectedKas = [...defaultAllKas];
+    }
+    setSelectedKas(newSelectedKas);
+    onKasChange(newSelectedKas);
+  };
+
   return (
     <div
       className={cn(
@@ -71,25 +92,28 @@ export function HistoryRiilFilterBar({
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Kas:</span>
-          </div>
-
-          <div className="flex-1">
-            <Select value={kas ?? "all"} onValueChange={onKasChange}>
-              <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder="Pilih Kas" />
-              </SelectTrigger>
-              <SelectContent>
-                {KAS_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium">Kas:</span>
+          <div className="flex flex-row gap-4">
+            {kasOptions?.map((option) => (
+              <div key={option.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`kas-${option.id}`}
+                  checked={selectedKas.includes(option.nama)}
+                  onCheckedChange={(checked) =>
+                    handleKasChange(option.nama, !!checked)
+                  }
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor={`kas-${option.id}`}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {option.nama}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
       </div>
