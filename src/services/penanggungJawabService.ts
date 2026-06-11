@@ -19,7 +19,7 @@ export type TransactionPJBackend = {
   jenis_transaksi: "pemasukan" | "pengeluaran";
   jumlah: number;
   bukti: string | null;
-  akun?: { id: number; nama: string };
+  akun?: { id: number; nama_akun: string };
 };
 
 export type PenanggungJawabResponse = {

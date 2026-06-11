@@ -30,13 +30,13 @@ export const toTransactionPJRecord = (
     jenis_transaksi: "pemasukan" | "pengeluaran";
     jumlah: number;
     bukti: string | null;
-    akun?: { id: number; nama: string };
+    akun?: { id: number; nama_akun: string };
   },
 ): TransactionPJRecord => ({
   id: t.id,
   tanggal: formatDate(t.date),
   deskripsi: t.deskripsi,
-  akun: t.akun?.nama ?? "-",
+  akun: t.akun?.nama_akun ?? "-",
   pemasukan: t.jenis_transaksi === "pemasukan" ? t.jumlah : 0,
   pengeluaran: t.jenis_transaksi === "pengeluaran" ? t.jumlah : 0,
 });
