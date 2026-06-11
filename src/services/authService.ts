@@ -114,12 +114,16 @@ export const loginWithGoogle = createServerFn({ method: "POST" })
 export const logout = createServerFn({ method: "POST" }).handler(async () => {
   const tokenCookie = serialize("token", "", {
     httpOnly: true,
+    secure: env.VITE_ENV === "production",
+    sameSite: "strict",
     path: "/",
     maxAge: 0,
   });
 
   const userCookie = serialize("user", "", {
     httpOnly: false,
+    secure: env.VITE_ENV === "production",
+    sameSite: "strict",
     path: "/",
     maxAge: 0,
   });
@@ -127,7 +131,7 @@ export const logout = createServerFn({ method: "POST" }).handler(async () => {
   try {
     await api.post("/auth/logout");
   } catch (error) {
-    handleApiError(error);
+    console.error("Logout API error:", error);
   }
 
   return new Response(JSON.stringify({ success: true }), {
