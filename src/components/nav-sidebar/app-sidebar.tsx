@@ -133,7 +133,7 @@ export function AppSidebar({
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border">
                   <Avatar className="h-full w-full">
                     <AvatarImage
-                      src={user?.profile_image}
+                      src={user?.profile_image ?? undefined}
                       alt={user?.name || "User"}
                       className="object-cover"
                     />

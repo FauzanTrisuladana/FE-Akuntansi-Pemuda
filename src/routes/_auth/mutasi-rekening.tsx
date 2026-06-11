@@ -37,7 +37,7 @@ const mutasiRekeningSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.string().optional(),
+  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
   akun: z.string().optional(),
 });
 
@@ -98,8 +98,10 @@ function RouteComponent() {
       }
 
       // Apply kas filter
-      if (kasFilter && kasFilter !== "all") {
-        filtered = filtered.filter((m) => m.kas === kasFilter);
+      if (kasFilter.length === 0) {
+        filtered = [];
+      } else {
+        filtered = filtered.filter((m) => kasFilter.includes(m.kas));
       }
 
       // Apply akun filter
@@ -209,12 +211,12 @@ function RouteComponent() {
     });
   };
 
-  const handleKasChange = (value: string) => {
+  const handleKasChange = (selectedKas: Array<string>) => {
     navigate({
       to: "/mutasi-rekening",
       search: (prev: any) => ({
         ...prev,
-        kas: value === "all" ? undefined : value,
+        kas: selectedKas,
         page: 1,
       }),
       replace: true,
@@ -234,7 +236,7 @@ function RouteComponent() {
   };
 
   // TODO: Ganti dengan API call ketika backend siap
-  const handleAdd = (payload: {
+  const handleAdd = (_payload: {
     tanggal: string;
     akunDebit: string;
     akunKredit: string;
@@ -249,12 +251,12 @@ function RouteComponent() {
 
   // TODO: Ganti dengan API call ketika backend siap
   const handleEdit = ({
-    id,
-    tanggal,
-    akunDebit,
-    akunKredit,
-    jumlah,
-    keterangan,
+    id: _id,
+    tanggal: _tanggal,
+    akunDebit: _akunDebit,
+    akunKredit: _akunKredit,
+    jumlah: _jumlah,
+    keterangan: _keterangan,
   }: {
     id: number;
     tanggal: string;
@@ -270,7 +272,7 @@ function RouteComponent() {
   };
 
   // TODO: Ganti dengan API call ketika backend siap
-  const handleDelete = (id: number) => {
+  const handleDelete = (_id: number) => {
     toast.success("Mutasi akun berhasil dihapus");
     queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
     return true;

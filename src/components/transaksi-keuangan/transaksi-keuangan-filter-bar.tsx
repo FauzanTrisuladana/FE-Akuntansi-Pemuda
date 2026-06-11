@@ -1,5 +1,8 @@
+import * as React from "react";
 import { Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 import {
   Select,
@@ -8,18 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface TransaksiKeuanganFilterBarProps {
   tanggalMulai?: string;
   tanggalSelesai?: string;
-  kas?: string;
+  kas?: Array<string>;
   akun?: string;
   tipe?: Array<string>;
   onTanggalMulaiChange: (value: string) => void;
   onTanggalSelesaiChange: (value: string) => void;
-  onKasChange: (value: string) => void;
+  onKasChange: (selectedKas: Array<string>) => void;
   onAkunChange: (value: string) => void;
   onTipeChange: (value: Array<string>) => void;
   kasOptions: Array<{ id: number; nama: string }>;
@@ -44,6 +45,32 @@ export function TransaksiKeuanganFilterBar({
   isLoading,
   className,
 }: TransaksiKeuanganFilterBarProps) {
+  // Default: semua checkbox tercheck
+  const defaultAllKas = kasOptions.map((o) => o.nama);
+
+  const [selectedKas, setSelectedKas] = React.useState<Array<string>>(
+    kas ?? defaultAllKas,
+  );
+
+  // Sync state with URL params
+  React.useEffect(() => {
+    if (kas !== undefined) {
+      setSelectedKas(kas);
+    }
+  }, [kas]);
+
+  const handleKasChange = (kasNama: string, checked: boolean) => {
+    let newSelectedKas = checked
+      ? [...selectedKas, kasNama]
+      : selectedKas.filter((k) => k !== kasNama);
+    // Prevent empty selection - if all unchecked, keep all checked
+    if (newSelectedKas.length === 0) {
+      newSelectedKas = [...defaultAllKas];
+    }
+    setSelectedKas(newSelectedKas);
+    onKasChange(newSelectedKas);
+  };
+
   return (
     <div
       className={cn(
@@ -83,33 +110,34 @@ export function TransaksiKeuanganFilterBar({
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Kas:</span>
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium">Kas:</span>
+          <div className="flex flex-row gap-4">
+            {kasOptions.map((option) => (
+              <div key={option.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`kas-${option.id}`}
+                  checked={selectedKas.includes(option.nama)}
+                  onCheckedChange={(checked) =>
+                    handleKasChange(option.nama, !!checked)
+                  }
+                  disabled={isLoading}
+                />
+                <label
+                  htmlFor={`kas-${option.id}`}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {option.nama}
+                </label>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className="flex-1">
-            <Select value={kas ?? "all"} onValueChange={onKasChange}>
-              <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder="Pilih Kas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kas</SelectItem>
-                {kasOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.nama}>
-                    {option.nama}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Akun:</span>
-          </div>
-
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium">Akun:</span>
           <div className="flex-1">
             <Select value={akun ?? "all"} onValueChange={onAkunChange}>
               <SelectTrigger className="h-9 w-full">

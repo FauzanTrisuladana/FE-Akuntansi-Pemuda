@@ -40,7 +40,7 @@ export function MutasiRekeningEditDialog({
   data,
   onUpdate,
   errors: _errors,
-  akunOptions,
+  akunOptions: _akunOptions,
 }: MutasiRekeningEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
   const [jumlah, setJumlah] = useState("");

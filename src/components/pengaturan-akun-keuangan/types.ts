@@ -9,6 +9,48 @@ export type AkunKeuanganRecord = {
   status: AkunKeuanganStatus;
 };
 
+// Backend response type
+export type AkunKeuanganBackend = {
+  id: number;
+  nama_akun: string;
+  kas: string;
+  keterangan?: string | null;
+};
+
+// Transaction from backend
+export type TransactionBackend = {
+  id: number;
+  akun_id: number;
+  penginput_id: number;
+  penanggung_jawab_id: number;
+  deskripsi: string;
+  date: string;
+  jenis_transaksi: "pemasukan" | "pengeluaran";
+  jumlah: number;
+  bukti: string | null;
+};
+
+// Convert backend to frontend format
+export const toAkunKeuanganRecord = (a: AkunKeuanganBackend): AkunKeuanganRecord => ({
+  id: a.id,
+  namaAkun: a.nama_akun,
+  kas: a.kas,
+  jumlah: 0,
+  keterangan: a.keterangan,
+  status: "aktif",
+});
+
+// Convert backend transaction to frontend format
+export const toTransactionRecord = (t: TransactionBackend): TransactionRecord => ({
+  id: t.id,
+  tanggal: t.date.split("T")[0] ?? t.date,
+  jenisTransaksi: t.jenis_transaksi === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+  deskripsi: t.deskripsi,
+  debit: t.jenis_transaksi === "pemasukan" ? t.jumlah : 0,
+  kredit: t.jenis_transaksi === "pengeluaran" ? t.jumlah : 0,
+  saldo: 0, // Will be calculated
+});
+
 export type KasOption = {
   id: number;
   nama: string;

@@ -9,12 +9,10 @@ export type {
   LaporanKeuanganPosisiRecord,
   AkunOption,
   KasOption,
-  KaryawanOption,
 } from "./types";
 export {
   MOCK_AKUN_OPTIONS,
   MOCK_KAS_OPTIONS,
-  MOCK_KARYAWAN_OPTIONS,
   MOCK_LAPORAN_TRANSAKSI,
   MOCK_LAPORAN_MUTASI,
   MOCK_LAPORAN_POSISI,

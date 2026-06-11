@@ -4,18 +4,25 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { AkunKeuanganFormErrors } from "@/components/pengaturan-akun-keuangan/types";
 import {
-  MOCK_AKUN_KEUANGAN,
   MOCK_KAS_OPTIONS,
-  MOCK_TRANSACTIONS,
 } from "@/components/pengaturan-akun-keuangan/types";
+import { toAkunKeuanganRecord } from "@/components/pengaturan-akun-keuangan/types";
 
 import { AkunKeuanganAddDialog } from "@/components/pengaturan-akun-keuangan/akun-keuangan-add-dialog";
 import { AkunKeuanganTable } from "@/components/pengaturan-akun-keuangan/akun-keuangan-table";
 import { AkunKeuanganFilterBar } from "@/components/pengaturan-akun-keuangan/akun-keuangan-filter-bar";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+import {
+  getAkunKeuangan,
+  createAkunKeuangan,
+  updateAkunKeuangan,
+  deleteAkunKeuangan,
+  getAkunKeuanganDetail,
+} from "@/services/akunKeuanganService";
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
 const akunKeuanganSearchSchema = z.object({
@@ -38,45 +45,30 @@ function RouteComponent() {
 
   const { page, per_page, search: searchQuery, kas: kasFilter } = search;
 
-  // Mock data query
+  // API functions
+  const getAkunKeuanganFn = useServerFn(getAkunKeuangan);
+  const createAkunKeuanganFn = useServerFn(createAkunKeuangan);
+  const updateAkunKeuanganFn = useServerFn(updateAkunKeuangan);
+  const deleteAkunKeuanganFn = useServerFn(deleteAkunKeuangan);
+  const getAkunKeuanganDetailFn = useServerFn(getAkunKeuanganDetail);
+
   const akunKeuanganQuery = useQuery({
     queryKey: [
       "akunKeuangan",
       { page, per_page, search: searchQuery, kas: kasFilter },
     ],
-    queryFn: () => {
-      let filtered = MOCK_AKUN_KEUANGAN;
-
-      // Apply search filter
-      if (searchQuery) {
-        filtered = filtered.filter(
-          (a) =>
-            a.namaAkun.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            a.kas.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (a.keterangan ?? "")
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()),
-        );
-      }
-
-      if (kasFilter.length === 0) {
-        filtered = [];
-      } else {
-        filtered = filtered.filter((a) => kasFilter.includes(a.kas));
-      }
-
-      const total = filtered.length;
-      const last_page = Math.max(1, Math.ceil(total / per_page));
-      const current_page = Math.min(Math.max(1, page), last_page);
-      const start = (current_page - 1) * per_page;
-      const data = filtered.slice(start, start + per_page);
-      return {
-        current_page,
-        last_page,
-        per_page,
-        total,
-        data,
-      };
+    queryFn: async () => {
+      const response = await getAkunKeuanganFn({
+        data: {
+          params: {
+            page,
+            per_page,
+            search: searchQuery,
+            kas: kasFilter.length > 0 ? kasFilter : undefined,
+          },
+        },
+      });
+      return response;
     },
     staleTime: 1000 * 60 * 2,
   });
@@ -87,15 +79,8 @@ function RouteComponent() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const total = akunKeuanganQuery.data ? akunKeuanganQuery.data.total : 0;
-  const pageCount = akunKeuanganQuery.data
-    ? Math.max(
-        1,
-        Math.ceil(
-          akunKeuanganQuery.data.total / akunKeuanganQuery.data.per_page,
-        ),
-      )
-    : 1;
+  const total = akunKeuanganQuery.data?.meta?.total ?? 0;
+  const pageCount = akunKeuanganQuery.data?.meta?.last_page ?? 1;
   const safePage = Math.min(Math.max(page, 1), pageCount);
   const pageIndex = safePage - 1;
 
@@ -144,31 +129,67 @@ function RouteComponent() {
     });
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleAdd = (payload: {
+  // API handlers
+  const handleAdd = async (payload: {
     namaAkun: string;
     kasId: number;
     keterangan?: string;
   }) => {
     setAddErrors(null);
-    toast.success("Akun keuangan berhasil ditambahkan");
-    queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
-    return true;
+    try {
+      await createAkunKeuanganFn({
+        data: {
+          nama_akun: payload.namaAkun,
+          kas: MOCK_KAS_OPTIONS.find((k) => k.id === payload.kasId)?.nama ?? "",
+          keterangan: payload.keterangan,
+        },
+      });
+      toast.success("Akun keuangan berhasil ditambahkan");
+      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      return true;
+    } catch {
+      toast.error("Gagal membuat akun keuangan");
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleEdit = ({ id, kasId }: { id: number; kasId: number }) => {
+  const handleEdit = async ({
+    id,
+    kasId,
+    keterangan,
+  }: {
+    id: number;
+    kasId: number;
+    keterangan?: string;
+  }) => {
     setEditErrors(null);
-    toast.success("Akun keuangan berhasil diperbarui");
-    queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
-    return true;
+    try {
+      await updateAkunKeuanganFn({
+        data: {
+          id,
+          kas: MOCK_KAS_OPTIONS.find((k) => k.id === kasId)?.nama,
+          keterangan,
+        },
+      });
+      toast.success("Akun keuangan berhasil diperbarui");
+      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      return true;
+    } catch {
+      toast.error("Gagal memperbarui akun keuangan");
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleDelete = (id: number) => {
-    toast.success("Akun keuangan berhasil dihapus");
-    queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
-    return true;
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteAkunKeuanganFn({ data: { id } });
+      toast.success("Akun keuangan berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      return true;
+    } catch {
+      toast.error("Gagal menghapus akun keuangan");
+      return false;
+    }
   };
 
   return (

@@ -57,7 +57,7 @@ export function UserNav() {
         <Button variant="ghost" className="hover:bg-slate-100 h-12 gap-2 px-2">
           <Avatar className="h-9 w-9 border border-slate-200">
             <AvatarImage
-              src={user?.profile_image}
+              src={user?.profile_image ?? undefined}
               alt={user?.name || "User"}
               className="object-cover"
             />

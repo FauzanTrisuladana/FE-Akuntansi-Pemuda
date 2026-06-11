@@ -39,7 +39,7 @@ const transaksiKeuanganSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.string().catch("all"),
+  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
   akun: z.string().catch("all"),
   tipe: z.array(z.string()).catch(["pemasukan", "pengeluaran"]),
 });
@@ -107,8 +107,10 @@ function RouteComponent() {
       }
 
       // Apply kas filter
-      if (kasFilter && kasFilter !== "all") {
-        filtered = filtered.filter((t) => t.kas.includes(kasFilter));
+      if (kasFilter.length === 0) {
+        filtered = [];
+      } else {
+        filtered = filtered.filter((t) => kasFilter.some((k) => t.kas.includes(k)));
       }
 
       // Apply akun filter
@@ -240,12 +242,12 @@ function RouteComponent() {
     });
   };
 
-  const handleKasChange = (value: string) => {
+  const handleKasChange = (selectedKas: Array<string>) => {
     navigate({
       to: "/transaksi-keuangan",
       search: (prev: any) => ({
         ...prev,
-        kas: value === "all" ? undefined : value,
+        kas: selectedKas,
         page: 1,
       }),
       replace: true,
