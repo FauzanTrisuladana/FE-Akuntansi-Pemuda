@@ -83,17 +83,20 @@ export function UsersTable({
     if (typeof onPageSizeChange === "function") onPageSizeChange(newPageSize);
   };
 
-  const handleToggleStatus = async (user: UserRecord, nextActive: boolean) => {
-    if (nextActive) {
-      // aktivasi langsung tanpa dialog konfirmasi
-      if (typeof onToggleStatus === "function") {
-        await onToggleStatus(user.id, true);
+  const handleToggleStatus = React.useCallback(
+    async (user: UserRecord, nextActive: boolean) => {
+      if (nextActive) {
+        // aktivasi langsung tanpa dialog konfirmasi
+        if (typeof onToggleStatus === "function") {
+          await onToggleStatus(user.id, true);
+        }
+      } else {
+        // non-aktifkan munculkan dialog konfirmasi
+        setUserToDeactivate(user);
       }
-    } else {
-      // non-aktifkan munculkan dialog konfirmasi
-      setUserToDeactivate(user);
-    }
-  };
+    },
+    [onToggleStatus],
+  );
 
   const columns = React.useMemo<Array<ColumnDef<UserRecord>>>(
     () => [
@@ -218,7 +221,7 @@ export function UsersTable({
         },
       },
     ],
-    [pagination.pageIndex, pagination.pageSize, onToggleStatus],
+    [pagination.pageIndex, pagination.pageSize, handleToggleStatus],
   );
 
   const table = useReactTable({

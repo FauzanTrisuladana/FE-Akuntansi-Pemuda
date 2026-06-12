@@ -110,7 +110,9 @@ function RouteComponent() {
       if (kasFilter.length === 0) {
         filtered = [];
       } else {
-        filtered = filtered.filter((t) => kasFilter.some((k) => t.kas.includes(k)));
+        filtered = filtered.filter((t) =>
+          kasFilter.some((k) => t.kas.includes(k)),
+        );
       }
 
       // Apply akun filter

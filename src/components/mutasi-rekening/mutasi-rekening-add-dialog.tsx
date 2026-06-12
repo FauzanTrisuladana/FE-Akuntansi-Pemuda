@@ -217,7 +217,8 @@ export function MutasiRekeningAddDialog({
                   htmlFor="akun-debit"
                   className="text-slate-600 font-medium"
                 >
-                  Tujuan Dana / Akun Debit<span className="text-red-500">*</span>
+                  Tujuan Dana / Akun Debit
+                  <span className="text-red-500">*</span>
                 </Label>
                 <Select value={akunDebit} onValueChange={setAkunDebit}>
                   <SelectTrigger

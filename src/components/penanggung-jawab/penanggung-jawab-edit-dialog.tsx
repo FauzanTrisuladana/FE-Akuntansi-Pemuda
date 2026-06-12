@@ -22,7 +22,10 @@ type PenanggungJawabEditDialogProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   data?: PenanggungJawabRecord | null;
-  onUpdate?: (payload: { id: number; nama: string }) => Promise<boolean> | boolean;
+  onUpdate?: (payload: {
+    id: number;
+    nama: string;
+  }) => Promise<boolean> | boolean;
   errors?: PenanggungJawabFormErrors;
 };
 

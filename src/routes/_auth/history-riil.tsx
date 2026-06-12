@@ -3,13 +3,19 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { KAS_OPTIONS, toHistoryRiilRecord } from "@/components/history-riil/types";
+import {
+  KAS_OPTIONS,
+  toHistoryRiilRecord,
+} from "@/components/history-riil/types";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";
 import { HistoryRiilFilterBar } from "@/components/history-riil/history-riil-filter-bar";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
-import { getHistoryRiil, verifyHistoryRiil } from "@/services/historyRiilService";
+import {
+  getHistoryRiil,
+  verifyHistoryRiil,
+} from "@/services/historyRiilService";
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
@@ -83,7 +89,11 @@ function RouteComponent() {
           },
         },
       });
-      if (!result) return { data: [], meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 } };
+      if (!result)
+        return {
+          data: [],
+          meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 },
+        };
       return {
         ...result,
         data: result.data.map(toHistoryRiilRecord),
@@ -95,7 +105,10 @@ function RouteComponent() {
   const pageCount = historyRiilQuery.data?.meta
     ? Math.max(
         1,
-        Math.ceil(historyRiilQuery.data.meta.total / historyRiilQuery.data.meta.per_page),
+        Math.ceil(
+          historyRiilQuery.data.meta.total /
+            historyRiilQuery.data.meta.per_page,
+        ),
       )
     : 1;
   const safePage = Math.min(Math.max(page, 1), pageCount);

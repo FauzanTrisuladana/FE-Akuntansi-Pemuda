@@ -123,7 +123,9 @@ export function AkunKeuanganTransactionsDialog({
       printWindow.focus();
       printWindow.print();
     } catch (err) {
-      toast.error('Gagal membuka jendela print. Pastikan pop-up tidak diblokir.');
+      toast.error(
+        "Gagal membuka jendela print. Pastikan pop-up tidak diblokir.",
+      );
     }
   };
 

@@ -32,7 +32,9 @@ export type TransactionBackend = {
 };
 
 // Convert backend to frontend format
-export const toAkunKeuanganRecord = (a: AkunKeuanganBackend): AkunKeuanganRecord => ({
+export const toAkunKeuanganRecord = (
+  a: AkunKeuanganBackend,
+): AkunKeuanganRecord => ({
   id: a.id,
   namaAkun: a.nama_akun,
   kas: a.kas,
@@ -51,10 +53,13 @@ export const formatCurrency = (amount: number): string => {
 };
 
 // Convert backend transaction to frontend format
-export const toTransactionRecord = (t: TransactionBackend): TransactionRecord => ({
+export const toTransactionRecord = (
+  t: TransactionBackend,
+): TransactionRecord => ({
   id: t.id,
   tanggal: t.date.split("T")[0] ?? t.date,
-  jenisTransaksi: t.jenis_transaksi === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+  jenisTransaksi:
+    t.jenis_transaksi === "pemasukan" ? "Pemasukan" : "Pengeluaran",
   deskripsi: t.deskripsi,
   debit: t.jenis_transaksi === "pemasukan" ? t.jumlah : 0,
   kredit: t.jenis_transaksi === "pengeluaran" ? t.jumlah : 0,

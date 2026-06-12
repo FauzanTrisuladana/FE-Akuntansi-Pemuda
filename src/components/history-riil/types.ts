@@ -22,7 +22,9 @@ export type HistoryRiilBackend = {
 };
 
 // Convert backend to frontend format
-export const toHistoryRiilRecord = (h: HistoryRiilBackend): HistoryRiilRecord => ({
+export const toHistoryRiilRecord = (
+  h: HistoryRiilBackend,
+): HistoryRiilRecord => ({
   id: h.id,
   tanggal: h.date.split("T")[0] ?? h.date,
   nama_akun: h.akun?.nama_akun ?? "-",

@@ -28,7 +28,7 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const request = getRequest();
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
   const cookieHeader = request?.headers.get("cookie") || "";
   const cookies = parse(cookieHeader);
   const token = cookies.token;

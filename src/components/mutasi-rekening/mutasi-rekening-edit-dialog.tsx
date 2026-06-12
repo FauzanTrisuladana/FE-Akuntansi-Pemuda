@@ -123,9 +123,7 @@ export function MutasiRekeningEditDialog({
             <div className="grid gap-2">
               <Label className="text-slate-600 font-medium">Kas Keuangan</Label>
               <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="font-medium text-slate-900">
-                  {data?.kas ?? "-"}
-                </p>
+                <p className="font-medium text-slate-900">{data?.kas ?? "-"}</p>
               </div>
             </div>
 

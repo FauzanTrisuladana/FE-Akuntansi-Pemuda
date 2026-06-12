@@ -48,7 +48,9 @@ interface AkunKeuanganTableProps {
   onDelete?: (id: number) => Promise<boolean> | boolean;
   kasOptions?: Array<{ id: number; nama: string }>;
   editErrors?: AkunKeuanganFormErrors;
-  onGetTransactions?: (id: number) => Promise<Array<TransactionBackend>> | undefined;
+  onGetTransactions?: (
+    id: number,
+  ) => Promise<Array<TransactionBackend>> | undefined;
 }
 
 export function AkunKeuanganTable({
@@ -71,9 +73,9 @@ export function AkunKeuanganTable({
   const [akunToView, setAkunToView] = React.useState<AkunKeuanganRecord | null>(
     null,
   );
-  const [transactions, setTransactions] = React.useState<Array<TransactionBackend>>(
-    [],
-  );
+  const [transactions, setTransactions] = React.useState<
+    Array<TransactionBackend>
+  >([]);
 
   const handlePageChange = (newPageIndex: number) => {
     if (typeof onPageChange === "function") onPageChange(newPageIndex);
@@ -226,9 +228,7 @@ export function AkunKeuanganTable({
   });
 
   const finalSaldo =
-    transactions.length > 0
-      ? formatCurrency(runningSaldo)
-      : formatCurrency(0);
+    transactions.length > 0 ? formatCurrency(runningSaldo) : formatCurrency(0);
 
   return (
     <>

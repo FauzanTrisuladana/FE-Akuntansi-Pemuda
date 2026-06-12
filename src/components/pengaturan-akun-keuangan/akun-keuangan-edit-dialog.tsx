@@ -98,10 +98,7 @@ export function AkunKeuanganEditDialog({
           <DialogBody className="grid gap-4 py-4">
             {/* Nama Akun (editable) */}
             <div className="grid gap-2">
-              <Label
-                htmlFor="nama-akun"
-                className="text-slate-600 font-medium"
-              >
+              <Label htmlFor="nama-akun" className="text-slate-600 font-medium">
                 Nama Akun*
               </Label>
               <Input

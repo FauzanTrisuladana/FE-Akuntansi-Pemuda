@@ -36,10 +36,15 @@ interface PenanggungJawabTableProps {
   };
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
-  onUpdate?: (payload: { id: number; nama: string }) => Promise<boolean> | boolean;
+  onUpdate?: (payload: {
+    id: number;
+    nama: string;
+  }) => Promise<boolean> | boolean;
   onDelete?: (id: number) => Promise<boolean> | boolean;
   editErrors?: PenanggungJawabFormErrors;
-  onGetTransactions?: (id: number) => Promise<Array<ServiceTransactionPJBackend>> | undefined;
+  onGetTransactions?: (
+    id: number,
+  ) => Promise<Array<ServiceTransactionPJBackend>> | undefined;
 }
 
 export function PenanggungJawabTable({

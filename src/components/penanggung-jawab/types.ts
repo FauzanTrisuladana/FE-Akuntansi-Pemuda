@@ -19,20 +19,18 @@ const formatDate = (dateString: string): string => {
 };
 
 // Convert backend transaction to frontend format
-export const toTransactionPJRecord = (
-  t: {
-    id: number;
-    akun_id: number;
-    penginput_id: number;
-    penanggung_jawab_id: number;
-    deskripsi: string;
-    date: string;
-    jenis_transaksi: "pemasukan" | "pengeluaran";
-    jumlah: number;
-    bukti: string | null;
-    akun?: { id: number; nama_akun: string };
-  },
-): TransactionPJRecord => ({
+export const toTransactionPJRecord = (t: {
+  id: number;
+  akun_id: number;
+  penginput_id: number;
+  penanggung_jawab_id: number;
+  deskripsi: string;
+  date: string;
+  jenis_transaksi: "pemasukan" | "pengeluaran";
+  jumlah: number;
+  bukti: string | null;
+  akun?: { id: number; nama_akun: string };
+}): TransactionPJRecord => ({
   id: t.id,
   tanggal: formatDate(t.date),
   deskripsi: t.deskripsi,

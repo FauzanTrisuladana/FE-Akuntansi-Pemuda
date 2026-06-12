@@ -57,9 +57,11 @@ export const verifyHistoryRiil = createServerFn({ method: "POST" })
   .validator((data: { id: number }) => data)
   .handler(async ({ data }) => {
     try {
-      const response = await api.put<{ status: string; message: string; data: HistoryRiilBackend }>(
-        `/history-riil/${data.id}/verify`,
-      );
+      const response = await api.put<{
+        status: string;
+        message: string;
+        data: HistoryRiilBackend;
+      }>(`/history-riil/${data.id}/verify`);
       return response.data;
     } catch (error) {
       handleApiError(error);

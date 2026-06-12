@@ -76,10 +76,9 @@ export const getAkunKeuangan = createServerFn({ method: "GET" })
   .validator((data: { params?: IndexAkunParams }) => data)
   .handler(async ({ data }) => {
     try {
-      const response = await api.get<AkunKeuanganCollectionResponse>(
-        "/akun",
-        { params: data.params },
-      );
+      const response = await api.get<AkunKeuanganCollectionResponse>("/akun", {
+        params: data.params,
+      });
       return response.data;
     } catch (error) {
       handleApiError(error);
@@ -106,10 +105,7 @@ export const createAkunKeuangan = createServerFn({ method: "POST" })
   .validator((data: StoreAkunPayload) => data)
   .handler(async ({ data }) => {
     try {
-      const response = await api.post<AkunKeuanganResponse>(
-        "/akun",
-        data,
-      );
+      const response = await api.post<AkunKeuanganResponse>("/akun", data);
       return response.data;
     } catch (error) {
       handleApiError(error);
@@ -121,14 +117,11 @@ export const updateAkunKeuangan = createServerFn({ method: "POST" })
   .validator((data: UpdateAkunPayload & { id: number }) => data)
   .handler(async ({ data }) => {
     try {
-      const response = await api.put<AkunKeuanganResponse>(
-        `/akun/${data.id}`,
-        {
-          nama_akun: data.nama_akun,
-          kas: data.kas,
-          keterangan: data.keterangan,
-        },
-      );
+      const response = await api.put<AkunKeuanganResponse>(`/akun/${data.id}`, {
+        nama_akun: data.nama_akun,
+        kas: data.kas,
+        keterangan: data.keterangan,
+      });
       return response.data;
     } catch (error) {
       handleApiError(error);
