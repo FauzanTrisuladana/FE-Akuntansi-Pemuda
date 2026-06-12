@@ -105,8 +105,8 @@ function RouteComponent() {
   const handleAdd = async (payload: { nama: string }): Promise<boolean> => {
     setAddErrors(null);
     try {
-      await createPenanggungJawabFn({ data: payload });
-      toast.success("Penanggung jawab berhasil ditambahkan");
+      const result = await createPenanggungJawabFn({ data: payload });
+      toast.success(result?.message || "Penanggung jawab berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
       setOpen(false);
       return true;
@@ -114,7 +114,7 @@ function RouteComponent() {
       const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
       setAddErrors(errors);
       const msg =
-        error?.response?.data?.message || "Gagal menambahkan penanggung jawab";
+        error?.response?.data?.message || error?.message || "Gagal menambahkan penanggung jawab";
       toast.error(msg);
       return false;
     }
@@ -129,15 +129,15 @@ function RouteComponent() {
   }): Promise<boolean> => {
     setEditErrors(null);
     try {
-      await updatePenanggungJawabFn({ data: { id, nama } });
-      toast.success("Penanggung jawab berhasil diperbarui");
+      const result = await updatePenanggungJawabFn({ data: { id, nama } });
+      toast.success(result?.message || "Penanggung jawab berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
       setEditErrors(errors);
       const msg =
-        error?.response?.data?.message || "Gagal memperbarui penanggung jawab";
+        error?.response?.data?.message || error?.message || "Gagal memperbarui penanggung jawab";
       toast.error(msg);
       return false;
     }
@@ -145,13 +145,13 @@ function RouteComponent() {
 
   const handleDelete = async (id: number): Promise<boolean> => {
     try {
-      await deletePenanggungJawabFn({ data: { id } });
-      toast.success("Penanggung jawab berhasil dihapus");
+      const result = await deletePenanggungJawabFn({ data: { id } });
+      toast.success(result?.message || "Penanggung jawab berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
       return true;
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message || "Gagal menghapus penanggung jawab";
+        error?.response?.data?.message || error?.message || "Gagal menghapus penanggung jawab";
       toast.error(msg);
       return false;
     }
