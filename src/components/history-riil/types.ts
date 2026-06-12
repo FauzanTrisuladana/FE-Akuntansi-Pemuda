@@ -7,6 +7,30 @@ export type HistoryRiilRecord = {
   is_verified: boolean;
 };
 
+// Backend response type
+export type HistoryRiilBackend = {
+  id: number;
+  date: string;
+  verified: boolean;
+  riil: string;
+  akun?: {
+    id: number;
+    nama_akun: string;
+    kas: string;
+    keterangan: string | null;
+  };
+};
+
+// Convert backend to frontend format
+export const toHistoryRiilRecord = (h: HistoryRiilBackend): HistoryRiilRecord => ({
+  id: h.id,
+  tanggal: h.date.split("T")[0] ?? h.date,
+  nama_akun: h.akun?.nama_akun ?? "-",
+  kas: h.akun?.kas ?? "-",
+  nilai_riil: parseFloat(h.riil),
+  is_verified: h.verified,
+});
+
 export type HistoryRiilFormErrors = Partial<
   Record<string, Array<string>>
 > | null;

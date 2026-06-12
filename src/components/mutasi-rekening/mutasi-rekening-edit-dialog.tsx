@@ -29,6 +29,7 @@ interface MutasiRekeningEditDialogProps {
     akunKredit: string;
     jumlah: number;
     keterangan?: string;
+    kas: string;
   }) => boolean;
   errors?: MutasiRekeningFormErrors;
   akunOptions?: Array<{ id: number; nama: string }>;
@@ -43,6 +44,7 @@ export function MutasiRekeningEditDialog({
   akunOptions: _akunOptions,
 }: MutasiRekeningEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
+  const [kas, setKas] = useState(data?.kas ?? "");
   const [jumlah, setJumlah] = useState("");
   const [keterangan, setKeterangan] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +52,7 @@ export function MutasiRekeningEditDialog({
   useEffect(() => {
     if (data) {
       setTanggal(data.tanggal);
+      setKas(data.kas);
       setJumlah(data.jumlah.toString());
       setKeterangan(data.keterangan ?? "");
     }
@@ -68,6 +71,7 @@ export function MutasiRekeningEditDialog({
         akunKredit: data.akun_kredit,
         jumlah: parseFloat(jumlah),
         keterangan: keterangan.trim() || undefined,
+        kas,
       });
       if (success) {
         onOpenChange(false);
@@ -113,6 +117,16 @@ export function MutasiRekeningEditDialog({
               {tanggalError ? (
                 <p className="text-sm text-destructive">{tanggalError}</p>
               ) : null}
+            </div>
+
+            {/* Kas Keuangan (readonly) */}
+            <div className="grid gap-2">
+              <Label className="text-slate-600 font-medium">Kas Keuangan</Label>
+              <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
+                <p className="font-medium text-slate-900">
+                  {data?.kas ?? "-"}
+                </p>
+              </div>
             </div>
 
             {/* Akun Kredit (readonly) */}

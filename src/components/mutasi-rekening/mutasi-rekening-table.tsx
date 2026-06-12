@@ -41,6 +41,7 @@ interface MutasiRekeningTableProps {
     akunKredit: string;
     jumlah: number;
     keterangan?: string;
+    kas: string;
   }) => boolean;
   onDelete?: (id: number) => boolean;
   akunOptions?: Array<{ id: number; nama: string }>;

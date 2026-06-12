@@ -242,6 +242,7 @@ function RouteComponent() {
     akunKredit: string;
     jumlah: number;
     keterangan?: string;
+    kas: string;
   }) => {
     setAddErrors(null);
     toast.success("Mutasi akun berhasil ditambahkan");
@@ -257,6 +258,7 @@ function RouteComponent() {
     akunKredit: _akunKredit,
     jumlah: _jumlah,
     keterangan: _keterangan,
+    kas: _kas,
   }: {
     id: number;
     tanggal: string;
@@ -264,6 +266,7 @@ function RouteComponent() {
     akunKredit: string;
     jumlah: number;
     keterangan?: string;
+    kas: string;
   }) => {
     setEditErrors(null);
     toast.success("Mutasi akun berhasil diperbarui");
@@ -319,6 +322,7 @@ function RouteComponent() {
         onCreate={handleAdd}
         errors={addErrors}
         akunOptions={akunDropdownQuery.data ?? []}
+        kasOptions={kasDropdownQuery.data ?? []}
       />
 
       <MutasiRekeningTable

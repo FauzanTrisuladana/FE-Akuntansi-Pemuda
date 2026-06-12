@@ -2,13 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { MOCK_HISTORY_RIIL } from "@/components/history-riil/types";
-import { MOCK_KAS_OPTIONS } from "@/components/pengaturan-akun-keuangan/types";
+import { useServerFn } from "@tanstack/react-start";
+import { KAS_OPTIONS, toHistoryRiilRecord } from "@/components/history-riil/types";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";
 import { HistoryRiilFilterBar } from "@/components/history-riil/history-riil-filter-bar";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+import { getHistoryRiil, verifyHistoryRiil } from "@/services/historyRiilService";
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
@@ -30,7 +31,7 @@ const historyRiilSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
+  kas: z.array(z.string()).catch(KAS_OPTIONS.map((o) => o.nama)),
 });
 
 export const Route = createFileRoute("/_auth/history-riil")({
@@ -53,14 +54,10 @@ function RouteComponent() {
     kas,
   } = search;
 
-  // Mock kas dropdown query
-  const kasDropdownQuery = useQuery({
-    queryKey: ["kas", "dropdown"],
-    queryFn: () => MOCK_KAS_OPTIONS,
-    staleTime: 1000 * 60 * 10,
-  });
+  const getHistoryRiilFn = useServerFn(getHistoryRiil);
+  const verifyHistoryRiilFn = useServerFn(verifyHistoryRiil);
 
-  // Mock data query
+  // API data query
   const historyRiilQuery = useQuery({
     queryKey: [
       "historyRiil",
@@ -73,54 +70,32 @@ function RouteComponent() {
         kas,
       },
     ],
-    queryFn: () => {
-      let filtered = MOCK_HISTORY_RIIL;
-
-      // Apply search filter
-      if (searchQuery) {
-        filtered = filtered.filter((h) =>
-          h.nama_akun.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-      }
-
-      // Apply date range filter
-      if (tanggal_mulai) {
-        filtered = filtered.filter((h) => h.tanggal >= tanggal_mulai);
-      }
-      if (tanggal_selesai) {
-        filtered = filtered.filter((h) => h.tanggal <= tanggal_selesai);
-      }
-
-      // Apply kas filter
-      if (kas.length === 0) {
-        filtered = [];
-      } else {
-        filtered = filtered.filter((h) => kas.includes(h.kas));
-      }
-
-      const total = filtered.length;
-      const last_page = Math.max(1, Math.ceil(total / per_page));
-      const current_page = Math.min(Math.max(1, page), last_page);
-      const pageIndex = current_page - 1;
-      const data = filtered.slice(
-        pageIndex * per_page,
-        pageIndex * per_page + per_page,
-      );
+    queryFn: async () => {
+      const result = await getHistoryRiilFn({
+        data: {
+          params: {
+            page,
+            per_page,
+            search: searchQuery,
+            tanggal_mulai,
+            tanggal_selesai,
+            kas,
+          },
+        },
+      });
+      if (!result) return { data: [], meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 } };
       return {
-        current_page,
-        last_page,
-        per_page,
-        total,
-        data,
+        ...result,
+        data: result.data.map(toHistoryRiilRecord),
       };
     },
     staleTime: 1000 * 60 * 2,
   });
 
-  const pageCount = historyRiilQuery.data
+  const pageCount = historyRiilQuery.data?.meta
     ? Math.max(
         1,
-        Math.ceil(historyRiilQuery.data.total / historyRiilQuery.data.per_page),
+        Math.ceil(historyRiilQuery.data.meta.total / historyRiilQuery.data.meta.per_page),
       )
     : 1;
   const safePage = Math.min(Math.max(page, 1), pageCount);
@@ -189,11 +164,16 @@ function RouteComponent() {
     });
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleVerify = (_id: number) => {
-    toast.success("Data berhasil diverifikasi");
-    queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
-    return true;
+  const handleVerify = async (id: number) => {
+    try {
+      await verifyHistoryRiilFn({ data: { id } });
+      toast.success("Data berhasil diverifikasi");
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
+      return true;
+    } catch {
+      toast.error("Gagal memverifikasi data");
+      return false;
+    }
   };
 
   return (
@@ -218,7 +198,7 @@ function RouteComponent() {
         onTanggalSelesaiChange={handleTanggalSelesaiChange}
         onKasChange={handleKasChange}
         isLoading={historyRiilQuery.isLoading}
-        kasOptions={kasDropdownQuery.data ?? []}
+        kasOptions={KAS_OPTIONS}
         className="mb-4"
       />
 

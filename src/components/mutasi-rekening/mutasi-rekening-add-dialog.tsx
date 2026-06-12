@@ -6,6 +6,7 @@ import type { MutasiRekeningFormErrors } from "./types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogBody,
@@ -34,9 +35,11 @@ type MutasiRekeningAddDialogProps = {
     akunKredit: string;
     jumlah: number;
     keterangan?: string;
+    kas: string;
   }) => boolean;
   errors?: MutasiRekeningFormErrors;
   akunOptions: Array<{ id: number; nama: string }>;
+  kasOptions: Array<{ id: number; nama: string }>;
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -46,6 +49,7 @@ export function MutasiRekeningAddDialog({
   onCreate,
   errors: _errors,
   akunOptions,
+  kasOptions,
 }: MutasiRekeningAddDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled =
@@ -54,6 +58,7 @@ export function MutasiRekeningAddDialog({
   const setDialogOpen = isControlled ? onOpenChange : setInternalOpen;
 
   const [tanggal, setTanggal] = useState("");
+  const [kas, setKas] = useState("");
   const [akunDebit, setAkunDebit] = useState("");
   const [akunKredit, setAkunKredit] = useState("");
   const [jumlah, setJumlah] = useState("");
@@ -62,12 +67,14 @@ export function MutasiRekeningAddDialog({
 
   const isFormValid =
     tanggal.trim() !== "" &&
+    kas !== "" &&
     akunDebit !== "" &&
     akunKredit !== "" &&
     jumlah.trim() !== "";
 
   const resetForm = () => {
     setTanggal("");
+    setKas("");
     setAkunDebit("");
     setAkunKredit("");
     setJumlah("");
@@ -86,6 +93,7 @@ export function MutasiRekeningAddDialog({
         akunKredit,
         jumlah: parseFloat(jumlah),
         keterangan: keterangan.trim() || undefined,
+        kas,
       });
       if (success) {
         setDialogOpen(false);
@@ -141,101 +149,139 @@ export function MutasiRekeningAddDialog({
               ) : null}
             </div>
 
-            {/* Akun Kredit (Asal Dana) */}
+            {/* Kas Keuangan */}
             <div className="grid gap-2">
-              <Label
-                htmlFor="akun-kredit"
-                className="text-slate-600 font-medium"
-              >
-                Asal Dana / Akun Kredit<span className="text-red-500">*</span>
+              <Label className="text-slate-600 font-medium">
+                Kas Keuangan<span className="text-red-500">*</span>
               </Label>
-              <Select value={akunKredit} onValueChange={setAkunKredit}>
-                <SelectTrigger
-                  id="akun-kredit"
-                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                  disabled={isLoading}
+              <div className="flex gap-3">
+                {kasOptions.map((option) => {
+                  const isSelected = kas === option.nama;
+                  const isKasPemuda =
+                    option.nama.toLowerCase() === "kas pemuda";
+                  return (
+                    <Badge
+                      key={option.id}
+                      variant="outline"
+                      className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                        isSelected
+                          ? isKasPemuda
+                            ? "bg-green-100 text-green-700 border-green-200"
+                            : "bg-amber-50 text-amber-600 border-amber-200"
+                          : "bg-gray-50 text-gray-500 border-gray-200"
+                      }`}
+                      onClick={() => setKas(option.nama)}
+                    >
+                      {option.nama}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Akun Kredit (Asal Dana) - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="akun-kredit"
+                  className="text-slate-600 font-medium"
                 >
-                  <SelectValue placeholder="Pilih Akun Kredit" />
-                </SelectTrigger>
-                <SelectContent>
-                  {akunOptions.map((akun) => (
-                    <SelectItem key={akun.id} value={akun.nama}>
-                      {akun.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {akunKreditError ? (
-                <p className="text-sm text-destructive">{akunKreditError}</p>
-              ) : null}
-            </div>
+                  Asal Dana / Akun Kredit<span className="text-red-500">*</span>
+                </Label>
+                <Select value={akunKredit} onValueChange={setAkunKredit}>
+                  <SelectTrigger
+                    id="akun-kredit"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Akun Kredit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {akunOptions.map((akun) => (
+                      <SelectItem key={akun.id} value={akun.nama}>
+                        {akun.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {akunKreditError ? (
+                  <p className="text-sm text-destructive">{akunKreditError}</p>
+                ) : null}
+              </div>
+            )}
 
-            {/* Akun Debit (Tujuan Dana) */}
-            <div className="grid gap-2">
-              <Label
-                htmlFor="akun-debit"
-                className="text-slate-600 font-medium"
-              >
-                Tujuan Dana / Akun Debit<span className="text-red-500">*</span>
-              </Label>
-              <Select value={akunDebit} onValueChange={setAkunDebit}>
-                <SelectTrigger
-                  id="akun-debit"
-                  className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                  disabled={isLoading}
+            {/* Akun Debit (Tujuan Dana) - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="akun-debit"
+                  className="text-slate-600 font-medium"
                 >
-                  <SelectValue placeholder="Pilih Akun Debit" />
-                </SelectTrigger>
-                <SelectContent>
-                  {akunOptions.map((akun) => (
-                    <SelectItem key={akun.id} value={akun.nama}>
-                      {akun.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {akunDebitError ? (
-                <p className="text-sm text-destructive">{akunDebitError}</p>
-              ) : null}
-            </div>
+                  Tujuan Dana / Akun Debit<span className="text-red-500">*</span>
+                </Label>
+                <Select value={akunDebit} onValueChange={setAkunDebit}>
+                  <SelectTrigger
+                    id="akun-debit"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Akun Debit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {akunOptions.map((akun) => (
+                      <SelectItem key={akun.id} value={akun.nama}>
+                        {akun.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {akunDebitError ? (
+                  <p className="text-sm text-destructive">{akunDebitError}</p>
+                ) : null}
+              </div>
+            )}
 
-            {/* Jumlah */}
-            <div className="grid gap-2">
-              <Label htmlFor="jumlah" className="text-slate-600 font-medium">
-                Jumlah<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="jumlah"
-                type="number"
-                value={jumlah}
-                onChange={(e) => setJumlah(e.target.value)}
-                placeholder="Masukkan jumlah"
-                className="h-12"
-                disabled={isLoading}
-              />
-              {jumlahError ? (
-                <p className="text-sm text-destructive">{jumlahError}</p>
-              ) : null}
-            </div>
+            {/* Jumlah - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label htmlFor="jumlah" className="text-slate-600 font-medium">
+                  Jumlah<span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="jumlah"
+                  type="number"
+                  value={jumlah}
+                  onChange={(e) => setJumlah(e.target.value)}
+                  placeholder="Masukkan jumlah"
+                  className="h-12"
+                  disabled={isLoading}
+                />
+                {jumlahError ? (
+                  <p className="text-sm text-destructive">{jumlahError}</p>
+                ) : null}
+              </div>
+            )}
 
-            {/* Keterangan */}
-            <div className="grid gap-2">
-              <Label
-                htmlFor="keterangan"
-                className="text-slate-600 font-medium"
-              >
-                Keterangan
-              </Label>
-              <textarea
-                id="keterangan"
-                value={keterangan}
-                onChange={(e) => setKeterangan(e.target.value)}
-                placeholder="Masukkan keterangan (opsional)"
-                rows={3}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={isLoading}
-              />
-            </div>
+            {/* Keterangan - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="keterangan"
+                  className="text-slate-600 font-medium"
+                >
+                  Keterangan
+                </Label>
+                <textarea
+                  id="keterangan"
+                  value={keterangan}
+                  onChange={(e) => setKeterangan(e.target.value)}
+                  placeholder="Masukkan keterangan (opsional)"
+                  rows={3}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             {generalError ? (
               <p className="text-sm text-destructive">{generalError}</p>

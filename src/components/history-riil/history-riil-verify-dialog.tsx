@@ -17,7 +17,7 @@ type HistoryRiilVerifyDialogProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   data?: HistoryRiilRecord | null;
-  onVerify?: (id: number) => boolean;
+  onVerify?: (id: number) => Promise<boolean> | boolean;
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -43,7 +43,6 @@ export function HistoryRiilVerifyDialog({
       const success = await onVerify?.(data.id);
       if (success) {
         setDialogOpen(false);
-        toast.success("Data berhasil diverifikasi");
       }
     } catch {
       toast.error("Gagal memverifikasi data");

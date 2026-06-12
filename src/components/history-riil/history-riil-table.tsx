@@ -33,7 +33,7 @@ interface HistoryRiilTableProps {
   };
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
-  onVerify?: (id: number) => boolean;
+  onVerify?: (id: number) => Promise<boolean> | boolean;
 }
 
 export function HistoryRiilTable({
