@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { Printer } from "lucide-react";
+import { format, toZonedTime } from "date-fns-tz";
 
 import {
   MOCK_AKUN_OPTIONS,
@@ -21,14 +22,14 @@ import HeaderComp from "@/components/shared/header-comp";
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
   const now = new Date();
-  return now
-    .toISOString()
-    .split("T")[0]
-    .replace(/-\d{2}$/, `-01`);
+  const jakartaTime = toZonedTime(now, "Asia/Jakarta");
+  return format(jakartaTime, "yyyy-MM-01");
 };
 
 const getToday = (): string => {
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const jakartaTime = toZonedTime(now, "Asia/Jakarta");
+  return format(jakartaTime, "yyyy-MM-dd");
 };
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────

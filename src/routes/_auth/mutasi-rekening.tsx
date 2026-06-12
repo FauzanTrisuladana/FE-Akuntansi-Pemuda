@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import { format, toZonedTime } from "date-fns-tz";
 import type { MutasiRekeningFormErrors } from "@/components/mutasi-rekening/types";
 import {
   MOCK_KAS_OPTIONS,
@@ -27,14 +28,14 @@ import { getAkunDropdown } from "@/services/akunKeuanganService";
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
   const now = new Date();
-  return now
-    .toISOString()
-    .split("T")[0]
-    .replace(/-\d{2}$/, `-01`);
+  const jakartaTime = toZonedTime(now, "Asia/Jakarta");
+  return format(jakartaTime, "yyyy-MM-01");
 };
 
 const getToday = (): string => {
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const jakartaTime = toZonedTime(now, "Asia/Jakarta");
+  return format(jakartaTime, "yyyy-MM-dd");
 };
 
 // ─── Search Params Schema ─────────────────────────────────────────────────────
