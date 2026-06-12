@@ -16,11 +16,11 @@ interface MutasiRekeningFilterBarProps {
   tanggalMulai?: string;
   tanggalSelesai?: string;
   kas?: Array<string>;
-  akun?: string;
+  akun?: number;
   onTanggalMulaiChange: (value: string) => void;
   onTanggalSelesaiChange: (value: string) => void;
   onKasChange: (selectedKas: Array<string>) => void;
-  onAkunChange: (value: string) => void;
+  onAkunChange: (value: number | undefined) => void;
   kasOptions: Array<{ id: number; nama: string }>;
   akunOptions: Array<{ id: number; nama: string }>;
   isLoading?: boolean;
@@ -135,14 +135,19 @@ export function MutasiRekeningFilterBar({
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Akun:</span>
           <div className="flex-1">
-            <Select value={akun ?? "all"} onValueChange={onAkunChange}>
+            <Select
+              value={akun?.toString() ?? "all"}
+              onValueChange={(val) =>
+                onAkunChange(val === "all" ? undefined : parseInt(val, 10))
+              }
+            >
               <SelectTrigger className="h-9 w-full">
                 <SelectValue placeholder="Pilih Akun" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Akun</SelectItem>
                 {akunOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.nama}>
+                  <SelectItem key={option.id} value={option.id.toString()}>
                     {option.nama}
                   </SelectItem>
                 ))}

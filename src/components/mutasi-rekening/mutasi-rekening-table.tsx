@@ -37,13 +37,12 @@ interface MutasiRekeningTableProps {
   onUpdate?: (payload: {
     id: number;
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    akunDebit: number;
+    akunKredit: number;
     jumlah: number;
     keterangan?: string;
-    kas: string;
-  }) => boolean;
-  onDelete?: (id: number) => boolean;
+  }) => Promise<boolean> | boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
   akunOptions?: Array<{ id: number; nama: string }>;
   editErrors?: MutasiRekeningFormErrors;
 }

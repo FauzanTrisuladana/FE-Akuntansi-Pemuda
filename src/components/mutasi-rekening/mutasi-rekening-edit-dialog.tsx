@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import type { FormEvent } from "react";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
 import { Button } from "@/components/ui/button";
@@ -25,12 +24,11 @@ interface MutasiRekeningEditDialogProps {
   onUpdate?: (payload: {
     id: number;
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    akunDebit: number;
+    akunKredit: number;
     jumlah: number;
     keterangan?: string;
-    kas: string;
-  }) => boolean;
+  }) => Promise<boolean> | boolean;
   errors?: MutasiRekeningFormErrors;
   akunOptions?: Array<{ id: number; nama: string }>;
 }
@@ -44,7 +42,6 @@ export function MutasiRekeningEditDialog({
   akunOptions: _akunOptions,
 }: MutasiRekeningEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
-  const [kas, setKas] = useState(data?.kas ?? "");
   const [jumlah, setJumlah] = useState("");
   const [keterangan, setKeterangan] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +49,6 @@ export function MutasiRekeningEditDialog({
   useEffect(() => {
     if (data) {
       setTanggal(data.tanggal);
-      setKas(data.kas);
       setJumlah(data.jumlah.toString());
       setKeterangan(data.keterangan ?? "");
     }
@@ -67,26 +63,24 @@ export function MutasiRekeningEditDialog({
       const success = await onUpdate?.({
         id: data.id,
         tanggal,
-        akunDebit: data.akun_debit,
-        akunKredit: data.akun_kredit,
+        akunDebit: data.akun_debit_id,
+        akunKredit: data.akun_kredit_id,
         jumlah: parseFloat(jumlah),
         keterangan: keterangan.trim() || undefined,
-        kas,
       });
       if (success) {
         onOpenChange(false);
       }
     } catch {
-      toast.error("Gagal memperbarui mutasi akun");
+      // Error handled in parent
     } finally {
       setIsLoading(false);
     }
   };
 
-  const isFormValid = tanggal.trim() !== "" && jumlah.trim() !== "";
+  const isFormValid = jumlah.trim() !== "";
 
   const generalError = _errors?.general?.[0];
-  const tanggalError = _errors?.tanggal?.[0];
   const jumlahError = _errors?.jumlah?.[0];
 
   return (
@@ -101,22 +95,12 @@ export function MutasiRekeningEditDialog({
           </DialogHeader>
 
           <DialogBody className="grid gap-4 py-4">
-            {/* Tanggal */}
+            {/* Tanggal (readonly) */}
             <div className="grid gap-2">
-              <Label htmlFor="tanggal" className="text-slate-600 font-medium">
-                Tanggal<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="tanggal"
-                type="date"
-                value={tanggal}
-                onChange={(e) => setTanggal(e.target.value)}
-                className="h-12"
-                disabled={isLoading}
-              />
-              {tanggalError ? (
-                <p className="text-sm text-destructive">{tanggalError}</p>
-              ) : null}
+              <Label className="text-slate-600 font-medium">Tanggal</Label>
+              <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
+                <p className="font-medium text-slate-900">{tanggal ?? "-"}</p>
+              </div>
             </div>
 
             {/* Kas Keuangan (readonly) */}

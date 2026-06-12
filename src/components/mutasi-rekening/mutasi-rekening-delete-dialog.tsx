@@ -16,7 +16,7 @@ interface MutasiRekeningDeleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   data: MutasiRekeningRecord | null;
-  onDelete?: (id: number) => boolean;
+  onDelete?: (id: number) => Promise<boolean> | boolean;
 }
 
 export function MutasiRekeningDeleteDialog({

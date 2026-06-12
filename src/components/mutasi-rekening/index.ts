@@ -8,9 +8,4 @@ export type {
   AkunOption,
   MutasiRekeningFormErrors,
 } from "./types";
-export {
-  MOCK_MUTASI_REKENING,
-  MOCK_AKUN_OPTIONS,
-  MOCK_KAS_OPTIONS,
-  formatCurrency,
-} from "./types";
+export { MOCK_KAS_OPTIONS, formatCurrency } from "./types";

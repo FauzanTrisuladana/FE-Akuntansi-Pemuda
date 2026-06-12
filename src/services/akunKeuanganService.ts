@@ -141,3 +141,23 @@ export const deleteAkunKeuangan = createServerFn({ method: "POST" })
       handleApiError(error);
     }
   });
+
+// Get akun dropdown
+export type AkunDropdownResponse = {
+  status: string;
+  message: string;
+  data: Array<{ id: number; nama_akun: string }>;
+};
+
+export const getAkunDropdown = createServerFn({ method: "GET" })
+  .validator((data: { search?: string; kas?: Array<string> }) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.get<AkunDropdownResponse>("/akun/dropdown", {
+        params: data,
+      });
+      return response.data;
+    } catch (error) {
+      handleApiError(error);
+    }
+  });

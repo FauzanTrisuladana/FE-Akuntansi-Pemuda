@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import type { FormEvent } from "react";
 import type { MutasiRekeningFormErrors } from "./types";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAkunDropdown } from "@/services/akunKeuanganService";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type MutasiRekeningAddDialogProps = {
@@ -31,14 +34,13 @@ type MutasiRekeningAddDialogProps = {
   onOpenChange?: (open: boolean) => void;
   onCreate: (payload: {
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    akunDebit: number;
+    akunKredit: number;
     jumlah: number;
     keterangan?: string;
     kas: string;
-  }) => boolean;
+  }) => Promise<boolean> | boolean;
   errors?: MutasiRekeningFormErrors;
-  akunOptions: Array<{ id: number; nama: string }>;
   kasOptions: Array<{ id: number; nama: string }>;
 };
 
@@ -48,7 +50,6 @@ export function MutasiRekeningAddDialog({
   onOpenChange,
   onCreate,
   errors: _errors,
-  akunOptions,
   kasOptions,
 }: MutasiRekeningAddDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -59,11 +60,34 @@ export function MutasiRekeningAddDialog({
 
   const [tanggal, setTanggal] = useState("");
   const [kas, setKas] = useState("");
-  const [akunDebit, setAkunDebit] = useState("");
-  const [akunKredit, setAkunKredit] = useState("");
+  const [akunDebit, setAkunDebit] = useState<number | "">("");
+  const [akunKredit, setAkunKredit] = useState<number | "">("");
   const [jumlah, setJumlah] = useState("");
   const [keterangan, setKeterangan] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Internal query for akun dropdown based on selected kas
+  const getAkunDropdownFn = useServerFn(getAkunDropdown);
+  const akunDropdownQuery = useQuery({
+    queryKey: ["akun", "dropdown", kas],
+    queryFn: async () => {
+      if (!kas) return [];
+      const result = await getAkunDropdownFn({ data: { kas: [kas] } });
+      if (!result?.data) return [];
+      return result.data.map((a: { id: number; nama_akun: string }) => ({
+        id: a.id,
+        nama: a.nama_akun,
+      }));
+    },
+    enabled: !!kas,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Reset akun debit/kredit when kas changes
+  useEffect(() => {
+    setAkunDebit("");
+    setAkunKredit("");
+  }, [kas]);
 
   const isFormValid =
     tanggal.trim() !== "" &&
@@ -89,8 +113,8 @@ export function MutasiRekeningAddDialog({
     try {
       const success = await onCreate({
         tanggal: tanggal.trim(),
-        akunDebit,
-        akunKredit,
+        akunDebit: typeof akunDebit === "number" ? akunDebit : 0,
+        akunKredit: typeof akunKredit === "number" ? akunKredit : 0,
         jumlah: parseFloat(jumlah),
         keterangan: keterangan.trim() || undefined,
         kas,
@@ -113,6 +137,7 @@ export function MutasiRekeningAddDialog({
 
   const generalError = _errors?.general?.[0];
   const tanggalError = _errors?.tanggal?.[0];
+  const kasError = _errors?.kas?.[0];
   const akunDebitError = _errors?.akunDebit?.[0];
   const akunKreditError = _errors?.akunKredit?.[0];
   const jumlahError = _errors?.jumlah?.[0];
@@ -154,6 +179,9 @@ export function MutasiRekeningAddDialog({
               <Label className="text-slate-600 font-medium">
                 Kas Keuangan<span className="text-red-500">*</span>
               </Label>
+              {kasError ? (
+                <p className="text-sm text-destructive">{kasError}</p>
+              ) : null}
               <div className="flex gap-3">
                 {kasOptions.map((option) => {
                   const isSelected = kas === option.nama;
@@ -188,17 +216,22 @@ export function MutasiRekeningAddDialog({
                 >
                   Asal Dana / Akun Kredit<span className="text-red-500">*</span>
                 </Label>
-                <Select value={akunKredit} onValueChange={setAkunKredit}>
+                <Select
+                  value={akunKredit.toString()}
+                  onValueChange={(val) =>
+                    setAkunKredit(val ? parseInt(val, 10) : "")
+                  }
+                >
                   <SelectTrigger
                     id="akun-kredit"
                     className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                    disabled={isLoading}
+                    disabled={isLoading || akunDropdownQuery.isLoading}
                   >
                     <SelectValue placeholder="Pilih Akun Kredit" />
                   </SelectTrigger>
                   <SelectContent>
-                    {akunOptions.map((akun) => (
-                      <SelectItem key={akun.id} value={akun.nama}>
+                    {akunDropdownQuery.data?.map((akun) => (
+                      <SelectItem key={akun.id} value={akun.id.toString()}>
                         {akun.nama}
                       </SelectItem>
                     ))}
@@ -220,17 +253,22 @@ export function MutasiRekeningAddDialog({
                   Tujuan Dana / Akun Debit
                   <span className="text-red-500">*</span>
                 </Label>
-                <Select value={akunDebit} onValueChange={setAkunDebit}>
+                <Select
+                  value={akunDebit.toString()}
+                  onValueChange={(val) =>
+                    setAkunDebit(val ? parseInt(val, 10) : "")
+                  }
+                >
                   <SelectTrigger
                     id="akun-debit"
                     className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                    disabled={isLoading}
+                    disabled={isLoading || akunDropdownQuery.isLoading}
                   >
                     <SelectValue placeholder="Pilih Akun Debit" />
                   </SelectTrigger>
                   <SelectContent>
-                    {akunOptions.map((akun) => (
-                      <SelectItem key={akun.id} value={akun.nama}>
+                    {akunDropdownQuery.data?.map((akun) => (
+                      <SelectItem key={akun.id} value={akun.id.toString()}>
                         {akun.nama}
                       </SelectItem>
                     ))}

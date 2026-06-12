@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import type { MutasiRekeningFormErrors } from "@/components/mutasi-rekening/types";
 import {
-  MOCK_AKUN_OPTIONS,
   MOCK_KAS_OPTIONS,
-  MOCK_MUTASI_REKENING,
+  toMutasiRekeningRecord,
 } from "@/components/mutasi-rekening/types";
 
 import { MutasiRekeningAddDialog } from "@/components/mutasi-rekening/mutasi-rekening-add-dialog";
@@ -16,6 +16,13 @@ import { MutasiRekeningTable } from "@/components/mutasi-rekening/mutasi-rekenin
 import { MutasiRekeningFilterBar } from "@/components/mutasi-rekening/mutasi-rekening-filter-bar";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+import {
+  createMutasiRekening,
+  deleteMutasiRekening,
+  getMutasiRekening,
+  updateMutasiRekening,
+} from "@/services/mutasiRekeningService";
+import { getAkunDropdown } from "@/services/akunKeuanganService";
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
@@ -38,7 +45,7 @@ const mutasiRekeningSearchSchema = z.object({
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
   kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
-  akun: z.string().optional(),
+  akun: z.number().optional(),
 });
 
 export const Route = createFileRoute("/_auth/mutasi-rekening")({
@@ -62,7 +69,13 @@ function RouteComponent() {
     akun: akunFilter,
   } = search;
 
-  // Mock data query
+  const getMutasiRekeningFn = useServerFn(getMutasiRekening);
+  const createMutasiRekeningFn = useServerFn(createMutasiRekening);
+  const updateMutasiRekeningFn = useServerFn(updateMutasiRekening);
+  const deleteMutasiRekeningFn = useServerFn(deleteMutasiRekening);
+  const getAkunDropdownFn = useServerFn(getAkunDropdown);
+
+  // API data query
   const mutasiRekeningQuery = useQuery({
     queryKey: [
       "mutasiRekening",
@@ -76,63 +89,44 @@ function RouteComponent() {
         akun: akunFilter,
       },
     ],
-    queryFn: () => {
-      let filtered = MOCK_MUTASI_REKENING;
-
-      // Apply search filter
-      if (searchQuery) {
-        filtered = filtered.filter(
-          (m) =>
-            m.keterangan?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            m.akun_debit.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            m.akun_kredit.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-      }
-
-      // Apply date range filter
-      if (tanggal_mulai) {
-        filtered = filtered.filter((m) => m.tanggal >= tanggal_mulai);
-      }
-      if (tanggal_selesai) {
-        filtered = filtered.filter((m) => m.tanggal <= tanggal_selesai);
-      }
-
-      // Apply kas filter
-      if (kasFilter.length === 0) {
-        filtered = [];
-      } else {
-        filtered = filtered.filter((m) => kasFilter.includes(m.kas));
-      }
-
-      // Apply akun filter
-      if (akunFilter && akunFilter !== "all") {
-        filtered = filtered.filter(
-          (m) => m.akun_debit === akunFilter || m.akun_kredit === akunFilter,
-        );
-      }
-
-      const total = filtered.length;
-      const last_page = Math.max(1, Math.ceil(total / per_page));
-      const current_page = Math.min(Math.max(1, page), last_page);
-      const pageIndex = current_page - 1;
-      const data = filtered.slice(
-        pageIndex * per_page,
-        pageIndex * per_page + per_page,
-      );
+    queryFn: async () => {
+      const result = await getMutasiRekeningFn({
+        data: {
+          params: {
+            page,
+            per_page,
+            search: searchQuery,
+            tanggal_mulai,
+            tanggal_selesai,
+            kas: kasFilter,
+            akun: akunFilter,
+          },
+        },
+      });
+      if (!result)
+        return {
+          data: [],
+          meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 },
+        };
       return {
-        current_page,
-        last_page,
-        per_page,
-        total,
-        data,
+        ...result,
+        data: result.data.map(toMutasiRekeningRecord),
       };
     },
     staleTime: 1000 * 60 * 2,
   });
 
+  // Akun dropdown query - filter by kas from URL
   const akunDropdownQuery = useQuery({
-    queryKey: ["akun", "dropdown"],
-    queryFn: () => MOCK_AKUN_OPTIONS,
+    queryKey: ["akun", "dropdown", kasFilter],
+    queryFn: async () => {
+      const result = await getAkunDropdownFn({ data: { kas: kasFilter } });
+      if (!result?.data) return [];
+      return result.data.map((a: { id: number; nama_akun: string }) => ({
+        id: a.id,
+        nama: a.nama_akun,
+      }));
+    },
     staleTime: 1000 * 60 * 10,
   });
 
@@ -142,12 +136,13 @@ function RouteComponent() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const total = mutasiRekeningQuery.data ? mutasiRekeningQuery.data.total : 0;
-  const pageCount = mutasiRekeningQuery.data
+  const total = mutasiRekeningQuery.data?.meta?.total ?? 0;
+  const pageCount = mutasiRekeningQuery.data?.meta
     ? Math.max(
         1,
         Math.ceil(
-          mutasiRekeningQuery.data.total / mutasiRekeningQuery.data.per_page,
+          mutasiRekeningQuery.data.meta.total /
+            mutasiRekeningQuery.data.meta.per_page,
         ),
       )
     : 1;
@@ -223,62 +218,103 @@ function RouteComponent() {
     });
   };
 
-  const handleAkunChange = (value: string) => {
+  const handleAkunChange = (value: number | undefined) => {
     navigate({
       to: "/mutasi-rekening",
       search: (prev: any) => ({
         ...prev,
-        akun: value === "all" ? undefined : value,
+        akun: value,
         page: 1,
       }),
       replace: true,
     });
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleAdd = (_payload: {
+  const handleAdd = async (payload: {
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    akunDebit: number;
+    akunKredit: number;
     jumlah: number;
     keterangan?: string;
     kas: string;
   }) => {
     setAddErrors(null);
-    toast.success("Mutasi akun berhasil ditambahkan");
-    queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
-    return true;
+    try {
+      await createMutasiRekeningFn({
+        data: {
+          akun_debit_id: payload.akunDebit,
+          akun_kredit_id: payload.akunKredit,
+          date: payload.tanggal,
+          jumlah: payload.jumlah,
+          keterangan: payload.keterangan,
+          kas: payload.kas,
+        },
+      });
+      toast.success("Mutasi akun berhasil ditambahkan");
+      queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
+      setAddErrors(errors);
+      const msg =
+        error?.response?.data?.message || error?.message || "Gagal menambahkan mutasi akun";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleEdit = ({
-    id: _id,
-    tanggal: _tanggal,
-    akunDebit: _akunDebit,
-    akunKredit: _akunKredit,
-    jumlah: _jumlah,
-    keterangan: _keterangan,
-    kas: _kas,
+  const handleEdit = async ({
+    id,
+    tanggal,
+    akunDebit,
+    akunKredit,
+    jumlah,
+    keterangan,
   }: {
     id: number;
     tanggal: string;
-    akunDebit: string;
-    akunKredit: string;
+    akunDebit: number;
+    akunKredit: number;
     jumlah: number;
     keterangan?: string;
-    kas: string;
   }) => {
     setEditErrors(null);
-    toast.success("Mutasi akun berhasil diperbarui");
-    queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
-    return true;
+    try {
+      await updateMutasiRekeningFn({
+        data: {
+          id,
+          date: tanggal,
+          akun_debit_id: akunDebit,
+          akun_kredit_id: akunKredit,
+          jumlah,
+          keterangan,
+        },
+      });
+      toast.success("Mutasi akun berhasil diperbarui");
+      queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      return true;
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
+      setEditErrors(errors);
+      const msg =
+        error?.response?.data?.message || error?.message || "Gagal memperbarui mutasi akun";
+      toast.error(msg);
+      return false;
+    }
   };
 
-  // TODO: Ganti dengan API call ketika backend siap
-  const handleDelete = (_id: number) => {
-    toast.success("Mutasi akun berhasil dihapus");
-    queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
-    return true;
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteMutasiRekeningFn({ data: { id } });
+      toast.success("Mutasi akun berhasil dihapus");
+      queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      return true;
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message || error?.message || "Gagal menghapus mutasi akun";
+      toast.error(msg);
+      return false;
+    }
   };
 
   return (
@@ -321,7 +357,6 @@ function RouteComponent() {
         }}
         onCreate={handleAdd}
         errors={addErrors}
-        akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
       />
 
