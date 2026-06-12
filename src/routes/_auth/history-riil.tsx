@@ -179,12 +179,13 @@ function RouteComponent() {
 
   const handleVerify = async (id: number) => {
     try {
-      await verifyHistoryRiilFn({ data: { id } });
-      toast.success("Data berhasil diverifikasi");
+      const result = await verifyHistoryRiilFn({ data: { id } });
+      toast.success(result?.message || "Data berhasil diverifikasi");
       queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
-    } catch {
-      toast.error("Gagal memverifikasi data");
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || "Gagal memverifikasi data";
+      toast.error(msg);
       return false;
     }
   };

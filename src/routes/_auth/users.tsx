@@ -153,17 +153,17 @@ function RouteComponent() {
   }): Promise<boolean> => {
     setAddErrors(null);
     try {
-      await createUserFn({
+      const result = await createUserFn({
         data: { nama: payload.name, email: payload.email, role: payload.role },
       });
-      toast.success("User berhasil ditambahkan");
+      toast.success(result?.message || "User berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["users"] });
       setOpen(false);
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as UserFormErrors;
       setAddErrors(errors);
-      const msg = error?.response?.data?.message || "Gagal menambahkan user";
+      const msg = error?.response?.data?.message || error?.message || "Gagal menambahkan user";
       toast.error(msg);
       return false;
     }
@@ -178,14 +178,14 @@ function RouteComponent() {
   }): Promise<boolean> => {
     setEditErrors(null);
     try {
-      await updateUserFn({ data: { id, role } });
-      toast.success("User berhasil diperbarui");
+      const result = await updateUserFn({ data: { id, role } });
+      toast.success(result?.message || "User berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["users"] });
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as UserFormErrors;
       setEditErrors(errors);
-      const msg = error?.response?.data?.message || "Gagal memperbarui user";
+      const msg = error?.response?.data?.message || error?.message || "Gagal memperbarui user";
       toast.error(msg);
       return false;
     }
@@ -193,12 +193,12 @@ function RouteComponent() {
 
   const handleDelete = async (id: number): Promise<boolean> => {
     try {
-      await deleteUserFn({ data: { id } });
-      toast.success("User berhasil dihapus");
+      const result = await deleteUserFn({ data: { id } });
+      toast.success(result?.message || "User berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["users"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || "Gagal menghapus user";
+      const msg = error?.response?.data?.message || error?.message || "Gagal menghapus user";
       toast.error(msg);
       return false;
     }
@@ -209,17 +209,13 @@ function RouteComponent() {
     nextActive: boolean,
   ): Promise<boolean> => {
     try {
-      await toggleUserStatusFn({ data: { id } });
-      toast.success(
-        nextActive
-          ? "User berhasil diaktifkan"
-          : "User berhasil dinon-aktifkan",
-      );
+      const result = await toggleUserStatusFn({ data: { id } });
+      toast.success(result?.message || (nextActive ? "User berhasil diaktifkan" : "User berhasil dinon-aktifkan"));
       queryClient.invalidateQueries({ queryKey: ["users"] });
       return true;
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message || "Gagal mengubah status user";
+        error?.response?.data?.message || error?.message || "Gagal mengubah status user";
       toast.error(msg);
       return false;
     }

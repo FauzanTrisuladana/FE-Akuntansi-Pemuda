@@ -137,18 +137,19 @@ function RouteComponent() {
   }) => {
     setAddErrors(null);
     try {
-      await createAkunKeuanganFn({
+      const result = await createAkunKeuanganFn({
         data: {
           nama_akun: payload.namaAkun,
           kas: MOCK_KAS_OPTIONS.find((k) => k.id === payload.kasId)?.nama ?? "",
           keterangan: payload.keterangan,
         },
       });
-      toast.success("Akun keuangan berhasil ditambahkan");
+      toast.success(result?.message || "Akun keuangan berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
-    } catch {
-      toast.error("Gagal membuat akun keuangan");
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || "Gagal membuat akun keuangan";
+      toast.error(msg);
       return false;
     }
   };
@@ -166,7 +167,7 @@ function RouteComponent() {
   }) => {
     setEditErrors(null);
     try {
-      await updateAkunKeuanganFn({
+      const result = await updateAkunKeuanganFn({
         data: {
           id,
           nama_akun: namaAkun,
@@ -174,23 +175,25 @@ function RouteComponent() {
           keterangan,
         },
       });
-      toast.success("Akun keuangan berhasil diperbarui");
+      toast.success(result?.message || "Akun keuangan berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
-    } catch {
-      toast.error("Gagal memperbarui akun keuangan");
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || "Gagal memperbarui akun keuangan";
+      toast.error(msg);
       return false;
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteAkunKeuanganFn({ data: { id } });
-      toast.success("Akun keuangan berhasil dihapus");
+      const result = await deleteAkunKeuanganFn({ data: { id } });
+      toast.success(result?.message || "Akun keuangan berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
-    } catch {
-      toast.error("Gagal menghapus akun keuangan");
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || "Gagal menghapus akun keuangan";
+      toast.error(msg);
       return false;
     }
   };

@@ -240,7 +240,7 @@ function RouteComponent() {
   }) => {
     setAddErrors(null);
     try {
-      await createMutasiRekeningFn({
+      const result = await createMutasiRekeningFn({
         data: {
           akun_debit_id: payload.akunDebit,
           akun_kredit_id: payload.akunKredit,
@@ -250,7 +250,7 @@ function RouteComponent() {
           kas: payload.kas,
         },
       });
-      toast.success("Mutasi akun berhasil ditambahkan");
+      toast.success(result?.message || "Mutasi akun berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
       return true;
     } catch (error: any) {
@@ -280,7 +280,7 @@ function RouteComponent() {
   }) => {
     setEditErrors(null);
     try {
-      await updateMutasiRekeningFn({
+      const result = await updateMutasiRekeningFn({
         data: {
           id,
           date: tanggal,
@@ -290,7 +290,7 @@ function RouteComponent() {
           keterangan,
         },
       });
-      toast.success("Mutasi akun berhasil diperbarui");
+      toast.success(result?.message || "Mutasi akun berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
       return true;
     } catch (error: any) {
@@ -305,8 +305,8 @@ function RouteComponent() {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteMutasiRekeningFn({ data: { id } });
-      toast.success("Mutasi akun berhasil dihapus");
+      const result = await deleteMutasiRekeningFn({ data: { id } });
+      toast.success(result?.message || "Mutasi akun berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
       return true;
     } catch (error: any) {

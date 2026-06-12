@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getRequest } from "@tanstack/react-start/server";
-import { redirect } from "@tanstack/react-router";
-import { parse } from "cookie";
+import { parse, serialize } from "cookie";
 import { env } from "@/env";
 
 export const api = axios.create({
@@ -43,8 +42,27 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      throw redirect({
-        to: "/login",
+      const tokenCookie = serialize("token", "", {
+        httpOnly: true,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 0,
+      });
+
+      const userCookie = serialize("user", "", {
+        httpOnly: false,
+        secure: env.VITE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 0,
+      });
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: {
+          "Set-Cookie": [tokenCookie, userCookie].join(", "),
+          "Content-Type": "application/json",
+        },
       });
     }
 
