@@ -60,7 +60,7 @@ export function AkunKeuanganFilterBar({
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`kas-${option.id}`}
-                  checked={selectedKas.includes(option.nama)}
+                  checked={selectedKas.map((k) => k.toLowerCase()).includes(option.nama.toLowerCase())}
                   onCheckedChange={(checked) =>
                     handleKasChange(option.nama, !!checked)
                   }
@@ -70,7 +70,7 @@ export function AkunKeuanganFilterBar({
                   htmlFor={`kas-${option.id}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {option.nama}
+                  {option.nama.toLowerCase()}
                 </label>
               </div>
             ))}

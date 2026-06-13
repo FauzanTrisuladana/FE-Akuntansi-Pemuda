@@ -42,7 +42,7 @@ export function MutasiRekeningFilterBar({
   className,
 }: MutasiRekeningFilterBarProps) {
   // Default: semua checkbox tercheck
-  const defaultAllKas = kasOptions.map((o) => o.nama);
+  const defaultAllKas = kasOptions.map((o) => o.nama.toLowerCase());
 
   const [selectedKas, setSelectedKas] = React.useState<Array<string>>(
     kas ?? defaultAllKas,
@@ -114,9 +114,9 @@ export function MutasiRekeningFilterBar({
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`kas-${option.id}`}
-                  checked={selectedKas.includes(option.nama)}
+                  checked={selectedKas.map((k) => k.toLowerCase()).includes(option.nama.toLowerCase())}
                   onCheckedChange={(checked) =>
-                    handleKasChange(option.nama, !!checked)
+                    handleKasChange(option.nama.toLowerCase(), !!checked)
                   }
                   disabled={isLoading}
                 />
@@ -124,7 +124,7 @@ export function MutasiRekeningFilterBar({
                   htmlFor={`kas-${option.id}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  {option.nama}
+                  {option.nama.toLowerCase()}
                 </label>
               </div>
             ))}
