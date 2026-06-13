@@ -163,7 +163,10 @@ function RouteComponent() {
     } catch (error: any) {
       const errors = error?.response?.data?.errors as UserFormErrors;
       setAddErrors(errors);
-      const msg = error?.response?.data?.message || error?.message || "Gagal menambahkan user";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menambahkan user";
       toast.error(msg);
       return false;
     }
@@ -185,7 +188,10 @@ function RouteComponent() {
     } catch (error: any) {
       const errors = error?.response?.data?.errors as UserFormErrors;
       setEditErrors(errors);
-      const msg = error?.response?.data?.message || error?.message || "Gagal memperbarui user";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui user";
       toast.error(msg);
       return false;
     }
@@ -198,7 +204,10 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Gagal menghapus user";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menghapus user";
       toast.error(msg);
       return false;
     }
@@ -210,12 +219,19 @@ function RouteComponent() {
   ): Promise<boolean> => {
     try {
       const result = await toggleUserStatusFn({ data: { id } });
-      toast.success(result?.message || (nextActive ? "User berhasil diaktifkan" : "User berhasil dinon-aktifkan"));
+      toast.success(
+        result?.message ||
+          (nextActive
+            ? "User berhasil diaktifkan"
+            : "User berhasil dinon-aktifkan"),
+      );
       queryClient.invalidateQueries({ queryKey: ["users"] });
       return true;
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal mengubah status user";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal mengubah status user";
       toast.error(msg);
       return false;
     }

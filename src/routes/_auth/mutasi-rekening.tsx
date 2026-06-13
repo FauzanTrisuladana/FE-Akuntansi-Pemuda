@@ -258,7 +258,9 @@ function RouteComponent() {
       const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
       setAddErrors(errors);
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal menambahkan mutasi akun";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menambahkan mutasi akun";
       toast.error(msg);
       return false;
     }
@@ -298,7 +300,9 @@ function RouteComponent() {
       const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
       setEditErrors(errors);
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal memperbarui mutasi akun";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui mutasi akun";
       toast.error(msg);
       return false;
     }
@@ -312,7 +316,9 @@ function RouteComponent() {
       return true;
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal menghapus mutasi akun";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menghapus mutasi akun";
       toast.error(msg);
       return false;
     }

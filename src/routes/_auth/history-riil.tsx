@@ -185,7 +185,10 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Gagal memverifikasi data";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memverifikasi data";
       toast.error(msg);
       return false;
     }

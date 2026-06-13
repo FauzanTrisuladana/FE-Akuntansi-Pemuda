@@ -39,7 +39,7 @@ export const toMutasiRekeningRecord = (
   m: MutasiRekeningBackend,
 ): MutasiRekeningRecord => ({
   id: m.id,
-  tanggal: m.date.split("T")[0] ?? m.date,
+  tanggal: m.date,
   akun_debit: m.akun_debit?.nama_akun ?? "-",
   akun_kredit: m.akun_kredit?.nama_akun ?? "-",
   akun_debit_id: m.akun_debit_id,

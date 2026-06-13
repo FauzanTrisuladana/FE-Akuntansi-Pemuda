@@ -148,7 +148,10 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Gagal membuat akun keuangan";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal membuat akun keuangan";
       toast.error(msg);
       return false;
     }
@@ -179,7 +182,10 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Gagal memperbarui akun keuangan";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui akun keuangan";
       toast.error(msg);
       return false;
     }
@@ -192,7 +198,10 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
       return true;
     } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || "Gagal menghapus akun keuangan";
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menghapus akun keuangan";
       toast.error(msg);
       return false;
     }

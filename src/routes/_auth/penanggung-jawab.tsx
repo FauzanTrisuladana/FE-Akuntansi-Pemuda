@@ -114,7 +114,9 @@ function RouteComponent() {
       const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
       setAddErrors(errors);
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal menambahkan penanggung jawab";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menambahkan penanggung jawab";
       toast.error(msg);
       return false;
     }
@@ -137,7 +139,9 @@ function RouteComponent() {
       const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
       setEditErrors(errors);
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal memperbarui penanggung jawab";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui penanggung jawab";
       toast.error(msg);
       return false;
     }
@@ -151,7 +155,9 @@ function RouteComponent() {
       return true;
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message || error?.message || "Gagal menghapus penanggung jawab";
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menghapus penanggung jawab";
       toast.error(msg);
       return false;
     }
