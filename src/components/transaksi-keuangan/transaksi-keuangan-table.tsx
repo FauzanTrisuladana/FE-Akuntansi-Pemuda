@@ -76,6 +76,7 @@ export function TransaksiKeuanganTable({
   akunOptions,
   kasOptions,
   penginputOptions,
+  penanggungJawabOptions,
   editErrors,
 }: TransaksiKeuanganTableProps) {
   const [transaksiToEdit, setTransaksiToEdit] =
@@ -392,6 +393,7 @@ export function TransaksiKeuanganTable({
         akunOptions={akunOptions ?? []}
         kasOptions={kasOptions ?? []}
         penginputOptions={penginputOptions ?? []}
+        penanggungJawabOptions={penanggungJawabOptions ?? []}
       />
 
       <TransaksiKeuanganDeleteDialog

@@ -10,6 +10,7 @@ import {
   MOCK_AKUN_OPTIONS,
   MOCK_KARYAWAN_OPTIONS,
   MOCK_KAS_OPTIONS,
+  MOCK_PENANGGUNG_JAWAB_OPTIONS,
   MOCK_TRANSAKSI_KEUANGAN,
 } from "@/components/transaksi-keuangan/types";
 
@@ -160,6 +161,12 @@ function RouteComponent() {
   const karyawanDropdownQuery = useQuery({
     queryKey: ["karyawan", "dropdown"],
     queryFn: () => MOCK_KARYAWAN_OPTIONS,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const penanggungJawabDropdownQuery = useQuery({
+    queryKey: ["penanggungJawab", "dropdown"],
+    queryFn: () => MOCK_PENANGGUNG_JAWAB_OPTIONS,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -375,6 +382,7 @@ function RouteComponent() {
         errors={addErrors}
         akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
+        penanggungJawabOptions={penanggungJawabDropdownQuery.data ?? []}
       />
 
       <TransaksiKeuanganTable
@@ -408,6 +416,7 @@ function RouteComponent() {
         akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
         penginputOptions={karyawanDropdownQuery.data ?? []}
+        penanggungJawabOptions={penanggungJawabDropdownQuery.data ?? []}
       />
     </>
   );

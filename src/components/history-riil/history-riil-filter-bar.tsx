@@ -100,7 +100,9 @@ export function HistoryRiilFilterBar({
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={`kas-${option.id}`}
-                  checked={selectedKas.map((k) => k.toLowerCase()).includes(option.nama.toLowerCase())}
+                  checked={selectedKas
+                    .map((k) => k.toLowerCase())
+                    .includes(option.nama.toLowerCase())}
                   onCheckedChange={(checked) =>
                     handleKasChange(option.nama.toLowerCase(), !!checked)
                   }

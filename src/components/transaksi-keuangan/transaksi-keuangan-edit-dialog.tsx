@@ -49,6 +49,7 @@ interface TransaksiKeuanganEditDialogProps {
   akunOptions?: Array<{ id: number; nama: string }>;
   kasOptions?: Array<{ id: number; nama: string }>;
   penginputOptions?: Array<{ id: number; nama: string; email: string }>;
+  penanggungJawabOptions?: Array<{ id: number; nama: string }>;
 }
 
 export function TransaksiKeuanganEditDialog({
@@ -60,6 +61,7 @@ export function TransaksiKeuanganEditDialog({
   akunOptions,
   kasOptions,
   penginputOptions,
+  penanggungJawabOptions,
 }: TransaksiKeuanganEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
@@ -258,6 +260,37 @@ export function TransaksiKeuanganEditDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {akunOptions?.map((option) => (
+                      <SelectItem key={option.id} value={option.nama}>
+                        {option.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Penanggung Jawab - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="penanggung-jawab"
+                  className="text-slate-600 font-medium"
+                >
+                  Penanggung Jawab<span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={penanggungJawab}
+                  onValueChange={setPenanggungJawab}
+                >
+                  <SelectTrigger
+                    id="penanggung-jawab"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Penanggung Jawab" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(penanggungJawabOptions ?? []).map((option) => (
                       <SelectItem key={option.id} value={option.nama}>
                         {option.nama}
                       </SelectItem>

@@ -44,6 +44,7 @@ type TransaksiKeuanganAddDialogProps = {
   errors?: TransaksiKeuanganFormErrors;
   akunOptions: Array<{ id: number; nama: string }>;
   kasOptions: Array<{ id: number; nama: string }>;
+  penanggungJawabOptions?: Array<{ id: number; nama: string }>;
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -54,6 +55,7 @@ export function TransaksiKeuanganAddDialog({
   errors: _errors,
   akunOptions,
   kasOptions,
+  penanggungJawabOptions,
 }: TransaksiKeuanganAddDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled =
@@ -264,6 +266,37 @@ export function TransaksiKeuanganAddDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {akunOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.nama}>
+                        {option.nama}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Penanggung Jawab - hanya tampil jika kas sudah dipilih */}
+            {kas && (
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="penanggung-jawab"
+                  className="text-slate-600 font-medium"
+                >
+                  Penanggung Jawab<span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={penanggungJawab}
+                  onValueChange={setPenanggungJawab}
+                >
+                  <SelectTrigger
+                    id="penanggung-jawab"
+                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
+                    disabled={isLoading}
+                  >
+                    <SelectValue placeholder="Pilih Penanggung Jawab" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(penanggungJawabOptions ?? []).map((option) => (
                       <SelectItem key={option.id} value={option.nama}>
                         {option.nama}
                       </SelectItem>
