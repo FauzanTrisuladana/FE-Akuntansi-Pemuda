@@ -43,8 +43,8 @@ interface TransaksiKeuanganEditDialogProps {
     kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
-    bukti?: string;
-  }) => boolean;
+    bukti?: File | null;
+  }) => Promise<boolean> | boolean;
   errors?: TransaksiKeuanganFormErrors;
   akunOptions?: Array<{ id: number; nama: string }>;
   kasOptions?: Array<{ id: number; nama: string }>;
@@ -105,7 +105,7 @@ export function TransaksiKeuanganEditDialog({
         kas,
         tipe,
         jumlah: parseFloat(jumlah),
-        bukti: previewUrlString,
+        bukti: _buktiFile,
       });
       if (success) {
         onOpenChange(false);
@@ -131,9 +131,6 @@ export function TransaksiKeuanganEditDialog({
       setPreviewUrl(url);
     }
   };
-
-  // Keep previewUrl as string | undefined for type compatibility
-  const previewUrlString = previewUrl ?? undefined;
 
   const tanggalError = _errors?.tanggal?.[0];
   const deskripsiError = _errors?.deskripsi?.[0];

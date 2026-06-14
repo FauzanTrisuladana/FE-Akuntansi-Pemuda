@@ -19,6 +19,60 @@ export type TransaksiKeuanganFormErrors = Partial<
   Record<string, Array<string>>
 > | null;
 
+// Backend response type
+export type TransaksiBackend = {
+  id: number;
+  akun_id: number;
+  penginput_id: number;
+  penanggung_jawab_id: number;
+  deskripsi: string | null;
+  date: string;
+  jenis_transaksi: "pemasukan" | "pengeluaran";
+  jumlah: number;
+  bukti: string | null;
+  akun?: {
+    id: number;
+    nama_akun: string;
+    kas: string;
+    jumlah: string;
+    keterangan: string | null;
+  };
+  penginput?: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    status: string;
+    profile_image: string | null;
+    has_password: boolean;
+  };
+  penanggung_jawab?: {
+    id: number;
+    nama: string;
+    valuasi_transaksi: number;
+  };
+};
+
+// Convert backend to frontend format
+export const toTransaksiKeuanganRecord = (
+  t: TransaksiBackend,
+): TransaksiKeuanganRecord => ({
+  id: t.id,
+  tanggal: t.date,
+  deskripsi: t.deskripsi || "",
+  akun_transaksi: t.akun?.nama_akun || "",
+  penanggung_jawab: t.penanggung_jawab?.nama || "",
+  penginput: {
+    nama: t.penginput?.name || "",
+    email: t.penginput?.email || "",
+    avatar: t.penginput?.profile_image || undefined,
+  },
+  kas: t.akun?.kas || "",
+  tipe: t.jenis_transaksi,
+  jumlah: t.jumlah,
+  bukti: t.bukti || undefined,
+});
+
 export type AkunOption = {
   id: number;
   nama: string;

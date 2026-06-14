@@ -56,12 +56,13 @@ interface TransaksiKeuanganTableProps {
     kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
-    bukti?: string;
-  }) => boolean;
-  onDelete?: (id: number) => boolean;
+    bukti?: File | null;
+  }) => any;
+  onDelete?: (id: number) => any;
   akunOptions?: Array<{ id: number; nama: string }>;
   kasOptions?: Array<{ id: number; nama: string }>;
   penginputOptions?: Array<{ id: number; nama: string; email: string }>;
+  penanggungJawabOptions?: Array<{ id: number; nama: string }>;
   editErrors?: TransaksiKeuanganFormErrors;
 }
 

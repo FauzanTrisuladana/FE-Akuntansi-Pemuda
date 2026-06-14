@@ -39,8 +39,8 @@ type TransaksiKeuanganAddDialogProps = {
     kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
-    bukti?: string;
-  }) => boolean;
+    bukti?: File | null;
+  }) => Promise<boolean> | boolean;
   errors?: TransaksiKeuanganFormErrors;
   akunOptions: Array<{ id: number; nama: string }>;
   kasOptions: Array<{ id: number; nama: string }>;
@@ -107,7 +107,7 @@ export function TransaksiKeuanganAddDialog({
         kas,
         tipe,
         jumlah: parseFloat(jumlah),
-        bukti: previewUrlString,
+        bukti: _buktiFile,
       });
       if (success) {
         setDialogOpen(false);
@@ -133,9 +133,6 @@ export function TransaksiKeuanganAddDialog({
       setPreviewUrl(url);
     }
   };
-
-  // Keep previewUrl as string | undefined for type compatibility
-  const previewUrlString = previewUrl ?? undefined;
 
   const tanggalError = _errors?.tanggal?.[0];
   const deskripsiError = _errors?.deskripsi?.[0];

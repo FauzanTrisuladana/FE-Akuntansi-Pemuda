@@ -16,7 +16,7 @@ interface TransaksiKeuanganFilterBarProps {
   tanggalMulai?: string;
   tanggalSelesai?: string;
   kas?: Array<string>;
-  akun?: string;
+  akun?: number | null;
   tipe?: Array<string>;
   onTanggalMulaiChange: (value: string) => void;
   onTanggalSelesaiChange: (value: string) => void;
@@ -141,14 +141,19 @@ export function TransaksiKeuanganFilterBar({
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Akun:</span>
           <div className="flex-1">
-            <Select value={akun ?? "all"} onValueChange={onAkunChange}>
+            <Select
+              value={
+                akun !== null && akun !== undefined ? akun.toString() : "all"
+              }
+              onValueChange={onAkunChange}
+            >
               <SelectTrigger className="h-9 w-full">
                 <SelectValue placeholder="Pilih Akun" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Akun</SelectItem>
                 {akunOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.nama}>
+                  <SelectItem key={option.id} value={option.id.toString()}>
                     {option.nama}
                   </SelectItem>
                 ))}

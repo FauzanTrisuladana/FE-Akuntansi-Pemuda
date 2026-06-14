@@ -134,3 +134,24 @@ export const deletePenanggungJawab = createServerFn({ method: "POST" })
       handleApiError(error);
     }
   });
+
+export type PenanggungJawabDropdownResponse = {
+  status: string;
+  message: string;
+  data: Array<PenanggungJawabRecord>;
+};
+
+// Get penanggung jawab dropdown
+export const getPenanggungJawabDropdown = createServerFn({ method: "GET" })
+  .validator((data: { params?: { search?: string } }) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.get<PenanggungJawabDropdownResponse>(
+        "/penanggung-jawab/dropdown",
+        { params: data.params },
+      );
+      return response.data;
+    } catch (error) {
+      handleApiError(error);
+    }
+  });
