@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -175,7 +175,8 @@ function RouteComponent() {
   };
 
   // Data already mapped in queryFn
-  const mappedData = (transaksiKeuanganQuery.data?.data ?? []) as Array<TransaksiKeuanganRecord>;
+  const mappedData = (transaksiKeuanganQuery.data?.data ??
+    []) as Array<TransaksiKeuanganRecord>;
   const totalPemasukan =
     (transaksiKeuanganQuery.data as TransaksiCollectionResponse)?.summary
       ?.total_pemasukan ?? 0;

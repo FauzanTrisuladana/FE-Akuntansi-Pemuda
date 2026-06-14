@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import type { FormEvent } from "react";
@@ -42,7 +42,7 @@ type TransaksiKeuanganAddDialogProps = {
     bukti?: File | null;
   }) => Promise<boolean> | boolean;
   errors?: TransaksiKeuanganFormErrors;
-  akunOptions: Array<{ id: number; nama: string }>;
+  akunOptions: Array<{ id: number; nama: string; kas?: string }>;
   kasOptions: Array<{ id: number; nama: string }>;
   penanggungJawabOptions?: Array<{ id: number; nama: string }>;
 };
@@ -73,6 +73,14 @@ export function TransaksiKeuanganAddDialog({
   const [_buktiFile, setBuktiFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Filter akun berdasarkan kas yang dipilih
+  const filteredAkunOptions = useMemo(() => {
+    if (!kas) return [];
+    return akunOptions.filter(
+      (option) => option.kas?.toLowerCase() === kas.toLowerCase(),
+    );
+  }, [akunOptions, kas]);
 
   const isFormValid =
     tanggal.trim() !== "" &&
@@ -262,7 +270,7 @@ export function TransaksiKeuanganAddDialog({
                     <SelectValue placeholder="Pilih Akun Transaksi" />
                   </SelectTrigger>
                   <SelectContent>
-                    {akunOptions.map((option) => (
+                    {filteredAkunOptions.map((option) => (
                       <SelectItem key={option.id} value={option.nama}>
                         {option.nama}
                       </SelectItem>
