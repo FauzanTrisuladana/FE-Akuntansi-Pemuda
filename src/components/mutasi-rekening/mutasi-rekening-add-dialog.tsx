@@ -72,7 +72,9 @@ export function MutasiRekeningAddDialog({
     queryKey: ["akun", "dropdown", kas],
     queryFn: async () => {
       if (!kas) return [];
-      const result = await getAkunDropdownFn({ data: { kas: [kas] } });
+      const result = await getAkunDropdownFn({
+        data: { kas: [kas.toLowerCase()] },
+      });
       if (!result?.data) return [];
       return result.data.map((a: { id: number; nama_akun: string }) => ({
         id: a.id,
@@ -117,7 +119,7 @@ export function MutasiRekeningAddDialog({
         akunKredit: typeof akunKredit === "number" ? akunKredit : 0,
         jumlah: parseFloat(jumlah),
         keterangan: keterangan.trim() || undefined,
-        kas,
+        kas: kas.toLowerCase(),
       });
       if (success) {
         setDialogOpen(false);

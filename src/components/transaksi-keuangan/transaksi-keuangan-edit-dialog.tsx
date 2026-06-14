@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import type { FormEvent } from "react";
 import type {
   TransaksiKeuanganFormErrors,
@@ -28,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { getAkunDropdown } from "@/services/akunKeuanganService";
 
 interface TransaksiKeuanganEditDialogProps {
   open: boolean;
@@ -46,7 +49,6 @@ interface TransaksiKeuanganEditDialogProps {
     bukti?: File | null;
   }) => Promise<boolean> | boolean;
   errors?: TransaksiKeuanganFormErrors;
-  akunOptions?: Array<{ id: number; nama: string }>;
   kasOptions?: Array<{ id: number; nama: string }>;
   penginputOptions?: Array<{ id: number; nama: string; email: string }>;
   penanggungJawabOptions?: Array<{ id: number; nama: string }>;
@@ -58,7 +60,6 @@ export function TransaksiKeuanganEditDialog({
   data,
   onUpdate,
   errors: _errors,
-  akunOptions,
   kasOptions,
   penginputOptions,
   penanggungJawabOptions,
@@ -74,6 +75,25 @@ export function TransaksiKeuanganEditDialog({
   const [_buktiFile, setBuktiFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Internal query for akun dropdown based on kas from data
+  const getAkunDropdownFn = useServerFn(getAkunDropdown);
+  const akunDropdownQuery = useQuery({
+    queryKey: ["akun", "dropdown", kas],
+    queryFn: async () => {
+      if (!kas) return [];
+      const result = await getAkunDropdownFn({
+        data: { kas: [kas.toLowerCase()] },
+      });
+      if (!result?.data) return [];
+      return result.data.map((a: { id: number; nama_akun: string }) => ({
+        id: a.id,
+        nama: a.nama_akun,
+      }));
+    },
+    enabled: !!kas,
+    staleTime: 1000 * 60 * 10,
+  });
 
   useEffect(() => {
     if (data) {
@@ -206,7 +226,6 @@ export function TransaksiKeuanganEditDialog({
                             : "bg-red-100 text-red-700 border-red-200"
                           : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
-                      onClick={() => setTipe(t)}
                     >
                       {t === "pemasukan" ? "Pemasukan" : "Pengeluaran"}
                     </Badge>
@@ -215,14 +234,12 @@ export function TransaksiKeuanganEditDialog({
               </div>
             </div>
 
-            {/* Kas Keuangan */}
+            {/* Kas Keuangan - Read Only */}
             <div className="grid gap-2">
-              <Label className="text-slate-600 font-medium">
-                Kas Keuangan<span className="text-red-500">*</span>
-              </Label>
+              <Label className="text-slate-600 font-medium">Kas Keuangan</Label>
               <div className="flex gap-3">
                 {kasOptions?.map((option) => {
-                  const isSelected = kas === option.nama;
+                  const isSelected = kas === option.nama.toLowerCase();
                   return (
                     <Badge
                       key={option.id}
@@ -232,9 +249,8 @@ export function TransaksiKeuanganEditDialog({
                           ? "bg-blue-100 text-blue-700 border-blue-200"
                           : "bg-gray-50 text-gray-500 border-gray-200"
                       }`}
-                      onClick={() => setKas(option.nama)}
                     >
-                      {option.nama}
+                      {option.nama.toLowerCase()}
                     </Badge>
                   );
                 })}
@@ -247,16 +263,19 @@ export function TransaksiKeuanganEditDialog({
                 <Label htmlFor="akun" className="text-slate-600 font-medium">
                   Akun Transaksi<span className="text-red-500">*</span>
                 </Label>
-                <Select value={akunTransaksi} onValueChange={setAkunTransaksi}>
+                <Select
+                  value={akunTransaksi}
+                  onValueChange={setAkunTransaksi}
+                  disabled={isLoading || akunDropdownQuery.isLoading}
+                >
                   <SelectTrigger
                     id="akun"
                     className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                    disabled={isLoading}
                   >
                     <SelectValue placeholder="Pilih Akun Transaksi" />
                   </SelectTrigger>
                   <SelectContent>
-                    {akunOptions?.map((option) => (
+                    {akunDropdownQuery.data?.map((option) => (
                       <SelectItem key={option.id} value={option.nama}>
                         {option.nama}
                       </SelectItem>

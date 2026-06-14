@@ -420,7 +420,6 @@ function RouteComponent() {
         }}
         onCreate={handleAdd}
         errors={addErrors}
-        akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
         penanggungJawabOptions={penanggungJawabDropdownQuery.data ?? []}
       />
@@ -453,7 +452,6 @@ function RouteComponent() {
         onUpdate={handleEdit}
         onDelete={handleDelete}
         editErrors={editErrors}
-        akunOptions={akunDropdownQuery.data ?? []}
         kasOptions={kasDropdownQuery.data ?? []}
         penanggungJawabOptions={penanggungJawabDropdownQuery.data ?? []}
       />

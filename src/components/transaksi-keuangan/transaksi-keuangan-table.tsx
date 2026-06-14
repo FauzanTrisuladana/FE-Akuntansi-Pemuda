@@ -59,7 +59,6 @@ interface TransaksiKeuanganTableProps {
     bukti?: File | null;
   }) => any;
   onDelete?: (id: number) => any;
-  akunOptions?: Array<{ id: number; nama: string }>;
   kasOptions?: Array<{ id: number; nama: string }>;
   penginputOptions?: Array<{ id: number; nama: string; email: string }>;
   penanggungJawabOptions?: Array<{ id: number; nama: string }>;
@@ -74,7 +73,6 @@ export function TransaksiKeuanganTable({
   onPageSizeChange,
   onUpdate,
   onDelete,
-  akunOptions,
   kasOptions,
   penginputOptions,
   penanggungJawabOptions,
@@ -391,7 +389,6 @@ export function TransaksiKeuanganTable({
         data={transaksiToEdit}
         onUpdate={onUpdate}
         errors={editErrors}
-        akunOptions={akunOptions ?? []}
         kasOptions={kasOptions ?? []}
         penginputOptions={penginputOptions ?? []}
         penanggungJawabOptions={penanggungJawabOptions ?? []}
