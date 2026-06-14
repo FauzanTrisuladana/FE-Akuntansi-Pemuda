@@ -232,6 +232,7 @@ function RouteComponent() {
         ...prev,
         kas: selectedKas,
         page: 1,
+        akun: null,
       }),
       replace: true,
     });
@@ -265,9 +266,8 @@ function RouteComponent() {
   const handleAdd = async (payload: {
     tanggal: string;
     deskripsi: string;
-    akun_transaksi: string;
-    penanggung_jawab: string;
-    penginput: string;
+    akun_id: number;
+    penanggung_jawab_id?: number;
     kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
@@ -275,28 +275,13 @@ function RouteComponent() {
   }) => {
     setAddErrors(null);
     try {
-      // Find akun_id from akunOptions (already mapped to {id, nama})
-      const akunId = akunDropdownQuery.data?.find(
-        (a: { id: number; nama: string }) => a.nama === payload.akun_transaksi,
-      )?.id;
-      if (!akunId) {
-        toast.error("Akun tidak ditemukan");
-        return false;
-      }
-
-      // Find penanggung_jawab_id from penanggungJawabOptions (already mapped)
-      const pjId = penanggungJawabDropdownQuery.data?.find(
-        (p: { id: number; nama: string }) =>
-          p.nama === payload.penanggung_jawab,
-      )?.id;
-
       await createTransaksiFn({
         data: {
           date: payload.tanggal,
           deskripsi: payload.deskripsi || undefined,
           jenis_transaksi: payload.tipe,
-          akun_id: akunId,
-          penanggung_jawab_id: pjId,
+          akun_id: payload.akun_id,
+          penanggung_jawab_id: payload.penanggung_jawab_id,
           jumlah: payload.jumlah,
           bukti: payload.bukti,
         },
@@ -316,9 +301,8 @@ function RouteComponent() {
     id: number;
     tanggal: string;
     deskripsi: string;
-    akun_transaksi: string;
-    penanggung_jawab: string;
-    penginput: string;
+    akun_id: number;
+    penanggung_jawab_id?: number;
     kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
@@ -326,26 +310,14 @@ function RouteComponent() {
   }) => {
     setEditErrors(null);
     try {
-      const akunId = akunDropdownQuery.data?.find(
-        (a: { id: number; nama: string }) => a.nama === params.akun_transaksi,
-      )?.id;
-      if (!akunId) {
-        toast.error("Akun tidak ditemukan");
-        return false;
-      }
-
-      const pjId = penanggungJawabDropdownQuery.data?.find(
-        (p: { id: number; nama: string }) => p.nama === params.penanggung_jawab,
-      )?.id;
-
       await updateTransaksiFn({
         data: {
           id: params.id,
           date: params.tanggal,
           deskripsi: params.deskripsi || undefined,
           jenis_transaksi: params.tipe,
-          akun_id: akunId,
-          penanggung_jawab_id: pjId,
+          akun_id: params.akun_id,
+          penanggung_jawab_id: params.penanggung_jawab_id,
           jumlah: params.jumlah,
           bukti: params.bukti,
         },

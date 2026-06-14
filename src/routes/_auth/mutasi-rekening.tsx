@@ -203,6 +203,7 @@ function RouteComponent() {
         ...prev,
         kas: selectedKas,
         page: 1,
+        akun: undefined,
       }),
       replace: true,
     });
