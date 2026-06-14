@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { FormEvent } from "react";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,7 @@ interface MutasiRekeningEditDialogProps {
   }) => Promise<boolean> | boolean;
   errors?: MutasiRekeningFormErrors;
   akunOptions?: Array<{ id: number; nama: string }>;
+  kasOptions?: Array<{ id: number; nama: string }>;
 }
 
 export function MutasiRekeningEditDialog({
@@ -40,6 +42,7 @@ export function MutasiRekeningEditDialog({
   onUpdate,
   errors: _errors,
   akunOptions: _akunOptions,
+  kasOptions,
 }: MutasiRekeningEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
   const [jumlah, setJumlah] = useState("");
@@ -105,9 +108,30 @@ export function MutasiRekeningEditDialog({
 
             {/* Kas Keuangan (readonly) */}
             <div className="grid gap-2">
-              <Label className="text-slate-600 font-medium">Kas Keuangan</Label>
-              <div className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="font-medium text-slate-900">{data?.kas ?? "-"}</p>
+              <Label className="text-slate-600 font-medium">
+                Kas Keuangan
+              </Label>
+              <div className="flex gap-3">
+                {kasOptions?.map((option) => {
+                  const isSelected = data?.kas.toLowerCase() === option.nama.toLowerCase();
+                  const isKasPemuda =
+                    option.nama.toLowerCase() === "kas pemuda";
+                  return (
+                    <Badge
+                      key={option.id}
+                      variant="outline"
+                      className={`cursor-default rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
+                        isSelected
+                          ? isKasPemuda
+                            ? "bg-green-100 text-green-700 border-green-200"
+                            : "bg-amber-50 text-amber-600 border-amber-200"
+                          : "bg-gray-50 text-gray-500 border-gray-200"
+                      }`}
+                    >
+                      {option.nama}
+                    </Badge>
+                  );
+                })}
               </div>
             </div>
 

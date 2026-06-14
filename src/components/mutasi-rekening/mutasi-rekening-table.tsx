@@ -7,7 +7,7 @@ import {
 import { Calendar, Pencil, Trash2 } from "lucide-react";
 import { MutasiRekeningEditDialog } from "./mutasi-rekening-edit-dialog";
 import { MutasiRekeningDeleteDialog } from "./mutasi-rekening-delete-dialog";
-import { formatCurrency } from "./types";
+import { formatCurrency, MOCK_KAS_OPTIONS } from "./types";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
@@ -289,6 +289,7 @@ export function MutasiRekeningTable({
         onUpdate={onUpdate}
         errors={editErrors}
         akunOptions={akunOptions ?? []}
+        kasOptions={MOCK_KAS_OPTIONS}
       />
 
       <MutasiRekeningDeleteDialog
