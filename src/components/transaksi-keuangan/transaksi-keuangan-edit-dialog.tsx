@@ -40,17 +40,14 @@ interface TransaksiKeuanganEditDialogProps {
     id: number;
     tanggal: string;
     deskripsi: string;
-    akun_transaksi: string;
-    penanggung_jawab: string;
-    penginput: string;
-    kas: string;
+    akun_id: number;
+    penanggung_jawab_id?: number;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
     bukti?: File | null;
   }) => Promise<boolean> | boolean;
   errors?: TransaksiKeuanganFormErrors;
   kasOptions?: Array<{ id: number; nama: string }>;
-  penginputOptions?: Array<{ id: number; nama: string; email: string }>;
   penanggungJawabOptions?: Array<{ id: number; nama: string }>;
 }
 
@@ -61,16 +58,14 @@ export function TransaksiKeuanganEditDialog({
   onUpdate,
   errors: _errors,
   kasOptions,
-  penginputOptions,
   penanggungJawabOptions,
 }: TransaksiKeuanganEditDialogProps) {
   const [tanggal, setTanggal] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [tipe, setTipe] = useState<"pemasukan" | "pengeluaran">("pemasukan");
   const [kas, setKas] = useState("");
-  const [akunTransaksi, setAkunTransaksi] = useState("");
+  const [akunId, setAkunId] = useState<number | "">("");
   const [penanggungJawab, setPenanggungJawab] = useState("");
-  const [penginput, setPenginput] = useState("");
   const [jumlah, setJumlah] = useState("");
   const [_buktiFile, setBuktiFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
@@ -101,9 +96,9 @@ export function TransaksiKeuanganEditDialog({
       setDeskripsi(data.deskripsi);
       setTipe(data.tipe);
       setKas(data.kas);
-      setAkunTransaksi(data.akun_transaksi);
+      setAkunId(data.akun_id);
       setPenanggungJawab(data.penanggung_jawab);
-      setPenginput(data.penginput.nama);
+
       setJumlah(data.jumlah.toString());
       setPreviewUrl(data.bukti);
     }
@@ -119,10 +114,8 @@ export function TransaksiKeuanganEditDialog({
         id: data.id,
         tanggal,
         deskripsi,
-        akun_transaksi: akunTransaksi,
-        penanggung_jawab: penanggungJawab,
-        penginput,
-        kas,
+        akun_id: typeof akunId === "number" ? akunId : 0,
+        penanggung_jawab_id: data.penanggung_jawab_id,
         tipe,
         jumlah: parseFloat(jumlah),
         bukti: _buktiFile,
@@ -140,7 +133,7 @@ export function TransaksiKeuanganEditDialog({
   const isFormValid =
     tanggal.trim() !== "" &&
     deskripsi.trim() !== "" &&
-    akunTransaksi !== "" &&
+    akunId !== "" &&
     jumlah.trim() !== "";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -264,8 +257,8 @@ export function TransaksiKeuanganEditDialog({
                   Akun Transaksi<span className="text-red-500">*</span>
                 </Label>
                 <Select
-                  value={akunTransaksi}
-                  onValueChange={setAkunTransaksi}
+                  value={akunId !== "" ? akunId.toString() : ""}
+                  onValueChange={(val) => setAkunId(parseInt(val, 10))}
                   disabled={isLoading || akunDropdownQuery.isLoading}
                 >
                   <SelectTrigger
@@ -276,7 +269,7 @@ export function TransaksiKeuanganEditDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {akunDropdownQuery.data?.map((option) => (
-                      <SelectItem key={option.id} value={option.nama}>
+                      <SelectItem key={option.id} value={option.id.toString()}>
                         {option.nama}
                       </SelectItem>
                     ))}
@@ -307,34 +300,6 @@ export function TransaksiKeuanganEditDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {(penanggungJawabOptions ?? []).map((option) => (
-                      <SelectItem key={option.id} value={option.nama}>
-                        {option.nama}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {/* Penginput - hanya tampil jika kas sudah dipilih */}
-            {kas && (
-              <div className="grid gap-2">
-                <Label
-                  htmlFor="penginput"
-                  className="text-slate-600 font-medium"
-                >
-                  Penginput
-                </Label>
-                <Select value={penginput} onValueChange={setPenginput}>
-                  <SelectTrigger
-                    id="penginput"
-                    className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
-                    disabled={isLoading}
-                  >
-                    <SelectValue placeholder="Pilih Penginput" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(penginputOptions ?? []).map((option) => (
                       <SelectItem key={option.id} value={option.nama}>
                         {option.nama}
                       </SelectItem>

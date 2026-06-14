@@ -36,10 +36,8 @@ type TransaksiKeuanganAddDialogProps = {
   onCreate: (payload: {
     tanggal: string;
     deskripsi: string;
-    akun_transaksi: string;
-    penanggung_jawab: string;
-    penginput: string;
-    kas: string;
+    akun_id: number;
+    penanggung_jawab_id?: number;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
     bukti?: File | null;
@@ -68,7 +66,7 @@ export function TransaksiKeuanganAddDialog({
   const [deskripsi, setDeskripsi] = useState("");
   const [tipe, setTipe] = useState<"pemasukan" | "pengeluaran">("pemasukan");
   const [kas, setKas] = useState("");
-  const [akunTransaksi, setAkunTransaksi] = useState("");
+  const [akunId, setAkunId] = useState<number | "">("");
   const [penanggungJawab, setPenanggungJawab] = useState("");
   const [jumlah, setJumlah] = useState("");
   const [_buktiFile, setBuktiFile] = useState<File | null>(null);
@@ -96,13 +94,13 @@ export function TransaksiKeuanganAddDialog({
 
   // Reset akun when kas changes
   useEffect(() => {
-    setAkunTransaksi("");
+    setAkunId("");
   }, [kas]);
 
   const isFormValid =
     tanggal.trim() !== "" &&
     deskripsi.trim() !== "" &&
-    akunTransaksi !== "" &&
+    akunId !== "" &&
     jumlah.trim() !== "";
 
   const resetForm = () => {
@@ -110,7 +108,7 @@ export function TransaksiKeuanganAddDialog({
     setDeskripsi("");
     setTipe("pemasukan");
     setKas("");
-    setAkunTransaksi("");
+    setAkunId("");
     setPenanggungJawab("");
     setJumlah("");
     setBuktiFile(null);
@@ -123,13 +121,16 @@ export function TransaksiKeuanganAddDialog({
 
     setIsLoading(true);
     try {
+      // Find penanggung_jawab_id from penanggungJawabOptions
+      const pjId = penanggungJawabOptions?.find(
+        (p) => p.nama === penanggungJawab,
+      )?.id;
+
       const success = await onCreate({
         tanggal: tanggal.trim(),
         deskripsi: deskripsi.trim(),
-        akun_transaksi: akunTransaksi,
-        penanggung_jawab: penanggungJawab,
-        penginput: "",
-        kas: kas.toLowerCase(),
+        akun_id: typeof akunId === "number" ? akunId : 0,
+        penanggung_jawab_id: pjId,
         tipe,
         jumlah: parseFloat(jumlah),
         bukti: _buktiFile,
@@ -278,7 +279,10 @@ export function TransaksiKeuanganAddDialog({
                 <Label htmlFor="akun" className="text-slate-600 font-medium">
                   Akun Transaksi<span className="text-red-500">*</span>
                 </Label>
-                <Select value={akunTransaksi} onValueChange={setAkunTransaksi}>
+                <Select
+                  value={akunId !== "" ? akunId.toString() : ""}
+                  onValueChange={(val) => setAkunId(parseInt(val, 10))}
+                >
                   <SelectTrigger
                     id="akun"
                     className="h-auto min-h-12 cursor-pointer w-full px-4 py-3"
@@ -288,7 +292,7 @@ export function TransaksiKeuanganAddDialog({
                   </SelectTrigger>
                   <SelectContent>
                     {akunDropdownQuery.data?.map((option) => (
-                      <SelectItem key={option.id} value={option.nama}>
+                      <SelectItem key={option.id} value={option.id.toString()}>
                         {option.nama}
                       </SelectItem>
                     ))}

@@ -268,7 +268,6 @@ function RouteComponent() {
     deskripsi: string;
     akun_id: number;
     penanggung_jawab_id?: number;
-    kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
     bukti?: File | null;
@@ -303,7 +302,6 @@ function RouteComponent() {
     deskripsi: string;
     akun_id: number;
     penanggung_jawab_id?: number;
-    kas: string;
     tipe: "pemasukan" | "pengeluaran";
     jumlah: number;
     bukti?: File | null;
