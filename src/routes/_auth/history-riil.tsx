@@ -112,23 +112,13 @@ function RouteComponent() {
         ),
       )
     : 1;
-  const safePage = Math.min(Math.max(page, 1), pageCount);
-  const pageIndex = safePage - 1;
+  const pageIndex = Math.max(page - 1, 0);
 
   const pagination = {
     pageIndex,
     pageSize: per_page,
     pageCount,
   };
-
-  // Handle safe page navigation
-  if (safePage !== page) {
-    navigate({
-      to: "/history-riil",
-      search: (prev: any) => ({ ...prev, page: safePage }),
-      replace: true,
-    });
-  }
 
   const handleSearchChange = (value: string) => {
     navigate({

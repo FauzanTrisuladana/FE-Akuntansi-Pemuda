@@ -81,8 +81,7 @@ function RouteComponent() {
 
   const total = akunKeuanganQuery.data?.meta?.total ?? 0;
   const pageCount = akunKeuanganQuery.data?.meta?.last_page ?? 1;
-  const safePage = Math.min(Math.max(page, 1), pageCount);
-  const pageIndex = safePage - 1;
+  const pageIndex = Math.max(page - 1, 0);
 
   const pagination = {
     pageIndex,
@@ -94,16 +93,6 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [addErrors, setAddErrors] = useState<AkunKeuanganFormErrors>(null);
   const [editErrors, setEditErrors] = useState<AkunKeuanganFormErrors>(null);
-
-  useEffect(() => {
-    if (safePage !== page) {
-      navigate({
-        to: "/pengaturan-akun-keuangan",
-        search: (prev: any) => ({ ...prev, page: safePage }),
-        replace: true,
-      });
-    }
-  }, [navigate, page, safePage]);
 
   const handleSearchChange = (value: string) => {
     navigate({
