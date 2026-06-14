@@ -35,13 +35,11 @@ export function TransaksiKeuanganEvidenceDialog({
 
         <DialogBody className="py-4">
           {data?.bukti ? (
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
-              <img
-                src={data.bukti}
-                alt={`Bukti transaksi ${data.deskripsi}`}
-                className="w-full object-contain max-h-96"
-              />
-            </div>
+            <img
+              src={data.bukti}
+              alt={`Bukti transaksi ${data.deskripsi}`}
+              className="w-full object-contain max-h-96"
+            />
           ) : (
             <p className="text-center text-muted-foreground py-8">
               Tidak ada bukti tersedia
@@ -51,11 +49,12 @@ export function TransaksiKeuanganEvidenceDialog({
 
         <DialogFooter>
           <Button
-            variant="outline"
-            className="md:w-[50%] w-full h-12 cursor-pointer"
+            type="button"
+            variant="destructive"
+            className="h-12 cursor-pointer"
             onClick={() => onOpenChange(false)}
           >
-            Batal
+            Tutup
           </Button>
         </DialogFooter>
       </DialogContent>
