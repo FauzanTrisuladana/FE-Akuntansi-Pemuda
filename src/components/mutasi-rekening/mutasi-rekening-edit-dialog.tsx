@@ -108,12 +108,11 @@ export function MutasiRekeningEditDialog({
 
             {/* Kas Keuangan (readonly) */}
             <div className="grid gap-2">
-              <Label className="text-slate-600 font-medium">
-                Kas Keuangan
-              </Label>
+              <Label className="text-slate-600 font-medium">Kas Keuangan</Label>
               <div className="flex gap-3">
                 {kasOptions?.map((option) => {
-                  const isSelected = data?.kas.toLowerCase() === option.nama.toLowerCase();
+                  const isSelected =
+                    data?.kas.toLowerCase() === option.nama.toLowerCase();
                   const isKasPemuda =
                     option.nama.toLowerCase() === "kas pemuda";
                   return (

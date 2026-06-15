@@ -6,7 +6,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { format, toZonedTime } from "date-fns-tz";
 import { useServerFn } from "@tanstack/react-start";
-import type { TransaksiCollectionResponse } from "@/services/transaksiService";
+import type {
+  SerializedFile,
+  TransaksiCollectionResponse,
+} from "@/services/transaksiService";
 import type {
   TransaksiKeuanganFormErrors,
   TransaksiKeuanganRecord,
@@ -30,6 +33,21 @@ import { TransaksiKeuanganFilterBar } from "@/components/transaksi-keuangan/tran
 import { TransaksiKeuanganSummary } from "@/components/transaksi-keuangan/transaksi-keuangan-summary";
 import HeaderComp from "@/components/shared/header-comp";
 import { SearchBar } from "@/components/shared/search-bar";
+
+// Helper to convert File to a serializable format for server function boundary
+const fileToSerializedFile = (file: File): Promise<SerializedFile> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Remove the data:...;base64, prefix
+      const base64 = result.split(",")[1];
+      resolve({ base64, name: file.name, type: file.type });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 const getFirstDayOfMonth = (): string => {
@@ -274,6 +292,11 @@ function RouteComponent() {
   }) => {
     setAddErrors(null);
     try {
+      let serializedBukti: SerializedFile | undefined;
+      if (payload.bukti) {
+        serializedBukti = await fileToSerializedFile(payload.bukti);
+      }
+
       await createTransaksiFn({
         data: {
           date: payload.tanggal,
@@ -282,7 +305,7 @@ function RouteComponent() {
           akun_id: payload.akun_id,
           penanggung_jawab_id: payload.penanggung_jawab_id,
           jumlah: payload.jumlah,
-          bukti: payload.bukti,
+          bukti: serializedBukti,
         },
       });
       toast.success("Transaksi berhasil ditambahkan");
@@ -308,6 +331,11 @@ function RouteComponent() {
   }) => {
     setEditErrors(null);
     try {
+      let serializedBukti: SerializedFile | undefined;
+      if (params.bukti) {
+        serializedBukti = await fileToSerializedFile(params.bukti);
+      }
+
       await updateTransaksiFn({
         data: {
           id: params.id,
@@ -317,7 +345,7 @@ function RouteComponent() {
           akun_id: params.akun_id,
           penanggung_jawab_id: params.penanggung_jawab_id,
           jumlah: params.jumlah,
-          bukti: params.bukti,
+          bukti: serializedBukti,
         },
       });
       toast.success("Transaksi berhasil diperbarui");

@@ -2,6 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
 
+// Serializable file representation that survives server function boundary
+export type SerializedFile = {
+  base64: string;
+  name: string;
+  type: string;
+};
+
 // Types
 export type TransaksiBackend = {
   id: number;
@@ -94,7 +101,7 @@ export const createTransaksiKeuangan = createServerFn({ method: "POST" })
       akun_id: number;
       penanggung_jawab_id?: number;
       jumlah: number;
-      bukti?: unknown;
+      bukti?: SerializedFile | null;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -112,7 +119,9 @@ export const createTransaksiKeuangan = createServerFn({ method: "POST" })
       }
       formData.append("jumlah", data.jumlah.toString());
       if (data.bukti) {
-        formData.append("bukti", data.bukti as File);
+        const buffer = Buffer.from(data.bukti.base64, "base64");
+        const blob = new Blob([buffer], { type: data.bukti.type });
+        formData.append("bukti", blob, data.bukti.name);
       }
 
       const response = await api.post<TransaksiSingleResponse>(
@@ -136,7 +145,7 @@ export const updateTransaksiKeuangan = createServerFn({ method: "POST" })
       akun_id: number;
       penanggung_jawab_id?: number;
       jumlah: number;
-      bukti?: unknown;
+      bukti?: SerializedFile | null;
     }) => data,
   )
   .handler(async ({ data }) => {
@@ -155,7 +164,9 @@ export const updateTransaksiKeuangan = createServerFn({ method: "POST" })
       }
       formData.append("jumlah", data.jumlah.toString());
       if (data.bukti) {
-        formData.append("bukti", data.bukti as File);
+        const buffer = Buffer.from(data.bukti.base64, "base64");
+        const blob = new Blob([buffer], { type: data.bukti.type });
+        formData.append("bukti", blob, data.bukti.name);
       }
 
       const response = await api.post<TransaksiSingleResponse>(

@@ -7,7 +7,7 @@ import {
 import { Calendar, Pencil, Trash2 } from "lucide-react";
 import { MutasiRekeningEditDialog } from "./mutasi-rekening-edit-dialog";
 import { MutasiRekeningDeleteDialog } from "./mutasi-rekening-delete-dialog";
-import { formatCurrency, MOCK_KAS_OPTIONS } from "./types";
+import { MOCK_KAS_OPTIONS, formatCurrency } from "./types";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
