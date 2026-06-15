@@ -75,41 +75,40 @@ export function MutasiRekeningFilterBar({
       )}
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Rentang Tanggal:</span>
           </div>
 
-          <div className="flex items-center gap-2 flex-1">
+          <div className="flex items-center gap-2 flex-1 flex-col sm:flex-row">
             <Input
               id="tanggal_mulai"
               type="date"
               value={tanggalMulai ?? ""}
               onChange={(e) => onTanggalMulaiChange(e.target.value)}
-              className="h-9 flex-1"
+              className="h-9 flex-1 w-full sm:w-auto"
               disabled={isLoading}
             />
-          </div>
-
-          <span className="font-medium text-slate-500">-</span>
-
-          <div className="flex items-center gap-2 flex-1">
+            <span className="font-medium text-slate-500 sm:hidden">s/d</span>
+            <span className="font-medium text-slate-500 hidden sm:inline">-</span>
             <Input
               id="tanggal_selesai"
               type="date"
               value={tanggalSelesai ?? ""}
               onChange={(e) => onTanggalSelesaiChange(e.target.value)}
-              className="h-9 flex-1"
+              className="h-9 flex-1 w-full sm:w-auto"
               disabled={isLoading}
             />
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Kas:</span>
-          <div className="flex flex-row gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Kas:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             {kasOptions.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
@@ -133,9 +132,11 @@ export function MutasiRekeningFilterBar({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Akun:</span>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Akun:</span>
+          </div>
           <div className="flex-1">
             <Select
               value={akun?.toString() ?? "all"}

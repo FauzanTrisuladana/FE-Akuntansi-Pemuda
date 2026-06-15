@@ -74,11 +74,13 @@ export function FilterBar({
         className,
       )}
     >
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Peran:</span>
-          <div className="flex flex-row gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Peran:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             {roleOptions.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
@@ -100,10 +102,12 @@ export function FilterBar({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Status:</span>
-          <div className="flex flex-row gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Status:</span>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             {["Aktif", "Pending", "Tidak Aktif"].map((status) => (
               <div key={status} className="flex items-center space-x-2">
                 <Checkbox

@@ -51,32 +51,32 @@ export function AkunKeuanganFilterBar({
         className,
       )}
     >
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Kas:</span>
-          <div className="flex flex-row gap-4">
-            {kasOptions.map((option) => (
-              <div key={option.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`kas-${option.id}`}
-                  checked={selectedKas
-                    .map((k) => k.toLowerCase())
-                    .includes(option.nama.toLowerCase())}
-                  onCheckedChange={(checked) =>
-                    handleKasChange(option.nama, !!checked)
-                  }
-                  disabled={isLoading}
-                />
-                <label
-                  htmlFor={`kas-${option.id}`}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {option.nama.toLowerCase()}
-                </label>
-              </div>
-            ))}
-          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:gap-4">
+          {kasOptions.map((option) => (
+            <div key={option.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={`kas-${option.id}`}
+                checked={selectedKas
+                  .map((k) => k.toLowerCase())
+                  .includes(option.nama.toLowerCase())}
+                onCheckedChange={(checked) =>
+                  handleKasChange(option.nama, !!checked)
+                }
+                disabled={isLoading}
+              />
+              <label
+                htmlFor={`kas-${option.id}`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {option.nama.toLowerCase()}
+              </label>
+            </div>
+          ))}
         </div>
       </div>
     </div>
