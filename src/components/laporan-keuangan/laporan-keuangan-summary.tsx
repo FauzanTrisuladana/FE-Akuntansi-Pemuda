@@ -15,8 +15,8 @@ export function LaporanKeuanganSummary({
   kasDiTangan,
 }: LaporanKeuanganSummaryProps) {
   return (
-    <Card className="bg-slate-900 text-white w-full lg:w-64 flex-shrink-0 h-full flex flex-col">
-      <CardContent className="px-4 flex flex-col justify-between h-full">
+    <Card className="bg-slate-900 text-white w-full lg:w-64 flex-shrink-0 h-full flex flex-col max-h-48 sm:max-h-none">
+      <CardContent className="px-4 flex flex-col justify-between h-full overflow-y-auto">
         <h3 className="text-sm font-bold mb-3 pb-2 border-b border-slate-700">
           Ringkasan Laporan
         </h3>
