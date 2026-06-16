@@ -95,7 +95,9 @@ export function TransaksiKeuanganFilterBar({
               disabled={isLoading}
             />
             <span className="font-medium text-slate-500 sm:hidden">s/d</span>
-            <span className="font-medium text-slate-500 hidden sm:inline">-</span>
+            <span className="font-medium text-slate-500 hidden sm:inline">
+              -
+            </span>
             <Input
               id="tanggal_selesai"
               type="date"
