@@ -201,3 +201,21 @@ export const mapPosisiToLaporan = (
     keterangan: p.keterangan as "Seimbang" | "Uang Kurang" | "Uang Lebih",
   }));
 };
+
+// Download laporan PDF - server function
+export const downloadLaporanPDF = createServerFn({ method: "GET" })
+  .validator((data: { params: IndexLaporanParams }) => data)
+  .handler(async ({ data }) => {
+    try {
+      const response = await api.get("/laporan/pdf", {
+        params: data.params,
+        responseType: "arraybuffer",
+      });
+
+      // Convert array buffer to base64 string for client-side blob creation
+      const base64 = Buffer.from(response.data, "binary").toString("base64");
+      return base64;
+    } catch (error) {
+      handleApiError(error);
+    }
+  });

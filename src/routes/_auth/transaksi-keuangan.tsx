@@ -315,6 +315,11 @@ function RouteComponent() {
       if (error?.response?.data?.errors) {
         setAddErrors(error.response.data.errors);
       }
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menambahkan transaksi";
+      toast.error(msg);
       return false;
     }
   };
@@ -355,6 +360,11 @@ function RouteComponent() {
       if (error?.response?.data?.errors) {
         setEditErrors(error.response.data.errors);
       }
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal memperbarui transaksi";
+      toast.error(msg);
       return false;
     }
   };
@@ -365,7 +375,12 @@ function RouteComponent() {
       toast.success("Transaksi berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["transaksiKeuangan"] });
       return true;
-    } catch {
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal menghapus transaksi";
+      toast.error(msg);
       return false;
     }
   };

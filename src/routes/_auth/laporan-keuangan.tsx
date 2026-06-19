@@ -1,12 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Printer } from "lucide-react";
 import { format, toZonedTime } from "date-fns-tz";
 import { useServerFn } from "@tanstack/react-start";
 
 import type { KasOption } from "@/components/laporan-keuangan/types";
-import { getLaporanKeuangan } from "@/services/laporanService";
+import {
+  downloadLaporanPDF,
+  getLaporanKeuangan,
+} from "@/services/laporanService";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
 
 import { LaporanKeuanganTransaksiTable } from "@/components/laporan-keuangan/laporan-keuangan-transaksi-table";
@@ -181,9 +185,58 @@ function RouteComponent() {
     });
   };
 
-  const handlePrintPDF = () => {
-    // TODO: Implement PDF print functionality
-    console.log("Print PDF clicked");
+  const downloadLaporanPDFFn = useServerFn(downloadLaporanPDF);
+
+  const handlePrintPDF = async () => {
+    try {
+      const base64Data = await downloadLaporanPDFFn({
+        data: {
+          params: {
+            tanggal_mulai,
+            tanggal_selesai,
+            jenis_transaksi: tipeFilter as Array<"pemasukan" | "pengeluaran">,
+            kas: kasFilter.toLowerCase(),
+            akun:
+              akunFilter && akunFilter !== "all"
+                ? parseInt(akunFilter, 10)
+                : null,
+          },
+        },
+      });
+
+      if (!base64Data) {
+        toast.error("Gagal mengambil data PDF");
+        return;
+      }
+
+      // Convert base64 to blob
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+        const slice = byteCharacters.slice(offset, offset + 1024);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        byteArrays.push(new Uint8Array(byteNumbers));
+      }
+      const blob = new Blob(byteArrays, { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "laporan-keuangan.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error: any) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Gagal mengunduh PDF";
+      toast.error(msg);
+    }
   };
 
   return (
