@@ -1,11 +1,12 @@
 import * as React from "react";
+import { ArrowDownRight, ArrowUpRight, Calendar } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDownRight, ArrowUpRight, Calendar } from "lucide-react";
 import { formatCurrency } from "./types";
+import { LaporanKeuanganEvidenceDialog } from "./laporan-keuangan-evidence-dialog";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { LaporanKeuanganTransaksiRecord } from "./types";
 
@@ -144,7 +145,7 @@ export function LaporanKeuanganTransaksiTable({
               variant="ghost"
               size="sm"
               className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 cursor-pointer"
-              onClick={() => window.open(bukti, "_blank")}
+              onClick={() => handleViewBukti(row.original)}
             >
               Lihat Bukti
             </Button>
@@ -162,6 +163,15 @@ export function LaporanKeuanganTransaksiTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const [evidenceDialogOpen, setEvidenceDialogOpen] = React.useState(false);
+  const [selectedRecord, setSelectedRecord] =
+    React.useState<LaporanKeuanganTransaksiRecord | null>(null);
+
+  const handleViewBukti = (record: LaporanKeuanganTransaksiRecord) => {
+    setSelectedRecord(record);
+    setEvidenceDialogOpen(true);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -233,6 +243,12 @@ export function LaporanKeuanganTransaksiTable({
           </TableBody>
         </Table>
       </div>
+
+      <LaporanKeuanganEvidenceDialog
+        open={evidenceDialogOpen}
+        onOpenChange={setEvidenceDialogOpen}
+        data={selectedRecord}
+      />
     </div>
   );
 }

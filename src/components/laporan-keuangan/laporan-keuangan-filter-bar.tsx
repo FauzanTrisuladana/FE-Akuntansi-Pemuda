@@ -129,7 +129,7 @@ export function LaporanKeuanganFilterBar({
               <SelectContent>
                 <SelectItem value="all">Semua Akun</SelectItem>
                 {akunOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.nama}>
+                  <SelectItem key={option.id} value={option.id.toString()}>
                     {option.nama}
                   </SelectItem>
                 ))}

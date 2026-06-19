@@ -21,7 +21,6 @@ export type LaporanKeuanganMutasiRecord = {
 };
 
 export type LaporanKeuanganPosisiRecord = {
-  id: number;
   nama_akun: string;
   saldo_awal: number;
   pemasukan: number;
@@ -169,7 +168,6 @@ export const MOCK_LAPORAN_MUTASI: Array<LaporanKeuanganMutasiRecord> = [
 
 export const MOCK_LAPORAN_POSISI: Array<LaporanKeuanganPosisiRecord> = [
   {
-    id: 1,
     nama_akun: "Kas Ditangan (Retail)",
     saldo_awal: 1000000,
     pemasukan: 500000,
@@ -180,7 +178,6 @@ export const MOCK_LAPORAN_POSISI: Array<LaporanKeuanganPosisiRecord> = [
     keterangan: "Seimbang",
   },
   {
-    id: 2,
     nama_akun: "Kas Modal",
     saldo_awal: 2000000,
     pemasukan: 2250000,
@@ -191,7 +188,6 @@ export const MOCK_LAPORAN_POSISI: Array<LaporanKeuanganPosisiRecord> = [
     keterangan: "Uang Lebih",
   },
   {
-    id: 3,
     nama_akun: "Kas Operasional",
     saldo_awal: 500000,
     pemasukan: 0,

@@ -3,14 +3,11 @@ import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { Printer } from "lucide-react";
 import { format, toZonedTime } from "date-fns-tz";
+import { useServerFn } from "@tanstack/react-start";
 
-import {
-  MOCK_AKUN_OPTIONS,
-  MOCK_KAS_OPTIONS,
-  MOCK_LAPORAN_MUTASI,
-  MOCK_LAPORAN_POSISI,
-  MOCK_LAPORAN_TRANSAKSI,
-} from "@/components/laporan-keuangan/types";
+import type { KasOption } from "@/components/laporan-keuangan/types";
+import { getLaporanKeuangan } from "@/services/laporanService";
+import { getAkunDropdown } from "@/services/akunKeuanganService";
 
 import { LaporanKeuanganTransaksiTable } from "@/components/laporan-keuangan/laporan-keuangan-transaksi-table";
 import { LaporanKeuanganMutasiTable } from "@/components/laporan-keuangan/laporan-keuangan-mutasi-table";
@@ -59,65 +56,75 @@ function RouteComponent() {
     tipe: tipeFilter,
   } = search;
 
-  // Mock data query for transaksi keuangan
-  const transaksiQuery = useQuery({
+  // Server function for laporan
+  const getLaporanKeuanganFn = useServerFn(getLaporanKeuangan);
+  const getAkunDropdownFn = useServerFn(getAkunDropdown);
+
+  // Query for laporan keuangan
+  const laporanQuery = useQuery({
     queryKey: [
-      "laporanTransaksi",
-      { tanggal_mulai, tanggal_selesai, akun: akunFilter, tipe: tipeFilter },
+      "laporanKeuangan",
+      {
+        tanggal_mulai,
+        tanggal_selesai,
+        kas: kasFilter,
+        akun: akunFilter,
+        tipe: tipeFilter,
+      },
     ],
-    queryFn: () => {
-      let filtered = MOCK_LAPORAN_TRANSAKSI;
-
-      // Apply date range filter
-      if (tanggal_mulai) {
-        filtered = filtered.filter((t) => t.tanggal >= tanggal_mulai);
-      }
-      if (tanggal_selesai) {
-        filtered = filtered.filter((t) => t.tanggal <= tanggal_selesai);
-      }
-
-      // Apply akun filter
-      if (akunFilter && akunFilter !== "all") {
-        filtered = filtered.filter((t) => t.akun_transaksi === akunFilter);
-      }
-
-      // Apply tipe filter (array)
-      if (tipeFilter.length > 0 && !tipeFilter.includes("all")) {
-        filtered = filtered.filter((t) => tipeFilter.includes(t.tipe));
-      }
-
-      return filtered;
+    queryFn: async () => {
+      const result = await getLaporanKeuanganFn({
+        data: {
+          params: {
+            tanggal_mulai,
+            tanggal_selesai,
+            jenis_transaksi: tipeFilter as Array<"pemasukan" | "pengeluaran">,
+            kas: kasFilter.toLowerCase(),
+            akun:
+              akunFilter && akunFilter !== "all"
+                ? parseInt(akunFilter, 10)
+                : null,
+          },
+        },
+      });
+      return result;
     },
     staleTime: 1000 * 60 * 2,
   });
 
-  // Mock data query for mutasi kas
-  const mutasiQuery = useQuery({
-    queryKey: ["laporanMutasi"],
-    queryFn: () => MOCK_LAPORAN_MUTASI,
-    staleTime: 1000 * 60 * 2,
+  // Query for akun dropdown - filter by kas from URL
+  const akunQuery = useQuery({
+    queryKey: ["akun", "dropdown", kasFilter],
+    queryFn: async () => {
+      const result = await getAkunDropdownFn({
+        data: { kas: [kasFilter.toLowerCase()] },
+      });
+      if (!result?.data) return [];
+      return result.data.map((a: { id: number; nama_akun: string }) => ({
+        id: a.id,
+        nama: a.nama_akun,
+      }));
+    },
+    staleTime: 1000 * 60 * 10,
   });
 
-  // Mock data query for posisi keuangan
-  const posisiQuery = useQuery({
-    queryKey: ["laporanPosisi"],
-    queryFn: () => MOCK_LAPORAN_POSISI,
-    staleTime: 1000 * 60 * 2,
-  });
+  // Kas options - hardcoded based on backend validation
+  const kasOptions: Array<KasOption> = [
+    { id: 1, nama: "Kas Pemuda" },
+    { id: 2, nama: "17 an" },
+  ];
 
-  // Calculate totals for summary
-  const transaksiData = transaksiQuery.data ?? [];
-  const totalPemasukan = transaksiData
-    .filter((t) => t.tipe === "pemasukan")
-    .reduce((sum, t) => sum + t.jumlah, 0);
-  const totalPengeluaran = transaksiData
-    .filter((t) => t.tipe === "pengeluaran")
-    .reduce((sum, t) => sum + t.jumlah, 0);
-
-  // Calculate saldo awal from posisi data
-  const posisiData = posisiQuery.data ?? [];
-  const saldoAwal = posisiData.reduce((sum, p) => sum + p.saldo_awal, 0);
-  const kasDiTangan = posisiData.reduce((sum, p) => sum + p.total, 0);
+  // Extract data from laporan response
+  const laporanData = laporanQuery.data;
+  const transaksiData = laporanData?.data?.transaksi ?? [];
+  const mutasiData = laporanData?.data?.mutasi ?? [];
+  const posisiData = laporanData?.data?.posisi_keuangan ?? [];
+  const summary = laporanData?.summary ?? {
+    total_pemasukan: 0,
+    total_pengeluaran: 0,
+    saldo_awal: 0,
+    kas_sekarang: 0,
+  };
 
   const handleTanggalMulaiChange = (value: string) => {
     navigate({
@@ -201,39 +208,39 @@ function RouteComponent() {
           onKasChange={handleKasChange}
           onAkunChange={handleAkunChange}
           onTipeChange={handleTipeChange}
-          kasOptions={MOCK_KAS_OPTIONS}
-          akunOptions={MOCK_AKUN_OPTIONS}
-          isLoading={transaksiQuery.isLoading}
+          kasOptions={kasOptions}
+          akunOptions={akunQuery.data ?? []}
+          isLoading={laporanQuery.isLoading || akunQuery.isLoading}
           className="flex-1"
         />
         <LaporanKeuanganSummary
-          saldoAwal={saldoAwal}
-          totalPemasukan={totalPemasukan}
-          totalPengeluaran={totalPengeluaran}
-          kasDiTangan={kasDiTangan}
+          saldoAwal={summary.saldo_awal}
+          totalPemasukan={summary.total_pemasukan}
+          totalPengeluaran={summary.total_pengeluaran}
+          kasDiTangan={summary.kas_sekarang}
         />
       </div>
 
       <div className="flex flex-col gap-8">
         <LaporanKeuanganTransaksiTable
-          data={transaksiQuery.data ?? []}
-          isLoading={transaksiQuery.isLoading}
+          data={transaksiData}
+          isLoading={laporanQuery.isLoading}
           kasNama={kasFilter}
           tanggalMulai={tanggal_mulai}
           tanggalSelesai={tanggal_selesai}
         />
 
         <LaporanKeuanganMutasiTable
-          data={mutasiQuery.data ?? []}
-          isLoading={mutasiQuery.isLoading}
+          data={mutasiData}
+          isLoading={laporanQuery.isLoading}
           kasNama={kasFilter}
           tanggalMulai={tanggal_mulai}
           tanggalSelesai={tanggal_selesai}
         />
 
         <LaporanKeuanganPosisiTable
-          data={posisiQuery.data ?? []}
-          isLoading={posisiQuery.isLoading}
+          data={posisiData}
+          isLoading={laporanQuery.isLoading}
           kasNama={kasFilter}
           tanggalSelesai={tanggal_selesai}
         />
