@@ -121,18 +121,6 @@ export function PenanggungJawabTable({
         ),
       },
       {
-        accessorKey: "valuasi_transaksi",
-        header: "Valuasi Transaksi",
-        cell: ({ row }) => {
-          const valuasi = row.original.valuasi_transaksi;
-          return (
-            <span className="text-sm font-medium text-green-600">
-              {formatCurrency(valuasi)}
-            </span>
-          );
-        },
-      },
-      {
         id: "actions",
         header: "Aksi",
         cell: ({ row }) => {

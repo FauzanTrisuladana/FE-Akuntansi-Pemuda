@@ -80,15 +80,6 @@ export function LaporanKeuanganTransaksiTable({
         ),
       },
       {
-        accessorKey: "penanggung_jawab",
-        header: "Penanggung Jawab",
-        cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-900">
-            {row.original.penanggung_jawab}
-          </span>
-        ),
-      },
-      {
         accessorKey: "tipe",
         header: "Tipe",
         cell: ({ row }) => {

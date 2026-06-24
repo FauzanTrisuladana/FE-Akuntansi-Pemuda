@@ -6,7 +6,6 @@ import { handleApiError } from "./errorService";
 export type PenanggungJawabRecord = {
   id: number;
   nama: string;
-  valuasi_transaksi: number;
 };
 
 export type TransactionPJBackend = {

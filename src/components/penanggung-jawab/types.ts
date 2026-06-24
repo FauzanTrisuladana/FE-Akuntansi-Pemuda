@@ -1,7 +1,6 @@
 export type PenanggungJawabRecord = {
   id: number;
   nama: string;
-  valuasi_transaksi: number;
 };
 
 export type TransactionPJRecord = {
@@ -47,62 +46,50 @@ export const MOCK_PENANGGUNG_JAWAB: Array<PenanggungJawabRecord> = [
   {
     id: 1,
     nama: "Fauzan",
-    valuasi_transaksi: 15000000,
   },
   {
     id: 2,
     nama: "Rizky",
-    valuasi_transaksi: 12500000,
   },
   {
     id: 3,
     nama: "Ahmad",
-    valuasi_transaksi: 8000000,
   },
   {
     id: 4,
     nama: "Budi",
-    valuasi_transaksi: 5000000,
   },
   {
     id: 5,
     nama: "Siti",
-    valuasi_transaksi: 3000000,
   },
   {
     id: 6,
     nama: "Dewi",
-    valuasi_transaksi: 2500000,
   },
   {
     id: 7,
     nama: "Agus",
-    valuasi_transaksi: 1000000,
   },
   {
     id: 8,
     nama: "Rina",
-    valuasi_transaksi: 750000,
   },
   {
     id: 9,
     nama: "Tono",
-    valuasi_transaksi: 500000,
   },
   {
     id: 10,
     nama: "Lisa",
-    valuasi_transaksi: 250000,
   },
   {
     id: 11,
     nama: "Eka",
-    valuasi_transaksi: 100000,
   },
   {
     id: 12,
     nama: "Joko",
-    valuasi_transaksi: 50000,
   },
 ];
 
