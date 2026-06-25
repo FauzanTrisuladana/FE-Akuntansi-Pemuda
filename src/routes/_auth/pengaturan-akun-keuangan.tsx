@@ -28,7 +28,7 @@ const akunKeuanganSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  kas: z.array(z.string()).catch(KAS_OPTIONS.map((o) => o.nama)),
+  kas: z.array(z.string()).catch(KAS_OPTIONS.map((o) => o.nama.toLowerCase())),
 });
 
 export const Route = createFileRoute("/_auth/pengaturan-akun-keuangan")({
@@ -134,7 +134,10 @@ function RouteComponent() {
       const result = await createAkunKeuanganFn({
         data: {
           nama_akun: payload.namaAkun,
-          kas: KAS_OPTIONS.find((k) => k.id === payload.kasId)?.nama ?? "",
+          kas:
+            KAS_OPTIONS.find(
+              (k) => k.id === payload.kasId,
+            )?.nama.toLowerCase() ?? "",
           keterangan: payload.keterangan,
         },
       });
@@ -168,7 +171,8 @@ function RouteComponent() {
         data: {
           id,
           nama_akun: namaAkun,
-          kas: KAS_OPTIONS.find((k) => k.id === kasId)?.nama,
+          kas:
+            KAS_OPTIONS.find((k) => k.id === kasId)?.nama.toLowerCase() ?? "",
           keterangan,
         },
       });

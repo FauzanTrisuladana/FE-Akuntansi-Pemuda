@@ -12,6 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
 import { KAS_OPTIONS } from "@/components/shared/mock-data";
 import { DataTablePagination } from "@/components/data-table-pagination";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 import {
   Table,

@@ -65,7 +65,7 @@ export function AkunKeuanganFilterBar({
                   .map((k) => k.toLowerCase())
                   .includes(option.nama.toLowerCase())}
                 onCheckedChange={(checked) =>
-                  handleKasChange(option.nama, !!checked)
+                  handleKasChange(option.nama.toLowerCase(), !!checked)
                 }
                 disabled={isLoading}
               />

@@ -10,6 +10,7 @@ import { HistoryRiilVerifyDialog } from "./history-riil-verify-dialog";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { HistoryRiilRecord } from "./types";
 import { DataTablePagination } from "@/components/data-table-pagination";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 import {
   Table,
