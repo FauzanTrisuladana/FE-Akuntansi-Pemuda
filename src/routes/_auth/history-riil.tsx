@@ -6,7 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { format, toZonedTime } from "date-fns-tz";
 import { toHistoryRiilRecord } from "@/components/history-riil/types";
 import { KAS_OPTIONS } from "@/components/shared/mock-data";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";
 import { HistoryRiilFilterBar } from "@/components/history-riil/history-riil-filter-bar";
@@ -41,21 +41,19 @@ const historyRiilSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/history-riil")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: historyRiilSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
+
+  const getHistoryRiilFn = useServerFn(getHistoryRiil);
+  const verifyHistoryRiilFn = useServerFn(verifyHistoryRiil);
 
   const {
     page,
@@ -65,9 +63,6 @@ function RouteComponent() {
     tanggal_selesai,
     kas,
   } = search;
-
-  const getHistoryRiilFn = useServerFn(getHistoryRiil);
-  const verifyHistoryRiilFn = useServerFn(verifyHistoryRiil);
 
   // API data query
   const historyRiilQuery = useQuery({
@@ -106,7 +101,22 @@ function RouteComponent() {
       };
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const pageCount = historyRiilQuery.data?.meta
     ? Math.max(

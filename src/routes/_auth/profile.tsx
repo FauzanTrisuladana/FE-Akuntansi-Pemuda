@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserProfile } from "@/hooks/use-user-profile";
+import { useRoleGuard } from "@/utils/roleGuard";
 import { ProfileHeader } from "@/components/profile/profile-header";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { ProfileInfo } from "@/components/profile/profile-info";
@@ -13,7 +14,8 @@ export const Route = createFileRoute("/_auth/profile")({
 });
 
 function ProfilePage() {
-  const { data: user, isLoading, isError } = useUserProfile();
+  const { authorized, isLoading } = useRoleGuard(["bendahara", "biasa"]);
+  const { data: user, isError } = useUserProfile();
   const queryClient = useQueryClient();
   const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
 
@@ -22,13 +24,6 @@ function ProfilePage() {
       setCurrentPhoto(user.profile_image);
     }
   }, [user?.profile_image]);
-
-  const handlePhotoUpdated = (newImageUrl: string) => {
-    setCurrentPhoto(newImageUrl);
-    queryClient.invalidateQueries({ queryKey: ["profile"] });
-  };
-
-  const userWithPhoto = user ? { ...user, profile_image: currentPhoto } : null;
 
   if (isLoading) {
     return (
@@ -47,6 +42,17 @@ function ProfilePage() {
       </div>
     );
   }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
+
+  const handlePhotoUpdated = (newImageUrl: string) => {
+    setCurrentPhoto(newImageUrl);
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+  };
+
+  const userWithPhoto = user ? { ...user, profile_image: currentPhoto } : null;
 
   if (isError) {
     return (

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getDashboard } from "@/services/dashboardService";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardLineChart } from "@/components/dashboard/dashboard-line-chart";
@@ -12,18 +12,11 @@ import { DashboardMultiLineChart } from "@/components/dashboard/dashboard-multi-
 import { DashboardMultiBarChart } from "@/components/dashboard/dashboard-multi-bar-chart";
 
 export const Route = createFileRoute("/_auth/dashboard")({
-  beforeLoad: async () => {
-    const result = await checkRole({
-      data: { allowedRoles: ["bendahara", "biasa"] },
-    });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara", "biasa"]);
   const [selectedKas, setSelectedKas] = useState<string>("kas pemuda");
   const getDashboardFn = useServerFn(getDashboard);
 
@@ -36,7 +29,34 @@ function RouteComponent() {
       return result;
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="h-80 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-80 rounded-lg bg-slate-100 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const data = dashboardQuery.data;
   const summary = data?.summary;

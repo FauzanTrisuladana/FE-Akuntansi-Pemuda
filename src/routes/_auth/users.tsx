@@ -8,7 +8,7 @@ import { FilterBar } from "src/components/users/filter-bar-user";
 import { useServerFn } from "@tanstack/react-start";
 import type { UserFormErrors } from "@/components/users/types";
 import { ROLE_OPTIONS } from "@/components/users/types";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
@@ -32,18 +32,13 @@ const usersSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/users")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: usersSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
@@ -58,6 +53,11 @@ function RouteComponent() {
 
   // API query
   const getUsersFn = useServerFn(getUsers);
+  const createUserFn = useServerFn(createUser);
+  const updateUserFn = useServerFn(updateUser);
+  const deleteUserFn = useServerFn(deleteUser);
+  const toggleUserStatusFn = useServerFn(toggleUserStatus);
+
   const usersQuery = useQuery({
     queryKey: [
       "users",
@@ -84,6 +84,7 @@ function RouteComponent() {
       return response;
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   const total = usersQuery.data ? usersQuery.data.meta.total : 0;
@@ -100,6 +101,20 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [addErrors, setAddErrors] = useState<UserFormErrors>(null);
   const [editErrors, setEditErrors] = useState<UserFormErrors>(null);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const handleSearchChange = (value: string) => {
     navigate({
@@ -136,11 +151,6 @@ function RouteComponent() {
       replace: true,
     });
   };
-
-  const createUserFn = useServerFn(createUser);
-  const updateUserFn = useServerFn(updateUser);
-  const deleteUserFn = useServerFn(deleteUser);
-  const toggleUserStatusFn = useServerFn(toggleUserStatus);
 
   const handleAdd = async (payload: {
     name: string;

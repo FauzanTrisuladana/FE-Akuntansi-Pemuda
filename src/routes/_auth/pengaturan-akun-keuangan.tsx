@@ -8,7 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import type { AkunKeuanganFormErrors } from "@/components/pengaturan-akun-keuangan/types";
 import { toAkunKeuanganRecord } from "@/components/pengaturan-akun-keuangan/types";
 import { KAS_OPTIONS } from "@/components/shared/mock-data";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 
 import { AkunKeuanganAddDialog } from "@/components/pengaturan-akun-keuangan/akun-keuangan-add-dialog";
 import { AkunKeuanganTable } from "@/components/pengaturan-akun-keuangan/akun-keuangan-table";
@@ -32,18 +32,13 @@ const akunKeuanganSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/pengaturan-akun-keuangan")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: akunKeuanganSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
@@ -76,6 +71,7 @@ function RouteComponent() {
       return response;
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   const kasDropdownQuery = useQuery({
@@ -98,6 +94,20 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [addErrors, setAddErrors] = useState<AkunKeuanganFormErrors>(null);
   const [editErrors, setEditErrors] = useState<AkunKeuanganFormErrors>(null);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const handleSearchChange = (value: string) => {
     navigate({

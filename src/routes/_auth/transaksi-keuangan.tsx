@@ -16,6 +16,7 @@ import type {
 } from "@/components/transaksi-keuangan/types";
 import { toTransaksiKeuanganRecord } from "@/components/transaksi-keuangan/types";
 import { KAS_OPTIONS } from "@/components/shared/mock-data";
+import { useRoleGuard } from "@/utils/roleGuard";
 import {
   createTransaksiKeuangan,
   deleteTransaksiKeuangan,
@@ -24,7 +25,6 @@ import {
 } from "@/services/transaksiService";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
 import { getPenanggungJawabDropdown } from "@/services/penanggungJawabService";
-import { checkRole } from "@/utils/roleGuard";
 
 import { TransaksiKeuanganAddDialog } from "@/components/transaksi-keuangan/transaksi-keuangan-add-dialog";
 import { TransaksiKeuanganTable } from "@/components/transaksi-keuangan/transaksi-keuangan-table";
@@ -76,18 +76,13 @@ const transaksiKeuanganSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/transaksi-keuangan")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: transaksiKeuanganSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
@@ -151,6 +146,7 @@ function RouteComponent() {
       };
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   // Akun dropdown query - filter by kas from URL
@@ -165,6 +161,7 @@ function RouteComponent() {
       }));
     },
     staleTime: 1000 * 60 * 10,
+    enabled: authorized && !isLoading,
   });
 
   const kasDropdownQuery = useQuery({
@@ -184,7 +181,27 @@ function RouteComponent() {
       }));
     },
     staleTime: 1000 * 60 * 10,
+    enabled: authorized && !isLoading,
   });
+
+  const [open, setOpen] = useState(false);
+  const [addErrors, setAddErrors] = useState<TransaksiKeuanganFormErrors>(null);
+  const [editErrors, setEditErrors] =
+    useState<TransaksiKeuanganFormErrors>(null);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const total = transaksiKeuanganQuery.data?.meta?.total ?? 0;
   const pageCount = transaksiKeuanganQuery.data?.meta?.last_page ?? 1;
@@ -206,11 +223,6 @@ function RouteComponent() {
   const totalPengeluaran =
     (transaksiKeuanganQuery.data as TransaksiCollectionResponse)?.summary
       ?.total_pengeluaran ?? 0;
-
-  const [open, setOpen] = useState(false);
-  const [addErrors, setAddErrors] = useState<TransaksiKeuanganFormErrors>(null);
-  const [editErrors, setEditErrors] =
-    useState<TransaksiKeuanganFormErrors>(null);
 
   const handleSearchChange = (value: string) => {
     navigate({

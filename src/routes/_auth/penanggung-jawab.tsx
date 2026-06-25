@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import type { PenanggungJawabFormErrors } from "@/components/penanggung-jawab/types";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 
 import { PenanggungJawabAddDialog } from "@/components/penanggung-jawab/penanggung-jawab-add-dialog";
 import { PenanggungJawabTable } from "@/components/penanggung-jawab/penanggung-jawab-table";
@@ -28,18 +28,13 @@ const penanggungJawabSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/penanggung-jawab")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: penanggungJawabSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
@@ -49,6 +44,10 @@ function RouteComponent() {
   // API query
   const getPenanggungJawabFn = useServerFn(getPenanggungJawab);
   const getPenanggungJawabDetailFn = useServerFn(getPenanggungJawabDetail);
+  const createPenanggungJawabFn = useServerFn(createPenanggungJawab);
+  const updatePenanggungJawabFn = useServerFn(updatePenanggungJawab);
+  const deletePenanggungJawabFn = useServerFn(deletePenanggungJawab);
+
   const penanggungJawabQuery = useQuery({
     queryKey: ["penanggungJawab", { page, per_page, search: searchQuery }],
     queryFn: async () => {
@@ -64,6 +63,7 @@ function RouteComponent() {
       return response;
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   const total = penanggungJawabQuery.data?.meta?.total ?? 0;
@@ -81,6 +81,20 @@ function RouteComponent() {
   const [addErrors, setAddErrors] = useState<PenanggungJawabFormErrors>(null);
   const [editErrors, setEditErrors] = useState<PenanggungJawabFormErrors>(null);
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
+
   const handleSearchChange = (value: string) => {
     navigate({
       to: "/penanggung-jawab",
@@ -92,10 +106,6 @@ function RouteComponent() {
       replace: true,
     });
   };
-
-  const createPenanggungJawabFn = useServerFn(createPenanggungJawab);
-  const updatePenanggungJawabFn = useServerFn(updatePenanggungJawab);
-  const deletePenanggungJawabFn = useServerFn(deletePenanggungJawab);
 
   const handleAdd = async (payload: { nama: string }): Promise<boolean> => {
     setAddErrors(null);

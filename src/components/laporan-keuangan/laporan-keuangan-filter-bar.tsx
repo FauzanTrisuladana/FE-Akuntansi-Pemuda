@@ -32,7 +32,7 @@ interface LaporanKeuanganFilterBarProps {
 export function LaporanKeuanganFilterBar({
   tanggalMulai,
   tanggalSelesai,
-  kas = "Kas Pemuda",
+  kas = "kas pemuda",
   akun,
   tipe,
   onTanggalMulaiChange,

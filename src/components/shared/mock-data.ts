@@ -11,7 +11,7 @@ export type AkunOption = {
 };
 
 export const KAS_OPTIONS: Array<KasOption> = [
-  { id: 1, nama: "Kas Pemuda" },
+  { id: 1, nama: "kas pemuda" },
   { id: 2, nama: "17 an" },
 ];
 

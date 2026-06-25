@@ -5,14 +5,14 @@ import { toast } from "sonner";
 import { Printer } from "lucide-react";
 import { format, toZonedTime } from "date-fns-tz";
 import { useServerFn } from "@tanstack/react-start";
-
 import type { KasOption } from "@/components/laporan-keuangan/types";
+import { useRoleGuard } from "@/utils/roleGuard";
+
 import {
   downloadLaporanPDF,
   getLaporanKeuangan,
 } from "@/services/laporanService";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
-import { checkRole } from "@/utils/roleGuard";
 
 import { LaporanKeuanganTransaksiTable } from "@/components/laporan-keuangan/laporan-keuangan-transaksi-table";
 import { LaporanKeuanganMutasiTable } from "@/components/laporan-keuangan/laporan-keuangan-mutasi-table";
@@ -38,26 +38,19 @@ const getToday = (): string => {
 const laporanKeuanganSearchSchema = z.object({
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.string().catch("Kas Pemuda"),
+  kas: z.string().catch("kas pemuda"),
   akun: z.string().catch("all"),
   tipe: z.array(z.string()).catch(["pemasukan", "pengeluaran"]),
 });
 
 export const Route = createFileRoute("/_auth/laporan-keuangan")({
-  beforeLoad: async () => {
-    const result = await checkRole({
-      data: { allowedRoles: ["bendahara", "biasa"] },
-    });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: laporanKeuanganSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara", "biasa"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
 
@@ -72,6 +65,7 @@ function RouteComponent() {
   // Server function for laporan
   const getLaporanKeuanganFn = useServerFn(getLaporanKeuangan);
   const getAkunDropdownFn = useServerFn(getAkunDropdown);
+  const downloadLaporanPDFFn = useServerFn(downloadLaporanPDF);
 
   // Query for laporan keuangan
   const laporanQuery = useQuery({
@@ -103,6 +97,7 @@ function RouteComponent() {
       return result;
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   // Query for akun dropdown - filter by kas from URL
@@ -119,11 +114,28 @@ function RouteComponent() {
       }));
     },
     staleTime: 1000 * 60 * 10,
+    enabled: authorized && !isLoading,
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="h-80 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="h-80 rounded-lg bg-slate-100 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   // Kas options - hardcoded based on backend validation
   const kasOptions: Array<KasOption> = [
-    { id: 1, nama: "Kas Pemuda" },
+    { id: 1, nama: "kas pemuda" },
     { id: 2, nama: "17 an" },
   ];
 
@@ -193,8 +205,6 @@ function RouteComponent() {
       replace: true,
     });
   };
-
-  const downloadLaporanPDFFn = useServerFn(downloadLaporanPDF);
 
   const handlePrintPDF = async () => {
     try {

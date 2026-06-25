@@ -1,26 +1,19 @@
-import { createServerFn } from "@tanstack/react-start";
-import { getProfile } from "@/services/profileService";
+import { useUserProfile } from "@/hooks/use-user-profile";
 
 /**
  * Check if the current user has the required role(s).
- * Redirects to dashboard if unauthorized.
+ * Use this in client-side components or route beforeLoad.
  */
-export const checkRole = createServerFn({ method: "GET" })
-  .validator((data: { allowedRoles: Array<string> }) => data)
-  .handler(async ({ data }) => {
-    try {
-      const user = await getProfile();
-      if (!user || !data.allowedRoles.includes(user.role)) {
-        return {
-          authorized: false,
-          redirect: "/dashboard",
-        };
-      }
-      return { authorized: true, role: user.role };
-    } catch {
-      return {
-        authorized: false,
-        redirect: "/dashboard",
-      };
-    }
-  });
+export function useRoleGuard(allowedRoles: Array<string>) {
+  const { data: user, isLoading } = useUserProfile();
+
+  if (isLoading) {
+    return { authorized: false, isLoading: true, role: null };
+  }
+
+  if (!user || !allowedRoles.includes(user.role)) {
+    return { authorized: false, isLoading: false, role: user?.role ?? null };
+  }
+
+  return { authorized: true, isLoading: false, role: user.role };
+}

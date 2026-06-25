@@ -9,7 +9,7 @@ import { format, toZonedTime } from "date-fns-tz";
 import type { MutasiRekeningFormErrors } from "@/components/mutasi-rekening/types";
 import { toMutasiRekeningRecord } from "@/components/mutasi-rekening/types";
 import { KAS_OPTIONS } from "@/components/shared/mock-data";
-import { checkRole } from "@/utils/roleGuard";
+import { useRoleGuard } from "@/utils/roleGuard";
 
 import { MutasiRekeningAddDialog } from "@/components/mutasi-rekening/mutasi-rekening-add-dialog";
 import { MutasiRekeningTable } from "@/components/mutasi-rekening/mutasi-rekening-table";
@@ -49,18 +49,13 @@ const mutasiRekeningSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/mutasi-rekening")({
-  beforeLoad: async () => {
-    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
-    if (!result.authorized) {
-      throw redirect({ to: "/unauthorized" });
-    }
-  },
   validateSearch: mutasiRekeningSearchSchema,
   component: RouteComponent,
 });
 
 // ─── Route Component ──────────────────────────────────────────────────────────
 function RouteComponent() {
+  const { authorized, isLoading } = useRoleGuard(["bendahara"]);
   const navigate = useNavigate();
   const search = Route.useSearch();
   const queryClient = useQueryClient();
@@ -120,6 +115,7 @@ function RouteComponent() {
       };
     },
     staleTime: 1000 * 60 * 2,
+    enabled: authorized && !isLoading,
   });
 
   // Akun dropdown query - filter by kas from URL
@@ -134,6 +130,7 @@ function RouteComponent() {
       }));
     },
     staleTime: 1000 * 60 * 10,
+    enabled: authorized && !isLoading,
   });
 
   const kasDropdownQuery = useQuery({
@@ -164,6 +161,20 @@ function RouteComponent() {
   const [open, setOpen] = useState(false);
   const [addErrors, setAddErrors] = useState<MutasiRekeningFormErrors>(null);
   const [editErrors, setEditErrors] = useState<MutasiRekeningFormErrors>(null);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="h-10 rounded-lg bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="h-96 rounded-lg bg-slate-100 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!authorized) {
+    throw redirect({ to: "/unauthorized" });
+  }
 
   const handleSearchChange = (value: string) => {
     navigate({
