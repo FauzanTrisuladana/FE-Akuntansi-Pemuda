@@ -15,7 +15,7 @@ interface SummaryCardProps {
 export function SummaryCard({ title, items, isLoading }: SummaryCardProps) {
   if (isLoading) {
     return (
-      <Card className="bg-slate-900 text-white w-56 flex-shrink-0 h-full flex flex-col">
+      <Card className="bg-slate-900 text-white w-full lg:w-64 flex-shrink-0 max-h-48 lg:max-h-none flex flex-col">
         <CardContent className="px-4 py-3 flex flex-col justify-between h-full overflow-y-auto">
           <div className="h-4 w-24 rounded bg-slate-700 animate-pulse mb-2" />
           <div className="space-y-2">
@@ -32,7 +32,7 @@ export function SummaryCard({ title, items, isLoading }: SummaryCardProps) {
   }
 
   return (
-    <Card className="bg-slate-900 text-white w-56 flex-shrink-0 h-full flex flex-col">
+    <Card className="bg-slate-900 text-white w-full lg:w-64 flex-shrink-0 max-h-48 lg:max-h-none flex flex-col">
       <CardContent className="px-4 py-3 flex flex-col justify-between h-full overflow-y-auto">
         <h3 className="text-sm font-bold mb-2 pb-2 border-b border-slate-700">
           {title}

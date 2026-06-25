@@ -47,11 +47,11 @@ export function AkunKeuanganFilterBar({
   return (
     <div
       className={cn(
-        "w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-3",
+        "w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-2",
         className,
       )}
     >
-      <div className="flex flex-col lg:flex-row lg:items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Kas:</span>
