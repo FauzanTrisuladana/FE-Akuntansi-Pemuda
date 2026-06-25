@@ -62,7 +62,9 @@ export function UserNav() {
               className="object-cover"
             />
             <AvatarFallback className="bg-slate-200 text-slate-700 font-bold text-xs">
-              {user?.name ? getInitials(user.name) : "..."}
+              {user?.name && user.name !== "User"
+                ? getInitials(user.name)
+                : "..."}
             </AvatarFallback>
           </Avatar>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -72,12 +74,18 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {user?.name || "Pengguna"}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user?.email || "—"}
-            </p>
+            {user?.name && user.name !== "User" ? (
+              <p className="text-sm font-medium leading-none">{user.name}</p>
+            ) : (
+              <div className="h-4 w-24 rounded bg-slate-200 animate-pulse" />
+            )}
+            {user?.email ? (
+              <p className="text-xs leading-none text-muted-foreground">
+                {user.email}
+              </p>
+            ) : (
+              <div className="h-3 w-28 rounded bg-slate-200 animate-pulse" />
+            )}
             {user?.role && (
               <p className="text-[10px] uppercase font-bold text-blue-600 bg-blue-50 w-fit px-1.5 py-0.5 rounded mt-1">
                 {user.role}

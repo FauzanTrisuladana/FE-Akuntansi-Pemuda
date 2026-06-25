@@ -150,7 +150,7 @@ export function AppSidebar({
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">
-                      {user?.name ? (
+                      {user?.name && user.name !== "User" ? (
                         getInitials(user.name)
                       ) : (
                         <User className="w-5 h-5" />
@@ -160,12 +160,18 @@ export function AppSidebar({
                 </div>
 
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="truncate font-semibold">
-                    {user?.name || "Memuat..."}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email || "Memuat..."}
-                  </span>
+                  {user?.name ? (
+                    <span className="truncate font-semibold">{user.name}</span>
+                  ) : (
+                    <div className="h-4 w-24 rounded bg-slate-200 animate-pulse" />
+                  )}
+                  {user?.email ? (
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  ) : (
+                    <div className="h-3 w-32 rounded bg-slate-200 animate-pulse mt-1" />
+                  )}
                 </div>
               </Link>
             </SidebarMenuButton>

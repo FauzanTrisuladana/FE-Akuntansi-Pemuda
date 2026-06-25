@@ -40,8 +40,24 @@ function AvatarImage({
 
 function AvatarFallback({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  const isEmpty =
+    !children ||
+    (typeof children === "string" &&
+      (children === "..." || children.trim() === ""));
+
+  if (isEmpty) {
+    return (
+      <AvatarPrimitive.Fallback
+        data-slot="avatar-fallback"
+        className={cn("bg-muted animate-pulse rounded-full", className)}
+        {...props}
+      />
+    );
+  }
+
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
