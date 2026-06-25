@@ -48,12 +48,12 @@ export function LaporanKeuanganFilterBar({
   return (
     <div
       className={cn(
-        "w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-2",
+        "w-full rounded-lg bg-slate-50 border-2 border-slate-200 hover:border-slate-300 transition-all px-4 py-3",
         className,
       )}
     >
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Rentang Tanggal:</span>
@@ -83,7 +83,7 @@ export function LaporanKeuanganFilterBar({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Kas:</span>
@@ -115,7 +115,7 @@ export function LaporanKeuanganFilterBar({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Akun:</span>
@@ -138,7 +138,7 @@ export function LaporanKeuanganFilterBar({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-2">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">Tipe:</span>
