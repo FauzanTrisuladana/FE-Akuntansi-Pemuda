@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 interface TransaksiKeuanganTableProps {
   data: Array<TransaksiKeuanganRecord>;
@@ -328,11 +329,8 @@ export function TransaksiKeuanganTable({
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Memuat data transaksi...
+                  <TableCell colSpan={columns.length} className="p-0 border-0">
+                    <TableSkeleton columns={columns.length} />
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows.length ? (

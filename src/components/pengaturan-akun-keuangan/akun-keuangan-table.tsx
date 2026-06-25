@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 interface AkunKeuanganTableProps {
   data: Array<AkunKeuanganRecord>;
@@ -260,11 +261,8 @@ export function AkunKeuanganTable({
             <TableBody>
               {isInitialLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Memuat data akun keuangan...
+                  <TableCell colSpan={columns.length} className="p-0 border-0">
+                    <TableSkeleton columns={columns.length} />
                   </TableCell>
                 </TableRow>
               ) : hasRows ? (

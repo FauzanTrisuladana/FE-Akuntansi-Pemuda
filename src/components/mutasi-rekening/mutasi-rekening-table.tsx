@@ -231,11 +231,8 @@ export function MutasiRekeningTable({
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Memuat data mutasi akun...
+                  <TableCell colSpan={columns.length} className="p-0 border-0">
+                    <TableSkeleton columns={columns.length} />
                   </TableCell>
                 </TableRow>
               ) : table.getRowModel().rows.length ? (

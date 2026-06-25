@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 interface PenanggungJawabTableProps {
   data: Array<PenanggungJawabRecord>;
@@ -215,11 +216,8 @@ export function PenanggungJawabTable({
             <TableBody>
               {isInitialLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Memuat data penanggung jawab...
+                  <TableCell colSpan={columns.length} className="p-0 border-0">
+                    <TableSkeleton columns={columns.length} />
                   </TableCell>
                 </TableRow>
               ) : hasRows ? (

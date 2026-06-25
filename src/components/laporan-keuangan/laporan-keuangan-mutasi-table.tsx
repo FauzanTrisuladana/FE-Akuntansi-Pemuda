@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 interface LaporanKeuanganMutasiTableProps {
   data: Array<LaporanKeuanganMutasiRecord>;
@@ -135,11 +136,8 @@ export function LaporanKeuanganMutasiTable({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Memuat data...
+                <TableCell colSpan={columns.length} className="p-0 border-0">
+                  <TableSkeleton columns={columns.length} />
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows.length > 0 ? (

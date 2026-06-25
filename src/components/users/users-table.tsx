@@ -25,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { TableSkeleton } from "@/components/ui/table-skeleton";
 
 interface UsersTableProps {
   data: Array<UserRecord>;
@@ -265,11 +266,8 @@ export function UsersTable({
             <TableBody>
               {isInitialLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Memuat data pengguna...
+                  <TableCell colSpan={columns.length} className="p-0 border-0">
+                    <TableSkeleton columns={columns.length} />
                   </TableCell>
                 </TableRow>
               ) : hasRows ? (

@@ -280,6 +280,7 @@ function RouteComponent() {
           totalPemasukan={summary.total_pemasukan}
           totalPengeluaran={summary.total_pengeluaran}
           kasDiTangan={summary.kas_sekarang}
+          isLoading={laporanQuery.isLoading}
         />
       </div>
 

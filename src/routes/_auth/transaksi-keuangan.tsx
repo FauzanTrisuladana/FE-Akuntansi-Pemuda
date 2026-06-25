@@ -429,6 +429,7 @@ function RouteComponent() {
         <TransaksiKeuanganSummary
           totalPemasukan={totalPemasukan}
           totalPengeluaran={totalPengeluaran}
+          isLoading={transaksiKeuanganQuery.isLoading}
         />
       </div>
 
