@@ -125,6 +125,15 @@ export function TransaksiKeuanganTable({
         ),
       },
       {
+        accessorKey: "kas",
+        header: "Kas",
+        cell: ({ row }) => (
+          <span className="text-sm font-semibold text-slate-900">
+            {row.original.kas}
+          </span>
+        ),
+      },
+      {
         accessorKey: "akun_transaksi",
         header: "Akun Transaksi",
         cell: ({ row }) => (
@@ -166,15 +175,6 @@ export function TransaksiKeuanganTable({
             </div>
           );
         },
-      },
-      {
-        accessorKey: "kas",
-        header: "Kas",
-        cell: ({ row }) => (
-          <span className="text-sm font-semibold text-slate-900">
-            {row.original.kas}
-          </span>
-        ),
       },
       {
         accessorKey: "tipe",
