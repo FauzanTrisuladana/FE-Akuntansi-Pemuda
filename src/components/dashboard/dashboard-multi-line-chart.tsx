@@ -80,7 +80,7 @@ export function DashboardMultiLineChart({
       <Card className="h-full shadow-lg border-3 border-slate-200">
         <CardHeader>
           <CardTitle className="text-lg font-bold text-slate-900">
-            Tren Pertumbuhan Saldo per Jenis Akun
+            Tren Pertumbuhan Saldo per Akun
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
