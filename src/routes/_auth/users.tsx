@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { FilterBar } from "src/components/users/filter-bar-user";
 import { useServerFn } from "@tanstack/react-start";
 import type { UserFormErrors } from "@/components/users/types";
 import { ROLE_OPTIONS } from "@/components/users/types";
+import { checkRole } from "@/utils/roleGuard";
 
 import { UserAddDialog } from "@/components/users/user-add-dialog";
 import { UsersTable } from "@/components/users/users-table";
@@ -31,6 +32,12 @@ const usersSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/users")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: usersSearchSchema,
   component: RouteComponent,
 });

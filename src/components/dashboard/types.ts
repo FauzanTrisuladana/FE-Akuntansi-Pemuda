@@ -4,26 +4,23 @@ export type DashboardStats = {
   totalSaldo: { total: number };
 };
 
-export type SaldoHarian = {
+export type SaldoDailyRecord = {
   tanggal: string;
   pemasukan: number;
   pengeluaran: number;
+  saldo: number;
 };
 
-export type SaldoPerAkun = {
+export type SaldoPerAkunRecord = {
   tanggal: string;
-  kasDitangan: number;
-  kasModal: number;
-  kasOperasional: number;
-  bankBca: number;
-  bankMandiri: number;
+  akun: Array<{ nama_akun: string; saldo: number }>;
 };
 
-export type RekonsiliasiData = {
+export type RekonsiliasiRecord = {
   tanggal: string;
   sistem: number;
   riil: number;
-  verified: boolean;
+  verified: number | null;
 };
 
 // Mock data untuk summary cards

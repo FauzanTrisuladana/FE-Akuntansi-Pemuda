@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import {
   MOCK_KAS_OPTIONS,
   toAkunKeuanganRecord,
 } from "@/components/pengaturan-akun-keuangan/types";
+import { checkRole } from "@/utils/roleGuard";
 
 import { AkunKeuanganAddDialog } from "@/components/pengaturan-akun-keuangan/akun-keuangan-add-dialog";
 import { AkunKeuanganTable } from "@/components/pengaturan-akun-keuangan/akun-keuangan-table";
@@ -33,6 +34,12 @@ const akunKeuanganSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/pengaturan-akun-keuangan")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: akunKeuanganSearchSchema,
   component: RouteComponent,
 });

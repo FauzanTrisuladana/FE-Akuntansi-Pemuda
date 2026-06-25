@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import type { PenanggungJawabFormErrors } from "@/components/penanggung-jawab/types";
+import { checkRole } from "@/utils/roleGuard";
 
 import { PenanggungJawabAddDialog } from "@/components/penanggung-jawab/penanggung-jawab-add-dialog";
 import { PenanggungJawabTable } from "@/components/penanggung-jawab/penanggung-jawab-table";
@@ -27,6 +28,12 @@ const penanggungJawabSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/penanggung-jawab")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: penanggungJawabSearchSchema,
   component: RouteComponent,
 });

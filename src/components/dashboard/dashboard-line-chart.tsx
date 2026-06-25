@@ -1,6 +1,6 @@
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { SaldoHarian } from "./types";
+import type { SaldoDailyRecord } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -17,14 +17,29 @@ const chartConfig = {
 
 export function DashboardLineChart({
   chartData,
+  isLoading,
 }: {
-  chartData?: Array<SaldoHarian>;
+  chartData?: Array<SaldoDailyRecord>;
+  isLoading?: boolean;
 }) {
   const processedData =
     chartData?.map((item) => ({
       tanggal: item.tanggal,
-      saldo: item.pemasukan - item.pengeluaran,
+      saldo: item.saldo,
     })) || [];
+
+  if (isLoading) {
+    return (
+      <Card className="h-full shadow-lg border-3 border-slate-200">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-slate-900">
+            Tren Saldo Kas Bulan Ini
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full shadow-lg border-3 border-slate-200">

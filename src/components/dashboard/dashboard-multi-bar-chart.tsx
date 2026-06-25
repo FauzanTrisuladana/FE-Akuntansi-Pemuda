@@ -23,8 +23,10 @@ const chartConfig = {
 
 export function DashboardMultiBarChart({
   chartData,
+  isLoading,
 }: {
-  chartData?: Array<RekonsiliasiData>;
+  chartData?: Array<RekonsiliasiRecord>;
+  isLoading?: boolean;
 }) {
   const processedData =
     chartData?.map((item) => ({
@@ -33,6 +35,19 @@ export function DashboardMultiBarChart({
       riil: item.riil,
       verified: item.verified,
     })) || [];
+
+  if (isLoading) {
+    return (
+      <Card className="h-full shadow-lg border-3 border-slate-200">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-slate-900">
+            Log Rekonsiliasi Kas (Aplikasi vs Riil)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full shadow-lg border-3 border-slate-200">

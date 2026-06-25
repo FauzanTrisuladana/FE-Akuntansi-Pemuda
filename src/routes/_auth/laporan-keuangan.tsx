@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import {
   getLaporanKeuangan,
 } from "@/services/laporanService";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
+import { checkRole } from "@/utils/roleGuard";
 
 import { LaporanKeuanganTransaksiTable } from "@/components/laporan-keuangan/laporan-keuangan-transaksi-table";
 import { LaporanKeuanganMutasiTable } from "@/components/laporan-keuangan/laporan-keuangan-mutasi-table";
@@ -43,6 +44,14 @@ const laporanKeuanganSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/laporan-keuangan")({
+  beforeLoad: async () => {
+    const result = await checkRole({
+      data: { allowedRoles: ["bendahara", "biasa"] },
+    });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: laporanKeuanganSearchSchema,
   component: RouteComponent,
 });

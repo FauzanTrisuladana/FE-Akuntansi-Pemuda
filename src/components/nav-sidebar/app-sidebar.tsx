@@ -27,8 +27,9 @@ export function AppSidebar({
   pathname,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { pathname: string }) {
-  const { data: user } = useUserProfile();
+  const { data: user, isLoading } = useUserProfile();
   const router = useRouter();
+  const userRole = user?.role;
 
   const logoutfn = useServerFn(logout);
   const queryClient = useQueryClient();
@@ -96,26 +97,33 @@ export function AppSidebar({
               <SidebarMenuItem>
                 <SearchBar className="sm:hidden block" />
               </SidebarMenuItem>
-              {navItems.map((item) => {
-                const isActive =
-                  pathname === item.url || pathname.startsWith(`${item.url}/`);
+              {isLoading
+                ? null
+                : navItems
+                    .filter(
+                      (item) => !userRole || item.roles.includes(userRole),
+                    )
+                    .map((item) => {
+                      const isActive =
+                        pathname === item.url ||
+                        pathname.startsWith(`${item.url}/`);
 
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={isActive}
-                      className="h-12 font-medium hover:bg-slate-100 data-[active=true]:bg-slate-900 data-[active=true]:text-white data-[active=true]:hover:bg-slate-800 data-[active=true]:hover:text-white"
-                    >
-                      <Link to={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                      return (
+                        <SidebarMenuItem key={item.title}>
+                          <SidebarMenuButton
+                            asChild
+                            tooltip={item.title}
+                            isActive={isActive}
+                            className="h-12 font-medium hover:bg-slate-100 data-[active=true]:bg-slate-900 data-[active=true]:text-white data-[active=true]:hover:bg-slate-800 data-[active=true]:hover:text-white"
+                          >
+                            <Link to={item.url}>
+                              <item.icon />
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

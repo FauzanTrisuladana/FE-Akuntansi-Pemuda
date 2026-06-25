@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -26,6 +26,7 @@ import {
 } from "@/services/transaksiService";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
 import { getPenanggungJawabDropdown } from "@/services/penanggungJawabService";
+import { checkRole } from "@/utils/roleGuard";
 
 import { TransaksiKeuanganAddDialog } from "@/components/transaksi-keuangan/transaksi-keuangan-add-dialog";
 import { TransaksiKeuanganTable } from "@/components/transaksi-keuangan/transaksi-keuangan-table";
@@ -77,6 +78,12 @@ const transaksiKeuanganSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/transaksi-keuangan")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: transaksiKeuanganSearchSchema,
   component: RouteComponent,
 });

@@ -19,8 +19,10 @@ export function DashboardSummaryCards({
     pengeluaran: { total: 0, change: 0 },
     totalSaldo: { total: 0 },
   },
+  isLoading,
 }: {
   stats?: DashboardStats;
+  isLoading?: boolean;
 }) {
   const items = [
     {
@@ -53,6 +55,16 @@ export function DashboardSummaryCards({
       iconBg: "bg-blue-50",
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

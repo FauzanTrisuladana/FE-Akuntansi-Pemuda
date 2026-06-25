@@ -1,6 +1,6 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { SaldoHarian } from "./types";
+import type { SaldoDailyRecord } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -21,8 +21,10 @@ const chartConfig = {
 
 export function DashboardBarChart({
   chartData,
+  isLoading,
 }: {
-  chartData?: Array<SaldoHarian>;
+  chartData?: Array<SaldoDailyRecord>;
+  isLoading?: boolean;
 }) {
   const processedData =
     chartData?.map((item) => ({
@@ -31,11 +33,24 @@ export function DashboardBarChart({
       pengeluaran: item.pengeluaran,
     })) || [];
 
+  if (isLoading) {
+    return (
+      <Card className="h-full shadow-lg border-3 border-slate-200">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-slate-900">
+            Perbandingan Pemasukan & Pengeluaran Harian
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+      </Card>
+    );
+  }
+
   return (
     <Card className="h-full shadow-lg border-3 border-slate-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-lg font-bold text-slate-900">
-          Perbandingan Pemasukan & Pengeluaran Per Minggu
+          Perbandingan Pemasukan & Pengeluaran Harian
         </CardTitle>
       </CardHeader>
       <CardContent>

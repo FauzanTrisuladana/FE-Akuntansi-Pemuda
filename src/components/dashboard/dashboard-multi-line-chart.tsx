@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { SaldoPerAkun } from "./types";
+import type { SaldoPerAkunRecord } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,55 +12,81 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartConfig = {
-  kasDitangan: {
-    label: "Kas Ditangan (Retail)",
-    color: "#3b82f6",
-  },
-  kasModal: {
-    label: "Kas Modal",
-    color: "#22c55e",
-  },
-  kasOperasional: {
-    label: "Kas Operasional",
-    color: "#f59e04",
-  },
-  bankBca: {
-    label: "Bank BCA",
-    color: "#ef4444",
-  },
-  bankMandiri: {
-    label: "Bank Mandiri",
-    color: "#8b5cf6",
-  },
-} satisfies ChartConfig;
-
-const AKUN_OPTIONS = [
-  { id: 1, nama: "Kas Ditangan (Retail)", key: "kasDitangan" as const },
-  { id: 2, nama: "Kas Modal", key: "kasModal" as const },
-  { id: 3, nama: "Kas Operasional", key: "kasOperasional" as const },
-  { id: 4, nama: "Bank BCA", key: "bankBca" as const },
-  { id: 5, nama: "Bank Mandiri", key: "bankMandiri" as const },
+const akunColors = [
+  "#3b82f6",
+  "#22c55e",
+  "#f59e04",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
 ];
 
 export function DashboardMultiLineChart({
   chartData,
+  isLoading,
 }: {
-  chartData?: Array<SaldoPerAkun>;
+  chartData?: Array<SaldoPerAkunRecord>;
+  isLoading?: boolean;
 }) {
-  const [selectedAkun, setSelectedAkun] = useState<Array<string>>(
-    AKUN_OPTIONS.map((opt) => opt.key),
+  // Extract unique akun names from API response
+  const akunOptions = useMemo(() => {
+    if (!chartData || chartData.length === 0) return [];
+    const uniqueAkun = new Set<string>();
+    chartData.forEach((item) => {
+      item.akun.forEach((a) => uniqueAkun.add(a.nama_akun));
+    });
+    return Array.from(uniqueAkun).map((nama, idx) => ({
+      key: nama.toLowerCase().replace(/[\s()]/g, "_"),
+      nama,
+      color: akunColors[idx % akunColors.length],
+    }));
+  }, [chartData]);
+
+  const chartConfig = useMemo(
+    () =>
+      Object.fromEntries(
+        akunOptions.map((opt) => [
+          opt.key,
+          { label: opt.nama, color: opt.color },
+        ]),
+      ) satisfies ChartConfig,
+    [akunOptions],
   );
 
+  const [selectedAkun, setSelectedAkun] = useState<Array<string>>(() =>
+    akunOptions.map((opt) => opt.key),
+  );
+
+  // Sync selectedAkun when akunOptions change
+  useMemo(() => {
+    setSelectedAkun(akunOptions.map((opt) => opt.key));
+  }, [akunOptions]);
+
+  // Dynamically build chart data from backend response
   const processedData =
-    chartData?.map((item) => ({
-      tanggal: item.tanggal,
-      kasDitangan: item.kasDitangan,
-      kasModal: item.kasModal,
-      kasOperasional: item.kasOperasional,
-      bankBca: item.bankBca,
-      bankMandiri: item.bankMandiri,
-    })) || [];
+    chartData?.map((item) => {
+      const record: Record<string, number | string> = { tanggal: item.tanggal };
+      item.akun.forEach((a) => {
+        const key = a.nama_akun.toLowerCase().replace(/[\s()]/g, "_");
+        record[key] = a.saldo;
+      });
+      return record;
+    }) || [];
+
+  if (isLoading) {
+    return (
+      <Card className="h-full shadow-lg border-3 border-slate-200">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-slate-900">
+            Tren Pertumbuhan Saldo per Jenis Akun
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full shadow-lg border-3 border-slate-200">
@@ -70,11 +96,11 @@ export function DashboardMultiLineChart({
         </CardTitle>
       </CardHeader>
       <div className="flex flex-wrap gap-2 px-6">
-        {AKUN_OPTIONS.map((option) => {
+        {akunOptions.map((option) => {
           const isSelected = selectedAkun.includes(option.key);
           return (
             <Badge
-              key={option.id}
+              key={option.key}
               variant="outline"
               className={`cursor-pointer rounded-full h-8 gap-1.5 px-3 has-[>svg]:px-2.5 font-bold ${
                 isSelected
@@ -130,91 +156,24 @@ export function DashboardMultiLineChart({
               content={<ChartLegendContent />}
               verticalAlign="bottom"
             />
-            {selectedAkun.includes("kasDitangan") && (
-              <Line
-                dataKey="kasDitangan"
-                type="monotone"
-                stroke="var(--color-kasDitangan)"
-                strokeWidth={3}
-                dot={{
-                  fill: "var(--color-kasDitangan)",
-                  r: 5,
-                  strokeWidth: 2,
-                  stroke: "#ffffff",
-                }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            )}
-            {selectedAkun.includes("kasModal") && (
-              <Line
-                dataKey="kasModal"
-                type="monotone"
-                stroke="var(--color-kasModal)"
-                strokeWidth={3}
-                dot={{
-                  fill: "var(--color-kasModal)",
-                  r: 5,
-                  strokeWidth: 2,
-                  stroke: "#ffffff",
-                }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            )}
-            {selectedAkun.includes("kasOperasional") && (
-              <Line
-                dataKey="kasOperasional"
-                type="monotone"
-                stroke="var(--color-kasOperasional)"
-                strokeWidth={3}
-                dot={{
-                  fill: "var(--color-kasOperasional)",
-                  r: 5,
-                  strokeWidth: 2,
-                  stroke: "#ffffff",
-                }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            )}
-            {selectedAkun.includes("bankBca") && (
-              <Line
-                dataKey="bankBca"
-                type="monotone"
-                stroke="var(--color-bankBca)"
-                strokeWidth={3}
-                dot={{
-                  fill: "var(--color-bankBca)",
-                  r: 5,
-                  strokeWidth: 2,
-                  stroke: "#ffffff",
-                }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            )}
-            {selectedAkun.includes("bankMandiri") && (
-              <Line
-                dataKey="bankMandiri"
-                type="monotone"
-                stroke="var(--color-bankMandiri)"
-                strokeWidth={3}
-                dot={{
-                  fill: "var(--color-bankMandiri)",
-                  r: 5,
-                  strokeWidth: 2,
-                  stroke: "#ffffff",
-                }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            )}
+            {akunOptions
+              .filter((opt) => selectedAkun.includes(opt.key))
+              .map((opt) => (
+                <Line
+                  key={opt.key}
+                  dataKey={opt.key}
+                  type="monotone"
+                  stroke={opt.color}
+                  strokeWidth={3}
+                  dot={{
+                    fill: opt.color,
+                    r: 5,
+                    strokeWidth: 2,
+                    stroke: "#ffffff",
+                  }}
+                  activeDot={{ r: 6 }}
+                />
+              ))}
           </LineChart>
         </ChartContainer>
       </CardContent>

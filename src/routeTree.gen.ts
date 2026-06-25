@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthUsersRouteImport } from './routes/_auth/users'
+import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
 import { Route as AuthTransaksiKeuanganRouteImport } from './routes/_auth/transaksi-keuangan'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthPengaturanAkunKeuanganRouteImport } from './routes/_auth/pengaturan-akun-keuangan'
@@ -39,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthUsersRoute = AuthUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
+  id: '/unauthorized',
+  path: '/unauthorized',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthTransaksiKeuanganRoute = AuthTransaksiKeuanganRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
   '/profile': typeof AuthProfileRoute
   '/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/users': typeof AuthUsersRoute
 }
 export interface FileRoutesByTo {
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
   '/profile': typeof AuthProfileRoute
   '/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/users': typeof AuthUsersRoute
 }
 export interface FileRoutesById {
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/_auth/pengaturan-akun-keuangan': typeof AuthPengaturanAkunKeuanganRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/_auth/transaksi-keuangan': typeof AuthTransaksiKeuanganRoute
+  '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/users': typeof AuthUsersRoute
 }
 export interface FileRouteTypes {
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/pengaturan-akun-keuangan'
     | '/profile'
     | '/transaksi-keuangan'
+    | '/unauthorized'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/pengaturan-akun-keuangan'
     | '/profile'
     | '/transaksi-keuangan'
+    | '/unauthorized'
     | '/users'
   id:
     | '__root__'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/_auth/pengaturan-akun-keuangan'
     | '/_auth/profile'
     | '/_auth/transaksi-keuangan'
+    | '/_auth/unauthorized'
     | '/_auth/users'
   fileRoutesById: FileRoutesById
 }
@@ -201,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthUsersRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/unauthorized': {
+      id: '/_auth/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
+      preLoaderRoute: typeof AuthUnauthorizedRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/transaksi-keuangan': {
@@ -271,6 +290,7 @@ interface AuthRouteChildren {
   AuthPengaturanAkunKeuanganRoute: typeof AuthPengaturanAkunKeuanganRoute
   AuthProfileRoute: typeof AuthProfileRoute
   AuthTransaksiKeuanganRoute: typeof AuthTransaksiKeuanganRoute
+  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthUsersRoute: typeof AuthUsersRoute
 }
 
@@ -283,6 +303,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthPengaturanAkunKeuanganRoute: AuthPengaturanAkunKeuanganRoute,
   AuthProfileRoute: AuthProfileRoute,
   AuthTransaksiKeuanganRoute: AuthTransaksiKeuanganRoute,
+  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthUsersRoute: AuthUsersRoute,
 }
 

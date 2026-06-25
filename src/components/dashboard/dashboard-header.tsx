@@ -1,14 +1,19 @@
-import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 
 const KAS_OPTIONS = [
-  { id: 1, nama: "Kas Pemuda" },
-  { id: 2, nama: "17-an" },
+  { id: 1, nama: "Kas Pemuda", value: "kas pemuda" },
+  { id: 2, nama: "17 an", value: "17 an" },
 ];
 
-export function DashboardHeader() {
-  const [selectedKas, setSelectedKas] = React.useState<string>("Kas Pemuda");
+interface DashboardHeaderProps {
+  selectedKas: string;
+  onKasChange: (kas: string) => void;
+}
 
+export function DashboardHeader({
+  selectedKas,
+  onKasChange,
+}: DashboardHeaderProps) {
   return (
     <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -17,8 +22,8 @@ export function DashboardHeader() {
       </div>
       <div className="flex gap-2">
         {KAS_OPTIONS.map((option) => {
-          const isSelected = selectedKas === option.nama;
-          const isKasPemuda = option.nama === "Kas Pemuda";
+          const isSelected = selectedKas === option.value;
+          const isKasPemuda = option.value === "kas pemuda";
           return (
             <Badge
               key={option.id}
@@ -30,7 +35,7 @@ export function DashboardHeader() {
                     : "bg-amber-50 text-amber-600 border-amber-200"
                   : "bg-gray-50 text-gray-600 border-gray-200"
               }`}
-              onClick={() => setSelectedKas(option.nama)}
+              onClick={() => onKasChange(option.value)}
             >
               {option.nama}
             </Badge>

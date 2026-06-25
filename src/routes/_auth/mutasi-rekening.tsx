@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import {
   MOCK_KAS_OPTIONS,
   toMutasiRekeningRecord,
 } from "@/components/mutasi-rekening/types";
+import { checkRole } from "@/utils/roleGuard";
 
 import { MutasiRekeningAddDialog } from "@/components/mutasi-rekening/mutasi-rekening-add-dialog";
 import { MutasiRekeningTable } from "@/components/mutasi-rekening/mutasi-rekening-table";
@@ -50,6 +51,12 @@ const mutasiRekeningSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/mutasi-rekening")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: mutasiRekeningSearchSchema,
   component: RouteComponent,
 });

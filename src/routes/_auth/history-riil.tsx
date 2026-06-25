@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import {
   KAS_OPTIONS,
   toHistoryRiilRecord,
 } from "@/components/history-riil/types";
+import { checkRole } from "@/utils/roleGuard";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";
 import { HistoryRiilFilterBar } from "@/components/history-riil/history-riil-filter-bar";
@@ -42,6 +43,12 @@ const historyRiilSearchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_auth/history-riil")({
+  beforeLoad: async () => {
+    const result = await checkRole({ data: { allowedRoles: ["bendahara"] } });
+    if (!result.authorized) {
+      throw redirect({ to: "/unauthorized" });
+    }
+  },
   validateSearch: historyRiilSearchSchema,
   component: RouteComponent,
 });
