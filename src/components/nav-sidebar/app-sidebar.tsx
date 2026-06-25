@@ -98,7 +98,11 @@ export function AppSidebar({
                 <SearchBar className="sm:hidden block" />
               </SidebarMenuItem>
               {isLoading
-                ? null
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <SidebarMenuItem key={i}>
+                      <div className="h-12 w-full rounded-lg bg-slate-100 animate-pulse" />
+                    </SidebarMenuItem>
+                  ))
                 : navItems
                     .filter(
                       (item) => !userRole || item.roles.includes(userRole),

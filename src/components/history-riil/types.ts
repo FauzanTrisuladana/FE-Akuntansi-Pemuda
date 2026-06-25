@@ -44,9 +44,3 @@ export const formatCurrency = (value: number): string => {
     minimumFractionDigits: 0,
   }).format(value);
 };
-
-// Opsi Kas untuk filter
-export const KAS_OPTIONS: Array<{ id: number; nama: string }> = [
-  { id: 1, nama: "17 an" },
-  { id: 2, nama: "kas pemuda" },
-];

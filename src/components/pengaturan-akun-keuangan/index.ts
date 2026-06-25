@@ -12,8 +12,8 @@ export type {
   TransactionBackend,
 } from "./types";
 export {
-  MOCK_KAS_OPTIONS,
   formatCurrency,
   toAkunKeuanganRecord,
   toTransactionRecord,
 } from "./types";
+export { KAS_OPTIONS } from "@/components/shared/mock-data";

@@ -58,11 +58,6 @@ export type MutasiRekeningFormErrors = Partial<
   Record<string, Array<string>>
 > | null;
 
-export const MOCK_KAS_OPTIONS: Array<AkunOption> = [
-  { id: 1, nama: "17 an" },
-  { id: 2, nama: "kas pemuda" },
-];
-
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",

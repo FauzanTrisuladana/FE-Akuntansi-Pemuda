@@ -4,10 +4,8 @@ import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { format, toZonedTime } from "date-fns-tz";
-import {
-  KAS_OPTIONS,
-  toHistoryRiilRecord,
-} from "@/components/history-riil/types";
+import { toHistoryRiilRecord } from "@/components/history-riil/types";
+import { KAS_OPTIONS } from "@/components/shared/mock-data";
 import { checkRole } from "@/utils/roleGuard";
 
 import { HistoryRiilTable } from "@/components/history-riil/history-riil-table";

@@ -92,11 +92,6 @@ export type PenanggungJawabOption = {
   nama: string;
 };
 
-export const MOCK_KAS_OPTIONS: Array<KasOption> = [
-  { id: 1, nama: "Kas Pemuda" },
-  { id: 2, nama: "17 an" },
-];
-
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",

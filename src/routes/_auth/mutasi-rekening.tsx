@@ -7,10 +7,8 @@ import { Plus } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { format, toZonedTime } from "date-fns-tz";
 import type { MutasiRekeningFormErrors } from "@/components/mutasi-rekening/types";
-import {
-  MOCK_KAS_OPTIONS,
-  toMutasiRekeningRecord,
-} from "@/components/mutasi-rekening/types";
+import { toMutasiRekeningRecord } from "@/components/mutasi-rekening/types";
+import { KAS_OPTIONS } from "@/components/shared/mock-data";
 import { checkRole } from "@/utils/roleGuard";
 
 import { MutasiRekeningAddDialog } from "@/components/mutasi-rekening/mutasi-rekening-add-dialog";
@@ -46,7 +44,7 @@ const mutasiRekeningSearchSchema = z.object({
   search: z.string().optional(),
   tanggal_mulai: z.string().catch(getFirstDayOfMonth()),
   tanggal_selesai: z.string().catch(getToday()),
-  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
+  kas: z.array(z.string()).catch(KAS_OPTIONS.map((o) => o.nama)),
   akun: z.number().optional(),
 });
 
@@ -140,7 +138,7 @@ function RouteComponent() {
 
   const kasDropdownQuery = useQuery({
     queryKey: ["kas", "dropdown"],
-    queryFn: () => MOCK_KAS_OPTIONS,
+    queryFn: () => KAS_OPTIONS,
     staleTime: 1000 * 60 * 10,
   });
 

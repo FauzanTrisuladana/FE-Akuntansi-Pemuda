@@ -6,10 +6,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import type { AkunKeuanganFormErrors } from "@/components/pengaturan-akun-keuangan/types";
-import {
-  MOCK_KAS_OPTIONS,
-  toAkunKeuanganRecord,
-} from "@/components/pengaturan-akun-keuangan/types";
+import { toAkunKeuanganRecord } from "@/components/pengaturan-akun-keuangan/types";
+import { KAS_OPTIONS } from "@/components/shared/mock-data";
 import { checkRole } from "@/utils/roleGuard";
 
 import { AkunKeuanganAddDialog } from "@/components/pengaturan-akun-keuangan/akun-keuangan-add-dialog";
@@ -30,7 +28,7 @@ const akunKeuanganSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   per_page: z.number().int().positive().catch(10),
   search: z.string().optional(),
-  kas: z.array(z.string()).catch(MOCK_KAS_OPTIONS.map((o) => o.nama)),
+  kas: z.array(z.string()).catch(KAS_OPTIONS.map((o) => o.nama)),
 });
 
 export const Route = createFileRoute("/_auth/pengaturan-akun-keuangan")({
@@ -82,7 +80,7 @@ function RouteComponent() {
 
   const kasDropdownQuery = useQuery({
     queryKey: ["kas", "dropdown"],
-    queryFn: () => MOCK_KAS_OPTIONS,
+    queryFn: () => KAS_OPTIONS,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -136,7 +134,7 @@ function RouteComponent() {
       const result = await createAkunKeuanganFn({
         data: {
           nama_akun: payload.namaAkun,
-          kas: MOCK_KAS_OPTIONS.find((k) => k.id === payload.kasId)?.nama ?? "",
+          kas: KAS_OPTIONS.find((k) => k.id === payload.kasId)?.nama ?? "",
           keterangan: payload.keterangan,
         },
       });
@@ -170,7 +168,7 @@ function RouteComponent() {
         data: {
           id,
           nama_akun: namaAkun,
-          kas: MOCK_KAS_OPTIONS.find((k) => k.id === kasId)?.nama,
+          kas: KAS_OPTIONS.find((k) => k.id === kasId)?.nama,
           keterangan,
         },
       });

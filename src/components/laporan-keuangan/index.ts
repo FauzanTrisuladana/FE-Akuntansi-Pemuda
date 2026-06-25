@@ -10,11 +10,5 @@ export type {
   AkunOption,
   KasOption,
 } from "./types";
-export {
-  MOCK_AKUN_OPTIONS,
-  MOCK_KAS_OPTIONS,
-  MOCK_LAPORAN_TRANSAKSI,
-  MOCK_LAPORAN_MUTASI,
-  MOCK_LAPORAN_POSISI,
-  formatCurrency,
-} from "./types";
+export { formatCurrency } from "./types";
+export { KAS_OPTIONS } from "@/components/shared/mock-data";

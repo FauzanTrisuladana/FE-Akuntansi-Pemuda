@@ -11,4 +11,5 @@ export type {
   KasOption,
   PenanggungJawabOption,
 } from "./types";
-export { MOCK_KAS_OPTIONS, formatCurrency } from "./types";
+export { formatCurrency } from "./types";
+export { KAS_OPTIONS } from "@/components/shared/mock-data";

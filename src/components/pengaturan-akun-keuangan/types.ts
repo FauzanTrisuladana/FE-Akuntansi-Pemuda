@@ -84,8 +84,3 @@ export type TransactionRecord = {
   kredit: number;
   saldo: number;
 };
-
-export const MOCK_KAS_OPTIONS: Array<KasOption> = [
-  { id: 1, nama: "17 an" },
-  { id: 2, nama: "kas pemuda" },
-];

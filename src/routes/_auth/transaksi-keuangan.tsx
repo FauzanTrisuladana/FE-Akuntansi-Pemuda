@@ -14,10 +14,8 @@ import type {
   TransaksiKeuanganFormErrors,
   TransaksiKeuanganRecord,
 } from "@/components/transaksi-keuangan/types";
-import {
-  MOCK_KAS_OPTIONS,
-  toTransaksiKeuanganRecord,
-} from "@/components/transaksi-keuangan/types";
+import { toTransaksiKeuanganRecord } from "@/components/transaksi-keuangan/types";
+import { KAS_OPTIONS } from "@/components/shared/mock-data";
 import {
   createTransaksiKeuangan,
   deleteTransaksiKeuangan,
@@ -171,7 +169,7 @@ function RouteComponent() {
 
   const kasDropdownQuery = useQuery({
     queryKey: ["kas", "dropdown"],
-    queryFn: () => MOCK_KAS_OPTIONS,
+    queryFn: () => KAS_OPTIONS,
     staleTime: 1000 * 60 * 10,
   });
 
