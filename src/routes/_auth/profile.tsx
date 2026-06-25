@@ -34,7 +34,16 @@ function ProfilePage() {
     return (
       <div className="flex flex-col gap-6">
         <ProfileHeader />
-        <p className="text-center text-muted-foreground">Memuat profil...</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 flex flex-col gap-4">
+            <div className="h-48 rounded-lg bg-slate-100 animate-pulse" />
+            <div className="h-48 rounded-lg bg-slate-100 animate-pulse" />
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="h-64 rounded-lg bg-slate-100 animate-pulse" />
+            <div className="h-32 rounded-lg bg-slate-100 animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
