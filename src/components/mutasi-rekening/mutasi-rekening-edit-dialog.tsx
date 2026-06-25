@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import type { FormEvent } from "react";
 import type { MutasiRekeningFormErrors, MutasiRekeningRecord } from "./types";
+import { formatRupiah, parseRupiah } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +69,7 @@ export function MutasiRekeningEditDialog({
         tanggal,
         akunDebit: data.akun_debit_id,
         akunKredit: data.akun_kredit_id,
-        jumlah: parseFloat(jumlah),
+        jumlah: parseRupiah(jumlah),
         keterangan: keterangan.trim() || undefined,
       });
       if (success) {
@@ -161,9 +162,12 @@ export function MutasiRekeningEditDialog({
               </Label>
               <Input
                 id="jumlah"
-                type="number"
-                value={jumlah}
-                onChange={(e) => setJumlah(e.target.value)}
+                type="text"
+                inputMode="numeric"
+                value={formatRupiah(jumlah)}
+                onChange={(e) =>
+                  setJumlah(e.target.value.replace(/[^\d]/g, ""))
+                }
                 placeholder="Masukkan jumlah"
                 className="h-12"
                 disabled={isLoading}

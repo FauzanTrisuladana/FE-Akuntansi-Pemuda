@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
+import { formatRupiah, parseRupiah } from "@/lib/utils";
 
 interface TransaksiKeuanganEditDialogProps {
   open: boolean;
@@ -117,7 +118,7 @@ export function TransaksiKeuanganEditDialog({
         akun_id: typeof akunId === "number" ? akunId : 0,
         penanggung_jawab_id: data.penanggung_jawab_id,
         tipe,
-        jumlah: parseFloat(jumlah),
+        jumlah: parseRupiah(jumlah),
         bukti: _buktiFile,
       });
       if (success) {
@@ -317,9 +318,12 @@ export function TransaksiKeuanganEditDialog({
                 </Label>
                 <Input
                   id="jumlah"
-                  type="number"
-                  value={jumlah}
-                  onChange={(e) => setJumlah(e.target.value)}
+                  type="text"
+                  inputMode="numeric"
+                  value={formatRupiah(jumlah)}
+                  onChange={(e) =>
+                    setJumlah(e.target.value.replace(/[^\d]/g, ""))
+                  }
                   placeholder="Masukkan jumlah"
                   className="h-12"
                   disabled={isLoading}

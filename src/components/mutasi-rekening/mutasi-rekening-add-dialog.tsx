@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAkunDropdown } from "@/services/akunKeuanganService";
+import { formatRupiah, parseRupiah } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type MutasiRekeningAddDialogProps = {
@@ -117,7 +118,7 @@ export function MutasiRekeningAddDialog({
         tanggal: tanggal.trim(),
         akunDebit: typeof akunDebit === "number" ? akunDebit : 0,
         akunKredit: typeof akunKredit === "number" ? akunKredit : 0,
-        jumlah: parseFloat(jumlah),
+        jumlah: parseRupiah(jumlah),
         keterangan: keterangan.trim() || undefined,
         kas: kas.toLowerCase(),
       });
@@ -290,9 +291,12 @@ export function MutasiRekeningAddDialog({
                 </Label>
                 <Input
                   id="jumlah"
-                  type="number"
-                  value={jumlah}
-                  onChange={(e) => setJumlah(e.target.value)}
+                  type="text"
+                  inputMode="numeric"
+                  value={formatRupiah(jumlah)}
+                  onChange={(e) =>
+                    setJumlah(e.target.value.replace(/[^\d]/g, ""))
+                  }
                   placeholder="Masukkan jumlah"
                   className="h-12"
                   disabled={isLoading}
