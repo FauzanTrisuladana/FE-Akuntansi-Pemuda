@@ -24,6 +24,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         charSet: "utf-8",
       },
       {
+        name: "google-site-verification",
+        content: "Y8HxHiNH_7DCvt-7-pPjnZ6ttWFRgLpKKSJLIBuPy0k",
+      },
+      {
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
