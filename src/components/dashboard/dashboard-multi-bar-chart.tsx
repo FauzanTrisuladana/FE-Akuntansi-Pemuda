@@ -1,6 +1,6 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { RekonsiliasiData } from "./types";
+import type { RekonsiliasiRecord } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -38,13 +38,11 @@ export function DashboardMultiBarChart({
 
   if (isLoading) {
     return (
-      <Card className="h-full shadow-lg border-3 border-slate-200">
+      <Card className="h-full shadow-lg border-3 border-slate-200 animate-pulse">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-slate-900">
-            Log Rekonsiliasi Kas (Aplikasi vs Riil)
-          </CardTitle>
+          <CardTitle className="h-6 w-1/2 rounded bg-slate-200" />
         </CardHeader>
-        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+        <CardContent className="h-[270px] rounded-lg bg-slate-100" />
       </Card>
     );
   }

@@ -77,13 +77,11 @@ export function DashboardMultiLineChart({
 
   if (isLoading) {
     return (
-      <Card className="h-full shadow-lg border-3 border-slate-200">
+      <Card className="h-full shadow-lg border-3 border-slate-200 animate-pulse">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-slate-900">
-            Tren Pertumbuhan Saldo per Akun
-          </CardTitle>
+          <CardTitle className="h-6 w-1/2 rounded bg-slate-200" />
         </CardHeader>
-        <CardContent className="h-[270px] bg-slate-100 animate-pulse rounded-lg" />
+        <CardContent className="h-[270px] rounded-lg bg-slate-100" />
       </Card>
     );
   }
