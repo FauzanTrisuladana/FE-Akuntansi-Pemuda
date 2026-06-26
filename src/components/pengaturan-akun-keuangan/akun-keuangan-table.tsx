@@ -235,43 +235,40 @@ export function AkunKeuanganTable({
     <>
       <Card className="shadow-lg border-3 border-slate-200 p-0">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/50">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                  {headerGroup.headers.map((header, index) => {
-                    let alignClass = "text-center";
-                    if (index === 1) alignClass = "text-left"; // Nama Akun
-                    if (index === 4) alignClass = "text-right"; // Jumlah
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className={`font-semibold text-slate-900 ${alignClass}`}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {isInitialLoading ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="p-0 border-0">
-                    <TableSkeleton columns={columns.length} />
-                  </TableCell>
-                </TableRow>
-              ) : hasRows ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-slate-50">
-                    {row.getVisibleCells().map((cell, index) => {
+          {isInitialLoading ? (
+            <TableSkeleton columns={columns.length} />
+          ) : (
+            <Table>
+              <TableHeader className="bg-slate-50/50">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                    {headerGroup.headers.map((header, index) => {
                       let alignClass = "text-center";
                       if (index === 1) alignClass = "text-left"; // Nama Akun
                       if (index === 4) alignClass = "text-right"; // Jumlah
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={`font-semibold text-slate-900 ${alignClass}`}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id} className="hover:bg-slate-50">
+                      {row.getVisibleCells().map((cell, index) => {
+                        let alignClass = "text-center";
+                        if (index === 1) alignClass = "text-left"; // Nama Akun
+                        if (index === 4) alignClass = "text-right"; // Jumlah
                       return (
                         <TableCell
                           key={cell.id}
@@ -296,9 +293,9 @@ export function AkunKeuanganTable({
                   </TableCell>
                 </TableRow>
               )}
-            </TableBody>
-          </Table>
-
+              </TableBody>
+            </Table>
+          )}
           <DataTablePagination
             pageIndex={pagination.pageIndex}
             pageCount={pagination.pageCount}

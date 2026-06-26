@@ -303,44 +303,41 @@ export function TransaksiKeuanganTable({
     <>
       <Card className="shadow-lg border-3 border-slate-200 p-0">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/50">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                  {headerGroup.headers.map((header, index) => {
-                    let alignClass = "text-center";
-                    if (index === 1 || index === 2 || index === 3)
-                      alignClass = "text-left";
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className={`font-semibold text-slate-900 ${alignClass}`}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="p-0 border-0">
-                    <TableSkeleton columns={columns.length} />
-                  </TableCell>
-                </TableRow>
-              ) : table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} className="hover:bg-slate-50">
-                    {row.getVisibleCells().map((cell, index) => {
+          {isLoading ? (
+            <TableSkeleton columns={columns.length} />
+          ) : (
+            <Table>
+              <TableHeader className="bg-slate-50/50">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                    {headerGroup.headers.map((header, index) => {
                       let alignClass = "text-center";
                       if (index === 1 || index === 2 || index === 3)
                         alignClass = "text-left";
                       return (
+                        <TableHead
+                          key={header.id}
+                          className={`font-semibold text-slate-900 ${alignClass}`}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id} className="hover:bg-slate-50">
+                      {row.getVisibleCells().map((cell, index) => {
+                        let alignClass = "text-center";
+                        if (index === 1 || index === 2 || index === 3)
+                          alignClass = "text-left";
+                        return (
                         <TableCell
                           key={cell.id}
                           className={`py-3 ${alignClass}`}
@@ -364,9 +361,9 @@ export function TransaksiKeuanganTable({
                   </TableCell>
                 </TableRow>
               )}
-            </TableBody>
-          </Table>
-
+              </TableBody>
+            </Table>
+          )}
           <DataTablePagination
             pageIndex={pagination.pageIndex}
             pageSize={pagination.pageSize}
