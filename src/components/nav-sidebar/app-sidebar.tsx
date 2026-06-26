@@ -150,7 +150,7 @@ export function AppSidebar({
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">
-                      {user?.name && user.name !== "User" ? (
+                      {user?.name ? (
                         getInitials(user.name)
                       ) : (
                         <User className="w-5 h-5" />

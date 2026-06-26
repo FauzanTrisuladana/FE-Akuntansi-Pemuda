@@ -62,9 +62,11 @@ export function UserNav() {
               className="object-cover"
             />
             <AvatarFallback className="bg-slate-200 text-slate-700 font-bold text-xs">
-              {user?.name && user.name !== "User"
-                ? getInitials(user.name)
-                : "..."}
+              {user?.name ? (
+                getInitials(user.name)
+              ) : (
+                <UserIcon className="w-5 h-5" />
+              )}
             </AvatarFallback>
           </Avatar>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
