@@ -327,6 +327,7 @@ function RouteComponent() {
       });
       toast.success("Transaksi berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["transaksiKeuangan"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       if (error?.response?.data?.errors) {
@@ -372,6 +373,7 @@ function RouteComponent() {
       });
       toast.success("Transaksi berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["transaksiKeuangan"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       if (error?.response?.data?.errors) {
@@ -391,6 +393,7 @@ function RouteComponent() {
       await deleteTransaksiFn({ data: { id } });
       toast.success("Transaksi berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["transaksiKeuangan"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       const msg =

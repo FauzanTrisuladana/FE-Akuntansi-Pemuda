@@ -259,6 +259,7 @@ function RouteComponent() {
       });
       toast.success(result?.message || "Mutasi akun berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
@@ -301,6 +302,7 @@ function RouteComponent() {
       });
       toast.success(result?.message || "Mutasi akun berhasil diperbarui");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as MutasiRekeningFormErrors;
@@ -319,6 +321,7 @@ function RouteComponent() {
       const result = await deleteMutasiRekeningFn({ data: { id } });
       toast.success(result?.message || "Mutasi akun berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ["mutasiRekening"] });
+      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
       return true;
     } catch (error: any) {
       const msg =
