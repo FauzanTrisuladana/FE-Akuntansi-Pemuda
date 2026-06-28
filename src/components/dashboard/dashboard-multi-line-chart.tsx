@@ -90,7 +90,7 @@ export function DashboardMultiLineChart({
     <Card className="h-full shadow-lg border-3 border-slate-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-lg font-bold text-slate-900">
-          Tren Pertumbuhan Saldo per Jenis Akun
+          Tren Pertumbuhan Saldo per Akun
         </CardTitle>
       </CardHeader>
       <div className="flex flex-wrap gap-2 px-6">
