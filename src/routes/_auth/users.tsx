@@ -163,7 +163,7 @@ function RouteComponent() {
         data: { nama: payload.name, email: payload.email, role: payload.role },
       });
       toast.success(result?.message || "User berhasil ditambahkan");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries();
       setOpen(false);
       return true;
     } catch (error: any) {
@@ -189,7 +189,7 @@ function RouteComponent() {
     try {
       const result = await updateUserFn({ data: { id, role } });
       toast.success(result?.message || "User berhasil diperbarui");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as UserFormErrors;
@@ -207,7 +207,7 @@ function RouteComponent() {
     try {
       const result = await deleteUserFn({ data: { id } });
       toast.success(result?.message || "User berhasil dihapus");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =
@@ -231,7 +231,7 @@ function RouteComponent() {
             ? "User berhasil diaktifkan"
             : "User berhasil dinon-aktifkan"),
       );
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =

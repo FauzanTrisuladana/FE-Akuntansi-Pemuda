@@ -187,7 +187,7 @@ function RouteComponent() {
     try {
       const result = await verifyHistoryRiilFn({ data: { id } });
       toast.success(result?.message || "Data berhasil diverifikasi");
-      queryClient.invalidateQueries({ queryKey: ["historyRiil"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =

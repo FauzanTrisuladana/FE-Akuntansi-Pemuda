@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updatePassword } from "@/services/profileService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfilePasswordProps {
   hasPassword: boolean;
@@ -17,6 +18,7 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const updatePasswordFn = useServerFn(updatePassword);
 
@@ -38,6 +40,7 @@ export function ProfilePassword({ hasPassword }: ProfilePasswordProps) {
       setCurrentPassword("");
       setPassword("");
       setPasswordConfirmation("");
+      queryClient.invalidateQueries();
       toast.success("Kata sandi berhasil diperbarui!");
     } catch (error: any) {
       const msg =

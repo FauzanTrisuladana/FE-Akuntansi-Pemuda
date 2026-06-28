@@ -49,7 +49,7 @@ function ProfilePage() {
 
   const handlePhotoUpdated = (newImageUrl: string) => {
     setCurrentPhoto(newImageUrl);
-    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    queryClient.invalidateQueries();
   };
 
   const userWithPhoto = user ? { ...user, profile_image: currentPhoto } : null;

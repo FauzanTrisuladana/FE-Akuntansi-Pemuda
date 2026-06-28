@@ -112,7 +112,7 @@ function RouteComponent() {
     try {
       const result = await createPenanggungJawabFn({ data: payload });
       toast.success(result?.message || "Penanggung jawab berhasil ditambahkan");
-      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      queryClient.invalidateQueries();
       setOpen(false);
       return true;
     } catch (error: any) {
@@ -138,7 +138,7 @@ function RouteComponent() {
     try {
       const result = await updatePenanggungJawabFn({ data: { id, nama } });
       toast.success(result?.message || "Penanggung jawab berhasil diperbarui");
-      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const errors = error?.response?.data?.errors as PenanggungJawabFormErrors;
@@ -156,7 +156,7 @@ function RouteComponent() {
     try {
       const result = await deletePenanggungJawabFn({ data: { id } });
       toast.success(result?.message || "Penanggung jawab berhasil dihapus");
-      queryClient.invalidateQueries({ queryKey: ["penanggungJawab"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =

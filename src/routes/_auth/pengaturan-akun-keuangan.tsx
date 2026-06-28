@@ -152,7 +152,7 @@ function RouteComponent() {
         },
       });
       toast.success(result?.message || "Akun keuangan berhasil ditambahkan");
-      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =
@@ -187,7 +187,7 @@ function RouteComponent() {
         },
       });
       toast.success(result?.message || "Akun keuangan berhasil diperbarui");
-      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =
@@ -203,7 +203,7 @@ function RouteComponent() {
     try {
       const result = await deleteAkunKeuanganFn({ data: { id } });
       toast.success(result?.message || "Akun keuangan berhasil dihapus");
-      queryClient.invalidateQueries({ queryKey: ["akunKeuangan"] });
+      queryClient.invalidateQueries();
       return true;
     } catch (error: any) {
       const msg =

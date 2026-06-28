@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateProfile } from "@/services/profileService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProfileInfoProps {
   user: UserProfile;
@@ -16,6 +17,7 @@ interface ProfileInfoProps {
 export function ProfileInfo({ user }: ProfileInfoProps) {
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateProfileFn = useServerFn(updateProfile);
@@ -25,6 +27,7 @@ export function ProfileInfo({ user }: ProfileInfoProps) {
     setIsSubmitting(true);
     try {
       await updateProfileFn({ data: { name, email } });
+      queryClient.invalidateQueries();
       toast.success("Profil berhasil diperbarui!");
     } catch (error: any) {
       const msg =
