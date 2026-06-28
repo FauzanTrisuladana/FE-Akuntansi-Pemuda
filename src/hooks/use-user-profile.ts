@@ -9,9 +9,6 @@ export function useUserProfile() {
     queryKey: ["profile"],
     queryFn: async () => {
       const data = await profilefn();
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(data));
-      }
       return data;
     },
     initialData: undefined,

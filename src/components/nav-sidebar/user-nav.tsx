@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 import { ChevronDown, LogOut, User as UserIcon } from "lucide-react";
 import { logout } from "src/services/authService";
 import { useServerFn } from "@tanstack/react-start";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserProfile } from "@/hooks/use-user-profile";
@@ -45,7 +46,6 @@ export function UserNav() {
         "Logout gagal. Coba lagi.";
       toast.error(msg);
     }
-    localStorage.removeItem("user");
     queryClient.removeQueries({
       queryKey: ["profile"],
     });

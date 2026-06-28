@@ -4,6 +4,7 @@ import * as React from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { LogOut, User } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { navItems } from "./nav-data";
@@ -54,7 +55,6 @@ export function AppSidebar({
         "Logout gagal. Coba lagi.";
       toast.error(msg);
     }
-    localStorage.removeItem("user");
     queryClient.removeQueries({
       queryKey: ["profile"],
     });
