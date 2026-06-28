@@ -241,7 +241,10 @@ export function AkunKeuanganTable({
             <Table>
               <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
+                  >
                     {headerGroup.headers.map((header, index) => {
                       let alignClass = "text-center";
                       if (index === 1) alignClass = "text-left"; // Nama Akun
@@ -269,30 +272,30 @@ export function AkunKeuanganTable({
                         let alignClass = "text-center";
                         if (index === 1) alignClass = "text-left"; // Nama Akun
                         if (index === 4) alignClass = "text-right"; // Jumlah
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={`py-3 ${alignClass}`}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      );
-                    })}
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={`py-3 ${alignClass}`}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      Tidak ada akun keuangan ditemukan.
+                    </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    Tidak ada akun keuangan ditemukan.
-                  </TableCell>
-                </TableRow>
-              )}
+                )}
               </TableBody>
             </Table>
           )}

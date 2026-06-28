@@ -155,7 +155,10 @@ export function HistoryRiilTable({
             <Table>
               <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
+                  >
                     {headerGroup.headers.map((header, index) => {
                       let alignClass = "text-center";
                       if (index === 1 || index === 2 || index === 3)
@@ -183,30 +186,30 @@ export function HistoryRiilTable({
                         let alignClass = "text-center";
                         if (index === 1 || index === 2 || index === 3)
                           alignClass = "text-left";
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={`py-3 ${alignClass}`}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      );
-                    })}
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={`py-3 ${alignClass}`}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      Tidak ada data history riil
+                    </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Tidak ada data history riil
-                  </TableCell>
-                </TableRow>
-              )}
+                )}
               </TableBody>
             </Table>
           )}
