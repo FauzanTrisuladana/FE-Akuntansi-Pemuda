@@ -52,7 +52,7 @@ export function DashboardBarChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-full w-full">
+        <ChartContainer config={chartConfig} className="h-[270px] w-full">
           <BarChart accessibilityLayer data={processedData} barGap={4}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis
